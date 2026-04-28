@@ -332,6 +332,14 @@ a {
   box-shadow: 0 14px 32px rgba(12, 22, 55, 0.08);
 }
 
+.hero-cta-actions {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
 .hero-cta-copy strong {
   display: block;
   color: var(--text);
@@ -345,8 +353,8 @@ a {
 }
 
 .hero-cta-button {
-  flex: 0 0 auto;
-  min-width: 150px;
+  min-width: 118px;
+  min-height: 42px;
 }
 
 .hero-banner::before,
@@ -861,8 +869,7 @@ a {
 }
 
 .hero-title,
-.section-head h2,
-.join-card h2 {
+.section-head h2 {
   margin: 16px 0;
   line-height: 1.08;
   letter-spacing: -0.04em;
@@ -879,7 +886,6 @@ a {
 .learn-card p,
 .path-card p,
 .timeline-body p,
-.join-copy p,
 .faq-item p,
 .stat-card p,
 .footer-copy p {
@@ -908,7 +914,6 @@ a {
 .learn-card,
 .path-card,
 .timeline-item,
-.join-card,
 .faq-item,
 .prize-spotlight,
 .prize-table-card,
@@ -2133,25 +2138,6 @@ a {
   color: var(--primary);
 }
 
-.join-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 26px;
-  padding: 28px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--primary) 12%, transparent), transparent),
-    var(--panel-strong);
-}
-
-.join-card--clean {
-  align-items: flex-start;
-}
-
-.join-copy {
-  max-width: 760px;
-}
-
 .requirements-layout {
   display: grid;
   gap: 18px;
@@ -2354,7 +2340,6 @@ a {
   }
 
   .nav-shell,
-  .join-card,
   .footer-inner {
     flex-direction: column;
     align-items: flex-start;
@@ -2417,6 +2402,10 @@ a {
     align-items: stretch;
     flex-direction: column;
     padding: 16px;
+  }
+
+  .hero-cta-actions {
+    justify-content: stretch;
   }
 
   .hero-cta-button {
@@ -2643,7 +2632,6 @@ a {
   .learn-card,
   .path-card,
   .timeline-item,
-  .join-card,
   .faq-item {
     padding: 20px;
   }

@@ -648,7 +648,12 @@ fn view_hero(model : Model) -> Html {
           strong(t(model.locale, zh="项目申报已开放", en="Proposal submission is open")),
           p(t(model.locale, zh="即日起至 7 月 1 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal by July 1.")),
         ]),
-        a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
+        div(class="hero-cta-actions", [
+          a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
+          a(class="button secondary hero-cta-button", href="#process", t(model.locale, zh="查看流程", en="View process")),
+          a(class="button secondary hero-cta-button", href="#requirements", t(model.locale, zh="查看验收", en="View acceptance")),
+          a(class="button secondary hero-cta-button", href="progress.html", t(model.locale, zh="比赛进度", en="Contest progress")),
+        ]),
       ]),
     ]),
   ])
@@ -1073,51 +1078,6 @@ fn view_requirements(model : Model) -> Html {
   ])
 }
 
-///|
-fn view_join(model : Model) -> Html {
-  section(id="join", class="section", [
-    div(class="container", [
-      div(class="join-card join-card--clean", [
-        div(class="join-copy", [
-          p(class="eyebrow", t(model.locale, zh="下一步", en="Next")),
-          h2(
-            t(
-              model.locale,
-              zh="项目申报入口已开放，\n先提交一页 PDF 申报书",
-              en="Registration is open. Submit your proposal first.",
-            ),
-          ),
-          p(
-            t(
-              model.locale,
-              zh="请通过项目申报表提交个人信息、项目 GitHub 链接和一页左右 PDF 申报书。赛方会通过邮件反馈审核结果。",
-              en="Use the form to submit your information, project GitHub link, and concise proposal. Organizers will follow up by email.",
-            ),
-          ),
-        ]),
-        div(class="join-actions", [
-          a(
-            class="button primary",
-            href=registration_href(),
-            t(model.locale, zh="提交项目申报", en="Submit proposal"),
-          ),
-          a(
-            class="button secondary",
-            href="#process",
-            t(model.locale, zh="查看流程", en="View process"),
-          ),
-          a(
-            class="button secondary",
-            href="#requirements",
-            t(model.locale, zh="查看验收", en="View acceptance"),
-          ),
-        ]),
-      ]),
-    ]),
-  ])
-}
-
-///|
 fn view_faq(model : Model) -> Html {
   section(id="faq", class="section section--alt", [
     div(class="container", [
@@ -1206,7 +1166,6 @@ fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
         view_process(model),
         view_directions(model),
         view_requirements(model),
-        view_join(model),
         view_faq(model),
       ])
     },
