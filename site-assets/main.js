@@ -613,6 +613,7 @@ function _M0TP219moonbit_2dcommunity7rabbita9TypedCellGRP38zongen0116mgpic2026_2
 }
 const _M0FP38zongen0116mgpic2026_2dsite4main20get__initial__locale = () => new URLSearchParams(window.location.search).get("lang") === "en" ? 1 : 0;
 const _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page = () => window.location.pathname.endsWith("/progress.html");
+const _M0FP38zongen0116mgpic2026_2dsite4main18is__showcase__page = () => window.location.pathname.endsWith("/showcase.html");
 const _M0FP38zongen0116mgpic2026_2dsite4main19prefers__dark__mode = () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
 function _M0TP38zongen0116mgpic2026_2dsite4main5Model(param0, param1) {
   this.locale = param0;
@@ -738,7 +739,7 @@ const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3488 = "si
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3489 = "container nav-shell";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3490 = "brand";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3491 = "brand-logo";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3492 = "site-assets/moonbit-logo.png?v=20260428-hero-signup";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3492 = "site-assets/moonbit-logo.png?v=20260428-showcase-page";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3493 = "brand-copy";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3494 = "brand-subtitle";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3495 = "nav-links";
@@ -751,12 +752,12 @@ const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3653 = 
 const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3654 = "qq-float-copy";
 const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3655 = "qq-qr-box";
 const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3656 = "qq-qr-img";
-const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3657 = "site-assets/registration-qr.png?v=20260428-hero-signup";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3657 = "site-assets/registration-qr.png?v=20260428-showcase-page";
 const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3658 = "qr-float-card";
 const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3659 = "qq-float-copy";
 const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3660 = "qq-qr-box";
 const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3661 = "qq-qr-img";
-const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3662 = "site-assets/qq-group-qr.png?v=20260428-hero-signup";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3662 = "site-assets/qq-group-qr.png?v=20260428-showcase-page";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3555 = "progress-step-index";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3556 = "progress-step-top";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3557 = "progress-status";
@@ -846,12 +847,13 @@ const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3504 = "hero
 const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3505 = "container";
 const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3506 = "hero-banner hero-banner--kv";
 const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3507 = "hero-kv-image";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3508 = "site-assets/main-kv.png?v=20260428-hero-signup";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3508 = "site-assets/main-kv.png?v=20260428-showcase-page";
 const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3509 = "hero-cta-row";
 const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3510 = "hero-cta-copy";
 const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3511 = "button primary hero-cta-button";
 const _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3675 = "page-main";
 const _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3676 = "page-main";
+const _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3677 = "page-main";
 function _M0FPC15abort5abortGuE(msg) {
   $panic();
 }
@@ -8271,43 +8273,50 @@ function _M0FP38zongen0116mgpic2026_2dsite4main20theme__toggle__label(model) {
     return _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "日间", "Light");
   }
 }
+function _M0FP38zongen0116mgpic2026_2dsite4main20is__standalone__page() {
+  return _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page() ? true : _M0FP38zongen0116mgpic2026_2dsite4main18is__showcase__page();
+}
 function _M0FP38zongen0116mgpic2026_2dsite4main10page__href(anchor) {
-  if (_M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page()) {
-    switch (anchor) {
-      case "#top": {
-        return "index.html#top";
-      }
-      case "#about": {
-        return "index.html#about";
-      }
-      case "#process": {
-        return "index.html#process";
-      }
-      case "#directions": {
-        return "index.html#directions";
-      }
-      case "#awards": {
-        return "index.html#awards";
-      }
-      case "#showcase": {
-        return "index.html#showcase";
-      }
-      case "#requirements": {
-        return "index.html#requirements";
-      }
-      case "#faq": {
-        return "index.html#faq";
-      }
-      default: {
-        return "index.html";
-      }
-    }
+  if (anchor === "showcase.html") {
+    return "showcase.html";
   } else {
-    return anchor;
+    if (_M0FP38zongen0116mgpic2026_2dsite4main20is__standalone__page()) {
+      switch (anchor) {
+        case "#top": {
+          return "index.html#top";
+        }
+        case "#about": {
+          return "index.html#about";
+        }
+        case "#process": {
+          return "index.html#process";
+        }
+        case "#directions": {
+          return "index.html#directions";
+        }
+        case "#awards": {
+          return "index.html#awards";
+        }
+        case "#showcase": {
+          return "showcase.html";
+        }
+        case "#requirements": {
+          return "index.html#requirements";
+        }
+        case "#faq": {
+          return "index.html#faq";
+        }
+        default: {
+          return anchor;
+        }
+      }
+    } else {
+      return anchor;
+    }
   }
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main10nav__items(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "定位", "About"), "#about"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "流程", "Process"), "#process"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "方向", "Directions"), "#directions"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "奖励", "Awards"), "#awards"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "作品墙", "Showcase"), "#showcase"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "验收", "Acceptance"), "#requirements"), _M0FP38zongen0116mgpic2026_2dsite4main26nav__items_2erecord_2f3469];
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "定位", "About"), "#about"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "流程", "Process"), "#process"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "方向", "Directions"), "#directions"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "奖励", "Awards"), "#awards"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "作品墙", "Showcase"), "showcase.html"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "验收", "Acceptance"), "#requirements"), _M0FP38zongen0116mgpic2026_2dsite4main26nav__items_2erecord_2f3469];
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main13hero__kv__alt(locale) {
   return _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "MoonBit 开源大赛主视觉", "MoonBit Open Source Competition key visual");
@@ -8669,7 +8678,7 @@ function _M0FP38zongen0116mgpic2026_2dsite4main12view__footer(model) {
   return _M0FP319moonbit_2dcommunity7rabbita4html6footerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3664, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3665, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3666, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 开源大赛", "MoonBit Open Source Contest")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "2026 MoonBit 国产开源生态大赛", "2026 MoonBit Open Source Ecosystem Competition"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3667, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://www.moonbitlang.cn/", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3668, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3669, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 中文官网", "MoonBit website"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://mooncakes.io/", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3670, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3671, undefined, undefined, "Mooncakes", -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://github.com/zongen01/MGPIC2026", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3672, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3673, undefined, undefined, "GitHub", -1)])])]);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main4view(dispatch, model) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main11site__class(model.theme), undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main12view__header(dispatch, model), _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page() ? _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3675, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main20view__progress__page(model)]) : _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3676, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main10view__hero(model), _M0FP38zongen0116mgpic2026_2dsite4main11view__about(model), _M0FP38zongen0116mgpic2026_2dsite4main12view__awards(model), _M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__wall(model), _M0FP38zongen0116mgpic2026_2dsite4main13view__process(model), _M0FP38zongen0116mgpic2026_2dsite4main16view__directions(model), _M0FP38zongen0116mgpic2026_2dsite4main18view__requirements(model), _M0FP38zongen0116mgpic2026_2dsite4main10view__join(model), _M0FP38zongen0116mgpic2026_2dsite4main9view__faq(model)]), _M0FP38zongen0116mgpic2026_2dsite4main12view__footer(model), _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page() ? _M0FP319moonbit_2dcommunity7rabbita4html7nothing : _M0FP38zongen0116mgpic2026_2dsite4main15view__qq__float(model)]);
+  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main11site__class(model.theme), undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main12view__header(dispatch, model), _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page() ? _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3675, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main20view__progress__page(model)]) : _M0FP38zongen0116mgpic2026_2dsite4main18is__showcase__page() ? _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3676, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__wall(model)]) : _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3677, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main10view__hero(model), _M0FP38zongen0116mgpic2026_2dsite4main11view__about(model), _M0FP38zongen0116mgpic2026_2dsite4main12view__awards(model), _M0FP38zongen0116mgpic2026_2dsite4main13view__process(model), _M0FP38zongen0116mgpic2026_2dsite4main16view__directions(model), _M0FP38zongen0116mgpic2026_2dsite4main18view__requirements(model), _M0FP38zongen0116mgpic2026_2dsite4main10view__join(model), _M0FP38zongen0116mgpic2026_2dsite4main9view__faq(model)]), _M0FP38zongen0116mgpic2026_2dsite4main12view__footer(model), _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page() ? _M0FP319moonbit_2dcommunity7rabbita4html7nothing : _M0FP38zongen0116mgpic2026_2dsite4main15view__qq__float(model)]);
 }
 (() => {
   const _bind = _M0FP219moonbit_2dcommunity7rabbita20cell__with__dispatchGRP38zongen0116mgpic2026_2dsite4main5ModelRP38zongen0116mgpic2026_2dsite4main3MsgE(_M0FP38zongen0116mgpic2026_2dsite4main14initial__model(), _M0FP38zongen0116mgpic2026_2dsite4main6update, _M0FP38zongen0116mgpic2026_2dsite4main4view);

@@ -55,6 +55,17 @@ fn is_progress_page() -> Bool {
 
 ///|
 #cfg(target="js")
+extern "js" fn is_showcase_page() -> Bool =
+  #| () => window.location.pathname.endsWith("/showcase.html")
+
+///|
+#cfg(not(target="js"))
+fn is_showcase_page() -> Bool {
+  false
+}
+
+///|
+#cfg(target="js")
 extern "js" fn prefers_dark_mode() -> Bool =
   #| () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
 
@@ -222,18 +233,25 @@ fn acceptance_href() -> String {
 }
 
 ///|
+fn is_standalone_page() -> Bool {
+  if is_progress_page() { true } else { is_showcase_page() }
+}
+
+///|
 fn page_href(anchor : String) -> String {
-  if is_progress_page() {
+  if anchor == "showcase.html" {
+    "showcase.html"
+  } else if is_standalone_page() {
     match anchor {
       "#top" => "index.html#top"
       "#about" => "index.html#about"
       "#process" => "index.html#process"
       "#directions" => "index.html#directions"
       "#awards" => "index.html#awards"
-      "#showcase" => "index.html#showcase"
+      "#showcase" => "showcase.html"
       "#requirements" => "index.html#requirements"
       "#faq" => "index.html#faq"
-      _ => "index.html"
+      _ => anchor
     }
   } else {
     anchor
@@ -247,7 +265,7 @@ fn nav_items(locale : Locale) -> Array[NavItem] {
     { label: t(locale, zh="流程", en="Process"), href: "#process" },
     { label: t(locale, zh="方向", en="Directions"), href: "#directions" },
     { label: t(locale, zh="奖励", en="Awards"), href: "#awards" },
-    { label: t(locale, zh="作品墙", en="Showcase"), href: "#showcase" },
+    { label: t(locale, zh="作品墙", en="Showcase"), href: "showcase.html" },
     { label: t(locale, zh="验收", en="Acceptance"), href: "#requirements" },
     { label: "FAQ", href: "#faq" },
   ]
@@ -564,7 +582,7 @@ fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
       a(class="brand", href=page_href("#top"), [
         img(
           class="brand-logo",
-          src="site-assets/moonbit-logo.png?v=20260428-hero-signup",
+          src="site-assets/moonbit-logo.png?v=20260428-showcase-page",
           alt=t(model.locale, zh="MoonBit Logo", en="MoonBit logo"),
           nothing,
         ),
@@ -603,7 +621,7 @@ fn view_hero(model : Model) -> Html {
       div(class="hero-banner hero-banner--kv", [
         img(
           class="hero-kv-image",
-          src="site-assets/main-kv.png?v=20260428-hero-signup",
+          src="site-assets/main-kv.png?v=20260428-showcase-page",
           alt=hero_kv_alt(model.locale),
           nothing,
         ),
@@ -997,7 +1015,7 @@ fn view_qq_float(model : Model) -> Html {
       div(class="qq-qr-box", [
         img(
           class="qq-qr-img",
-          src="site-assets/registration-qr.png?v=20260428-hero-signup",
+          src="site-assets/registration-qr.png?v=20260428-showcase-page",
           alt=t(model.locale, zh="赛事报名二维码", en="Event registration QR code"),
           nothing,
         ),
@@ -1011,7 +1029,7 @@ fn view_qq_float(model : Model) -> Html {
       div(class="qq-qr-box", [
         img(
           class="qq-qr-img",
-          src="site-assets/qq-group-qr.png?v=20260428-hero-signup",
+          src="site-assets/qq-group-qr.png?v=20260428-showcase-page",
           alt=t(model.locale, zh="赛事 QQ 群二维码", en="Event QQ group QR code"),
           nothing,
         ),
@@ -1045,12 +1063,15 @@ fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
       main_(class="page-main", [
         view_progress_page(model),
       ])
+    } else if is_showcase_page() {
+      main_(class="page-main", [
+        view_showcase_wall(model),
+      ])
     } else {
       main_(class="page-main", [
         view_hero(model),
         view_about(model),
         view_awards(model),
-        view_showcase_wall(model),
         view_process(model),
         view_directions(model),
         view_requirements(model),
