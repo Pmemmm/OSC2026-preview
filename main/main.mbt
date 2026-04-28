@@ -9,6 +9,7 @@ using @html {
   h2,
   h3,
   header,
+  img,
   li,
   main_,
   nav,
@@ -18,6 +19,12 @@ using @html {
   span,
   strong,
   summary,
+  table,
+  tbody,
+  td,
+  th,
+  thead,
+  tr,
   ul,
 }
 
@@ -26,13 +33,24 @@ using @rabbita {type Cmd, type Dispatch, type Html}
 
 ///|
 #cfg(target="js")
-extern "js" fn get_browser_lang() -> String =
-  #| () => navigator.language || document.documentElement.lang || "zh-CN"
+extern "js" fn get_initial_locale() -> Locale =
+  #| () => new URLSearchParams(window.location.search).get("lang") === "en" ? 1 : 0
 
 ///|
 #cfg(not(target="js"))
-fn get_browser_lang() -> String {
-  "zh-CN"
+fn get_initial_locale() -> Locale {
+  Zh
+}
+
+///|
+#cfg(target="js")
+extern "js" fn is_progress_page() -> Bool =
+  #| () => window.location.pathname.endsWith("/progress.html")
+
+///|
+#cfg(not(target="js"))
+fn is_progress_page() -> Bool {
+  false
 }
 
 ///|
@@ -67,14 +85,13 @@ struct Model {
 ///|
 fn initial_model() -> Model {
   {
-    locale: if get_browser_lang().has_prefix("zh") { Zh } else { En },
+    locale: get_initial_locale(),
     theme: if prefers_dark_mode() { Dark } else { Light },
   }
 }
 
 ///|
 enum Msg {
-  ToggleLocale
   ToggleTheme
 }
 
@@ -82,17 +99,6 @@ enum Msg {
 fn update(dispatch : Dispatch[Msg], msg : Msg, model : Model) -> (Cmd, Model) {
   ignore(dispatch)
   match msg {
-    ToggleLocale =>
-      (
-        @rabbita.none,
-        {
-          ..model,
-          locale: match model.locale {
-            Zh => En
-            En => Zh
-          },
-        },
-      )
     ToggleTheme =>
       (
         @rabbita.none,
@@ -123,48 +129,63 @@ struct NavItem {
 
 ///|
 struct InfoCard {
+  badge : String
   title : String
   desc : String
 }
 
 ///|
-struct LearnCard {
-  badge : String
+struct ListCard {
   title : String
   desc : String
+  items : Array[String]
+}
+
+///|
+struct ProcessItem {
+  time : String
+  title : String
+  desc : String
+}
+
+///|
+struct ProgressStep {
+  class_name : String
+  index : String
+  title : String
+  desc : String
+  status : String
+}
+
+///|
+struct PrizeItem {
+  award : String
+  prize : String
+  count : String
+}
+
+///|
+struct ShowcaseSignal {
+  value : String
+  label : String
+}
+
+///|
+struct ShowcaseLink {
+  label : String
   href : String
-  cta : String
 }
 
 ///|
-struct LearnStep {
-  step : String
+struct ShowcaseProject {
+  status : String
+  category : String
   title : String
+  subtitle : String
   desc : String
-}
-
-///|
-struct ShowcaseCard {
-  badge : String
-  title : String
-  desc : String
-  note : String
-  href : String
-}
-
-///|
-struct PathCard {
-  badge : String
-  title : String
-  desc : String
-  bullets : Array[String]
-}
-
-///|
-struct TimelineItem {
-  step : String
-  title : String
-  desc : String
+  highlights : Array[String]
+  tags : Array[String]
+  links : Array[ShowcaseLink]
 }
 
 ///|
@@ -183,14 +204,6 @@ fn site_class(theme : Theme) -> String {
 }
 
 ///|
-fn locale_toggle_label(locale : Locale) -> String {
-  match locale {
-    Zh => "EN"
-    En => "中文"
-  }
-}
-
-///|
 fn theme_toggle_label(model : Model) -> String {
   match model.theme {
     Light => t(model.locale, zh="夜间", en="Dark")
@@ -199,264 +212,303 @@ fn theme_toggle_label(model : Model) -> String {
 }
 
 ///|
+fn registration_href() -> String {
+  "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf"
+}
+
+///|
+fn acceptance_href() -> String {
+  "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg"
+}
+
+///|
+fn page_href(anchor : String) -> String {
+  if is_progress_page() {
+    match anchor {
+      "#top" => "index.html#top"
+      "#about" => "index.html#about"
+      "#process" => "index.html#process"
+      "#directions" => "index.html#directions"
+      "#awards" => "index.html#awards"
+      "#showcase" => "index.html#showcase"
+      "#requirements" => "index.html#requirements"
+      "#faq" => "index.html#faq"
+      _ => "index.html"
+    }
+  } else {
+    anchor
+  }
+}
+
+///|
 fn nav_items(locale : Locale) -> Array[NavItem] {
   [
-    { label: t(locale, zh="介绍", en="About"), href: "#about" },
-    { label: t(locale, zh="展示墙", en="Showcase"), href: "#showcase" },
-    { label: t(locale, zh="学习了解", en="Learn"), href: "#learn" },
-    { label: t(locale, zh="参与路径", en="Tracks"), href: "#paths" },
-    { label: t(locale, zh="时间安排", en="Timeline"), href: "#timeline" },
-    { label: t(locale, zh="支持计划", en="Support"), href: "#support" },
-    { label: t(locale, zh="FAQ", en="FAQ"), href: "#faq" },
+    { label: t(locale, zh="定位", en="About"), href: "#about" },
+    { label: t(locale, zh="流程", en="Process"), href: "#process" },
+    { label: t(locale, zh="方向", en="Directions"), href: "#directions" },
+    { label: t(locale, zh="奖励", en="Awards"), href: "#awards" },
+    { label: t(locale, zh="作品墙", en="Showcase"), href: "#showcase" },
+    { label: t(locale, zh="验收", en="Acceptance"), href: "#requirements" },
+    { label: "FAQ", href: "#faq" },
   ]
 }
 
 ///|
-fn hero_eyebrow(locale : Locale) -> String {
+fn hero_kv_alt(locale : Locale) -> String {
   t(
     locale,
-    zh="MoonBit Programming Innovation Challenge 2026",
-    en="MoonBit Programming Innovation Challenge 2026",
+    zh="MoonBit 开源大赛主视觉",
+    en="MoonBit Open Source Competition key visual",
   )
 }
 
 ///|
-fn hero_kv_title(locale : Locale) -> String {
-  t(
-    locale,
-    zh="MoonBit 开源创新挑战计划",
-    en="MoonBit Open Source Challenge",
-  )
-}
-
-///|
-fn hero_kv_subtitle(locale : Locale) -> String {
-  t(
-    locale,
-    zh="以开源协作、工程实践与长期生态沉淀为主线的 2026 年度开发者赛事",
-    en="A 2026 developer challenge for open-source collaboration, engineering practice, and long-term ecosystem growth",
-  )
-}
-
-///|
-fn hero_kv_tags(locale : Locale) -> Array[String] {
+fn summary_cards(locale : Locale) -> Array[InfoCard] {
   [
-    t(locale, zh="奖金激励", en="Prize incentive"),
-    t(locale, zh="开源协作", en="Open source"),
-    t(locale, zh="工程实践", en="Engineering"),
-    t(locale, zh="项目孵化", en="Incubation"),
-    t(locale, zh="GitHub 协作", en="GitHub collaboration"),
+    {
+      badge: t(locale, zh="参赛对象", en="Participants"),
+      title: t(locale, zh="在校生开放", en="Students"),
+      desc: t(locale, zh="面向所有对 MoonBit、AI 编程、开源生态和基础软件感兴趣的在校生。", en="Open to students interested in MoonBit, AI programming, open source, and infrastructure software."),
+    },
+    {
+      badge: t(locale, zh="项目规模", en="Scope"),
+      title: "4~10k LOC",
+      desc: t(locale, zh="参考有效 MoonBit 代码行数，重质量、边界和可维护性。", en="A reference range for effective MoonBit code, with quality first."),
+    },
+    {
+      badge: t(locale, zh="基础激励", en="Base support"),
+      title: "150 + 350 元",
+      desc: t(locale, zh="立项启动支持 + 验收完成支持，优秀作品奖励另计。", en="Kickoff support plus completion support; awards are separate."),
+    },
   ]
-}
-
-///|
-fn hero_prize_label(locale : Locale) -> String {
-  t(locale, zh="往届奖金规模参考", en="Reference prize scale")
-}
-
-///|
-fn hero_prize_value(_locale : Locale) -> String {
-  "¥84,000"
-}
-
-///|
-fn hero_prize_note(locale : Locale) -> String {
-  t(
-    locale,
-    zh="按 2025 双赛道公开奖金设置估算；2026 正式奖金以赛事章程公布为准。",
-    en="Estimated from the published 2025 awards across two tracks; the official 2026 prize setup will follow the final rules.",
-  )
 }
 
 ///|
 fn about_cards(locale : Locale) -> Array[InfoCard] {
   [
     {
-      title: t(locale, zh="开源优先", en="Open-source first"),
-      desc: t(locale, zh="围绕 GitHub 仓库、提交历史、README、演示与持续维护展开，鼓励真实协作与长期积累。", en="The program centers on GitHub repositories, commit history, READMEs, demos, and ongoing maintenance to encourage real collaboration and durable results."),
+      badge: t(locale, zh="AI 辅助", en="AI-assisted"),
+      title: t(locale, zh="用 AI 提效，但成果要可解释", en="Use AI, keep accountability"),
+      desc: t(locale, zh="AI 可用于代码生成、接口设计、测试补全和文档撰写；最终项目目标、技术路径、质量边界和开源合规由参赛者把控。", en="AI may help with code generation, API design, tests, and documentation. Participants remain responsible for goals, technical direction, quality boundaries, and open-source compliance."),
     },
     {
-      title: t(locale, zh="工程导向", en="Engineering oriented"),
-      desc: t(locale, zh="重点关注系统设计、实现质量、可运行性、文档、测试与后续演进能力。", en="It focuses on system design, implementation quality, runnability, documentation, testing, and long-term evolution."),
+      badge: t(locale, zh="生态包", en="Packages"),
+      title: t(locale, zh="聚焦开源生态库建设", en="Focus on ecosystem libraries"),
+      desc: t(locale, zh="项目可以是原创库、成熟生态库的 MoonBit 移植，也可以是围绕实际需求的开发工具或示例项目。", en="Projects can be original libraries, MoonBit ports of mature ecosystem libraries, developer tools, or example projects."),
     },
     {
-      title: t(locale, zh="生态沉淀", en="Ecosystem growth"),
-      desc: t(locale, zh="优秀项目将进入展示、孵化与长期共建通道，反哺 MoonBit 样例、内容与工具生态。", en="Strong projects can move into showcase, incubation, and long-term collaboration tracks that feed back into MoonBit examples, content, and tooling."),
+      badge: t(locale, zh="可验收", en="Acceptable"),
+      title: t(locale, zh="真实可用、可测试、可维护", en="Usable, tested, maintainable"),
+      desc: t(locale, zh="官网只保留关键规则：边界清晰、文档完整、测试可运行、后续可维护，细则以后续正式章程为准。", en="The site keeps the key rules: clear scope, complete docs, runnable tests, and maintainability. Details follow the official rules."),
     },
   ]
 }
 
 ///|
-fn path_cards(locale : Locale) -> Array[PathCard] {
+fn process_items(locale : Locale) -> Array[ProcessItem] {
   [
     {
-      badge: "Path A",
-      title: t(locale, zh="开源入门组", en="Open-source starter track"),
-      desc: t(locale, zh="面向第一次接触 MoonBit 的开发者，通过 Starter Repo、示例任务与工作坊完成从 0 到 1 的启动。", en="For developers who are new to MoonBit, with starter repositories, example tasks, and workshops that help them get from zero to one."),
-      bullets: [
-        t(locale, zh="环境搭建与最小项目", en="Environment setup and a minimal project"),
-        t(locale, zh="首个 Issue / PR", en="First issue or PR"),
-        t(locale, zh="新手任务池", en="Starter task pool"),
+      time: t(locale, zh="即日起 - 7/1", en="Now - Jul 1"),
+      title: t(locale, zh="项目申报", en="Project proposal"),
+      desc: t(locale, zh="通过官方表单提交参赛信息、GitHub 仓库和一页 PDF 项目申报书；仓库需包含 10-20 个有效 commits。通过申报审核可获得 150 元启动支持。", en="Submit participant info, GitHub repository, and a one-page PDF proposal through the official form. The repository should contain 10-20 valid commits. Approved proposals may receive RMB 150 kickoff support."),
+    },
+    {
+      time: t(locale, zh="即日起 - 7/1", en="Now - Jul 1"),
+      title: t(locale, zh="项目开发与社区活动", en="Development and community"),
+      desc: t(locale, zh="围绕公开仓库持续开发，保持提交记录、工单、合并请求和更新日志可追踪；赛事组提供指南、模板、答疑、宣讲和阶段展示。", en="Build in public with traceable commits, issues, pull requests, and changelogs. Organizers provide guides, templates, Q&A, talks, and stage showcases."),
+    },
+    {
+      time: t(locale, zh="6/1 - 7/1", en="Jun 1 - Jul 1"),
+      title: t(locale, zh="项目验收", en="Project acceptance"),
+      desc: t(locale, zh="项目完成后通过验收表提交申请。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。", en="After completion, submit the acceptance form. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project."),
+    },
+    {
+      time: t(locale, zh="7/5", en="Jul 5"),
+      title: t(locale, zh="优秀项目评选与展示", en="Final selection and showcase"),
+      desc: t(locale, zh="赛事组根据完成度、MoonBit 生态贡献、工程质量和展示表现综合评估，入选项目需要参加决赛答辩。", en="Organizers evaluate completion, MoonBit ecosystem contribution, engineering quality, and presentation. Selected projects join the final defense."),
+    },
+  ]
+}
+
+///|
+fn progress_steps(locale : Locale) -> Array[ProgressStep] {
+  [
+    {
+      class_name: "progress-step progress-step--done",
+      index: "01",
+      title: t(locale, zh="GitHub 账号", en="GitHub account"),
+      desc: t(locale, zh="用于识别参赛者、关联项目仓库和同步公开提交记录。", en="Used to identify the participant, link the project repository, and sync public commits."),
+      status: t(locale, zh="已连接", en="Connected"),
+    },
+    {
+      class_name: "progress-step progress-step--active",
+      index: "02",
+      title: t(locale, zh="项目申报", en="Proposal"),
+      desc: t(locale, zh="提交报名表后可显示申报审核状态、项目名称和联系邮箱。", en="After submission, this can show proposal review status, project name, and contact email."),
+      status: t(locale, zh="待同步", en="Pending sync"),
+    },
+    {
+      class_name: "progress-step progress-step--active",
+      index: "03",
+      title: t(locale, zh="仓库进度", en="Repository progress"),
+      desc: t(locale, zh="计划展示 GitHub 仓库、有效提交数、README、CI、测试和许可证状态。", en="Planned to show repository, valid commits, README, CI, tests, and license status."),
+      status: t(locale, zh="检查中", en="Checking"),
+    },
+    {
+      class_name: "progress-step",
+      index: "04",
+      title: t(locale, zh="验收与展示", en="Acceptance and showcase"),
+      desc: t(locale, zh="项目完成后可查看验收材料、审核反馈、奖励状态和作品墙展示状态。", en="After completion, this can show acceptance materials, feedback, reward status, and showcase status."),
+      status: t(locale, zh="未开始", en="Not started"),
+    },
+  ]
+}
+
+///|
+fn direction_cards(locale : Locale) -> Array[ListCard] {
+  [
+    {
+      title: t(locale, zh="入门友好型", en="Starter"),
+      desc: t(locale, zh="适合第一次参与 MoonBit 开源生态。", en="Good first MoonBit ecosystem projects."),
+      items: [
+        t(locale, zh="日志库 / tracing 工具（可基于 moonbitlang/async）", en="Logging / tracing, optionally based on moonbitlang/async"),
+        t(locale, zh="indexmap、bitmask、Stopwatch / benchmark 小工具", en="indexmap, bitmask, Stopwatch / benchmark helpers"),
+        t(locale, zh="模板渲染器、deterministic simulation 框架", en="Template renderer or deterministic simulation framework"),
       ],
     },
     {
-      badge: "Path B",
-      title: t(locale, zh="开源贡献组", en="Contribution track"),
-      desc: t(locale, zh="围绕 MoonBit 生态项目、文档、测试、工具链与社区仓库进行持续贡献，强调贡献质量与活跃度。", en="For continuous contribution to MoonBit ecosystem projects, docs, tests, tooling, and community repositories, with an emphasis on contribution quality and consistency."),
-      bullets: [
-        t(locale, zh="Good First Issue", en="Good first issue"),
-        t(locale, zh="文档 / 测试 / 示例任务", en="Docs, tests, and example tasks"),
-        t(locale, zh="周度贡献榜", en="Weekly contribution leaderboard"),
+      title: t(locale, zh="标准生态包", en="Ecosystem packages"),
+      desc: t(locale, zh="补齐 MoonBit 常用开发能力。", en="Fill common MoonBit development gaps."),
+      items: [
+        t(locale, zh="Graph 相关算法库、Pathfinding 工具库", en="Graph algorithms and pathfinding libraries"),
+        t(locale, zh="通用算法库，可结合 moon prove 验证", en="General algorithm libraries, optionally verified with moon prove"),
+        t(locale, zh="编译器底层基础设施，例如寄存器分配库", en="Compiler infrastructure such as register allocation libraries"),
       ],
     },
     {
-      badge: "Path C",
-      title: t(locale, zh="项目挑战组", en="Project challenge track"),
-      desc: t(locale, zh="面向希望做出完整项目和冲击重点展示的开发者，以项目申报、里程碑开发和最终答辩为主线推进。", en="For builders aiming to deliver full projects and reach the featured showcase through project proposals, milestone development, and a final presentation."),
-      bullets: [
-        t(locale, zh="项目申报与预答辩", en="Project proposal and early review"),
-        t(locale, zh="中期验收与 Demo Day", en="Midterm review and demo day"),
-        t(locale, zh="项目展示与孵化推荐", en="Showcase and incubation recommendations"),
+      title: t(locale, zh="工具与格式", en="Tools and formats"),
+      desc: t(locale, zh="适合官网展示和社区传播。", en="Good for demos and community sharing."),
+      items: [
+        t(locale, zh="Markdown to HTML", en="Markdown to HTML"),
+        t(locale, zh="构建工具，类似 n2 / ninja", en="Build tools similar to n2 / ninja"),
+        t(locale, zh="特定格式的序列化 / 反序列化工具，类似 protobuf", en="Format-specific serialization / deserialization tools similar to protobuf"),
+      ],
+    },
+    {
+      title: t(locale, zh="绑定与应用", en="Bindings and applications"),
+      desc: t(locale, zh="适合做可演示、可复用的生态项目。", en="Good for demonstrable and reusable ecosystem projects."),
+      items: [
+        t(locale, zh="小型 2D 游戏工具库或流行游戏引擎绑定", en="Small 2D game toolkits or popular game-engine bindings"),
+        t(locale, zh="流行数据库的 MoonBit 绑定", en="MoonBit bindings for popular databases"),
+        t(locale, zh="基于 moonbitlang/async 的并发框架，例如 actor 框架", en="Concurrency frameworks based on moonbitlang/async, such as actor frameworks"),
       ],
     },
   ]
 }
 
 ///|
-fn learn_cards(locale : Locale) -> Array[LearnCard] {
+fn showcase_signals(locale : Locale) -> Array[ShowcaseSignal] {
   [
     {
-      badge: t(locale, zh="官方网站", en="Official site"),
-      title: t(locale, zh="先快速认识 MoonBit", en="Start with the official overview"),
-      desc: t(locale, zh="先看 MoonBit 的语言定位、核心特性、生态入口和最新动态，建立整体认识。", en="Get the big picture first: language positioning, core features, ecosystem entry points, and recent updates."),
-      href: "https://www.moonbitlang.cn/",
-      cta: t(locale, zh="查看官网", en="Open website"),
+      value: t(locale, zh="待收录", en="Coming soon"),
+      label: t(locale, zh="通过申报、公开开发并达到展示标准后上墙。", en="Projects are listed after proposal review, public development, and showcase readiness."),
     },
     {
-      badge: t(locale, zh="官方文档", en="Documentation"),
-      title: t(locale, zh="按文档完成入门与安装", en="Follow the docs for setup"),
-      desc: t(locale, zh="从安装、项目结构、构建系统到语法基础，按官方文档走一遍最快。", en="The fastest path is the official documentation: installation, project structure, build system, and language basics."),
-      href: "https://docs.moonbitlang.cn",
-      cta: t(locale, zh="阅读文档", en="Read docs"),
+      value: t(locale, zh="公开仓库", en="Public repo"),
+      label: t(locale, zh="卡片会直接展示 GitHub、Mooncakes 和 Demo 入口。", en="Cards will expose GitHub, Mooncakes, and demo links."),
     },
     {
-      badge: t(locale, zh="B 站视频课程", en="Bilibili videos"),
-      title: t(locale, zh="跟着视频课程快速上手", en="Learn from the video courses"),
-      desc: t(locale, zh="如果你更习惯视频学习，可以直接看 MoonBit 官方 B 站账号上的课程与讲解视频。", en="If you prefer learning from videos, start with the tutorials and walkthroughs on MoonBit's official Bilibili channel."),
-      href: "https://space.bilibili.com/1453436642",
-      cta: t(locale, zh="打开 B 站课程", en="Open Bilibili"),
+      value: t(locale, zh="持续更新", en="Updated"),
+      label: t(locale, zh="项目介绍、亮点、文档和演示可随开发进展补充。", en="Profiles, highlights, docs, and demos can be added as projects evolve."),
     },
     {
-      badge: t(locale, zh="在线体验", en="Try online"),
-      title: t(locale, zh="先写一个最小示例", en="Try a minimal example"),
-      desc: t(locale, zh="如果暂时不想先装环境，可以直接在线试写 MoonBit，快速感受语法和反馈。", en="If you do not want to install locally first, try MoonBit online and get a quick feel for the syntax and feedback loop."),
-      href: "https://try.moonbitlang.cn/",
-      cta: t(locale, zh="打开在线环境", en="Open playground"),
-    },
-    {
-      badge: t(locale, zh="生态与样例", en="Ecosystem"),
-      title: t(locale, zh="看看包、样例和导览", en="Explore packages and examples"),
-      desc: t(locale, zh="通过 Mooncakes 和交互导览了解现成库、样例项目和常见开发路径。", en="Use Mooncakes and the interactive tour to explore packages, example projects, and common development paths."),
-      href: "https://mooncakes.io/",
-      cta: t(locale, zh="查看生态", en="Explore ecosystem"),
+      value: t(locale, zh="展示推荐", en="Promotion"),
+      label: t(locale, zh="优秀项目可获得官网、社区和后续生态维护推荐。", en="Standout projects may receive site, community, and ecosystem-maintenance promotion."),
     },
   ]
 }
 
 ///|
-fn learn_steps(locale : Locale) -> Array[LearnStep] {
+fn showcase_projects(locale : Locale) -> Array[ShowcaseProject] {
   [
     {
-      step: "01",
-      title: t(locale, zh="先看 MoonBit 是什么", en="Understand what MoonBit is"),
-      desc: t(locale, zh="先建立对语言定位、适用场景和生态入口的整体认识，不急着一上来就写大项目。", en="Build a quick mental model of the language, its use cases, and ecosystem before jumping into a larger project."),
+      status: t(locale, zh="待上墙", en="Pending"),
+      category: t(locale, zh="生态库", en="Library"),
+      title: t(locale, zh="项目名称待公布", en="Project name TBD"),
+      subtitle: t(locale, zh="通过验收后展示公开仓库、Mooncakes 包和 Demo", en="Public repo, Mooncakes package, and demo after acceptance"),
+      desc: t(locale, zh="用于展示真实可用的 MoonBit 开源库：项目目标、核心 API、使用示例、测试和文档都会在卡片中清楚呈现。", en="For usable MoonBit open-source libraries. Goals, core APIs, examples, tests, and documentation will be shown clearly in the card."),
+      highlights: [
+        t(locale, zh="公开 README、源码、提交记录和许可证", en="Public README, source, commits, and license"),
+        t(locale, zh="突出核心功能、适用场景和生态价值", en="Highlight core features, use cases, and ecosystem value"),
+        t(locale, zh="保留 GitHub / Mooncakes / Demo 入口", en="Reserve GitHub / Mooncakes / Demo entry points"),
+      ],
+      tags: ["MoonBit", "GitHub", "Mooncakes"],
+      links: [
+        { label: t(locale, zh="项目申报", en="Submit project"), href: registration_href() },
+      ],
     },
     {
-      step: "02",
-      title: t(locale, zh="完成安装并跑通最小项目", en="Install it and run a minimal project"),
-      desc: t(locale, zh="先把安装、构建、运行和最小示例打通，后面做赛事任务时会顺很多。", en="Get installation, build, run, and the smallest working example done first so the contest tasks feel smoother later."),
+      status: t(locale, zh="待上墙", en="Pending"),
+      category: t(locale, zh="开发工具", en="Tooling"),
+      title: t(locale, zh="工具项目待公布", en="Tooling project TBD"),
+      subtitle: t(locale, zh="适合展示 CLI、解析器、构建工具或 AI 辅助开发工具", en="For CLI, parsers, build tools, or AI-assisted development tools"),
+      desc: t(locale, zh="工具类项目会重点展示使用方式、最小示例、工程结构和可复现流程，让其他 MoonBit 开发者能直接参考。", en="Tooling projects will emphasize usage, minimal examples, engineering structure, and reproducible workflows for MoonBit developers."),
+      highlights: [
+        t(locale, zh="展示安装、运行和最小使用样例", en="Show installation, running, and minimal examples"),
+        t(locale, zh="展示 CI、测试和文档完成度", en="Show CI, tests, and documentation completeness"),
+        t(locale, zh="可补充技术文章或演示视频链接", en="Can include technical articles or demo videos"),
+      ],
+      tags: ["MoonBit", t(locale, zh="工具链", en="Tooling"), t(locale, zh="示例", en="Examples")],
+      links: [
+        { label: t(locale, zh="验收入口", en="Acceptance form"), href: acceptance_href() },
+      ],
     },
     {
-      step: "03",
-      title: t(locale, zh="按自己的背景选择入口", en="Pick the right entry for your background"),
-      desc: t(locale, zh="如果你是零基础、已有开发经验、或者想做编译器方向，推荐的起步路线并不一样。", en="The best first path differs depending on whether you are brand new, already experienced, or aiming at compiler work."),
+      status: t(locale, zh="待上墙", en="Pending"),
+      category: t(locale, zh="高校实践", en="Campus"),
+      title: t(locale, zh="高校项目待公布", en="Campus project TBD"),
+      subtitle: t(locale, zh="适合展示课程、社团、训练营或实验室产出的代表项目", en="For representative projects from courses, clubs, bootcamps, or labs"),
+      desc: t(locale, zh="高校实践项目会突出共建场景、学习材料、可复用成果和后续维护计划，便于更多学生继续参与 MoonBit 生态。", en="Campus projects will highlight collaboration context, learning material, reusable output, and maintenance plans so more students can join the MoonBit ecosystem."),
+      highlights: [
+        t(locale, zh="展示作者、学校 / 社团和项目方向", en="Show author, campus/community, and project direction"),
+        t(locale, zh="展示课程实践或开源训练成果", en="Show course practice or open-source training output"),
+        t(locale, zh="优秀内容可进入社区传播和访谈", en="Strong projects may enter community promotion and interviews"),
+      ],
+      tags: ["MoonBit", t(locale, zh="高校", en="Campus"), t(locale, zh="开源实践", en="Open Source")],
+      links: [
+        { label: t(locale, zh="报名争取上墙", en="Register to be featured"), href: registration_href() },
+      ],
     },
   ]
 }
 
 ///|
-fn showcase_cards(locale : Locale) -> Array[ShowcaseCard] {
+fn prize_items(locale : Locale) -> Array[PrizeItem] {
   [
-    {
-      badge: t(locale, zh="SCC 参赛项目", en="SCC project"),
-      title: "MoonSEO",
-      desc: t(locale, zh="一个用 MoonBit 实现的 SEO 落地页生成与审计 MVP，可把品牌 brief 生成静态页面草稿，并做可验证的规则检查。", en="A MoonBit-first MVP for generating and auditing SEO landing pages from a brief, with deterministic checks and static page export."),
-      note: t(locale, zh="关键词：SEO 落地页、规则审计、静态 HTML 导出", en="SEO landing pages, rule audit, static HTML export"),
-      href: "https://github.com/lauraraccoon/MoonSEO",
-    },
-    {
-      badge: t(locale, zh="Demo 项目", en="Demo project"),
-      title: "MoonMarkMind",
-      desc: t(locale, zh="一个用 MoonBit 编写的 Markdown 脑图编辑 Demo，支持结构解析、交互编辑、预览，以及导出 PNG、SVG、HTML。", en="A MoonBit Markdown mind-map demo with parsing, interactive editing, preview, and export to PNG, SVG, and HTML."),
-      note: t(locale, zh="关键词：Markdown、脑图编辑、可视化导出", en="Markdown, mind-map editing, visual export"),
-      href: "https://github.com/Xiao-li-He/MoonMarkMind",
-    },
-    {
-      badge: t(locale, zh="工具项目", en="Tooling project"),
-      title: "moonink",
-      desc: t(locale, zh="一个用 MoonBit 编写的静态站点生成器，已经实现 `help`、`onboard`、`build`、`serve` 等 CLI 流程，并支持页面构建、模板渲染和本地预览。", en="A static site generator written in MoonBit, with `help`, `onboard`, `build`, and `serve` commands plus page building, template rendering, and local preview."),
-      note: t(locale, zh="关键词：静态站点生成、CLI、模板渲染", en="Static site generation, CLI, template rendering"),
-      href: "https://github.com/Kozmosa/moonink",
-    },
+    { award: t(locale, zh="特等奖", en="Grand Prize"), prize: "15,000 元", count: "1 名" },
+    { award: t(locale, zh="一等奖", en="First Prize"), prize: "10,000 元", count: "1 名" },
+    { award: t(locale, zh="二等奖", en="Second Prize"), prize: "8,000 元", count: "2 名" },
+    { award: t(locale, zh="三等奖", en="Third Prize"), prize: "6,000 元", count: "3 名" },
   ]
 }
 
 ///|
-fn timeline_items(locale : Locale) -> Array[TimelineItem] {
+fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
   [
-    {
-      step: "01",
-      title: t(locale, zh="预热与合作招募", en="Warm-up and partnerships"),
-      desc: t(locale, zh="发布视觉与主张，启动社区、高校与合作伙伴联动。", en="Launch the brand, narrative, and coordination with communities, universities, and partners."),
-    },
-    {
-      step: "02",
-      title: t(locale, zh="报名与训练营", en="Registration and bootcamp"),
-      desc: t(locale, zh="开放预登记，发布 Starter Repo、任务池与直播答疑。", en="Open early registration and publish starter repositories, task pools, and live Q&A support."),
-    },
-    {
-      step: "03",
-      title: t(locale, zh="开源贡献与项目开发", en="Contribution and project build"),
-      desc: t(locale, zh="围绕公开仓库、持续提交与项目孵化展开正式开发。", en="Enter the active build phase around public repositories, continuous commits, and project incubation."),
-    },
-    {
-      step: "04",
-      title: t(locale, zh="中期验收与 Demo Day", en="Midterm review and demo day"),
-      desc: t(locale, zh="通过活跃度、里程碑与项目质量筛选重点项目。", en="Use activity, milestones, and project quality to identify standout work."),
-    },
-    {
-      step: "05",
-      title: t(locale, zh="决赛答辩与成果开放", en="Final review and open release"),
-      desc: t(locale, zh="展示优秀项目，发布榜单，并开启后续生态共建通道。", en="Present standout projects, publish final results, and open the next stage of ecosystem collaboration."),
-    },
+    { award: t(locale, zh="生态优异奖", en="Ecosystem Excellence"), prize: "4,000 元", count: t(locale, zh="若干名", en="Several") },
+    { award: t(locale, zh="专项鼓励奖", en="Special Encouragement"), prize: t(locale, zh="金额及数量视实际情况确定", en="Amount and count TBD"), count: t(locale, zh="若干名", en="Several") },
   ]
 }
 
 ///|
-fn support_cards(locale : Locale) -> Array[InfoCard] {
+fn acceptance_items(locale : Locale) -> Array[String] {
   [
-    {
-      title: t(locale, zh="AI 启动支持", en="AI kickoff support"),
-      desc: t(locale, zh="帮助选手完成仓库初始化、任务拆解、样例生成、文档搭建与开发提速，重点解决“不会开始”和“起步太慢”的问题。", en="Help participants initialize repositories, break down tasks, generate examples, build documentation, and accelerate development so they can actually get started."),
-    },
-    {
-      title: t(locale, zh="开源任务池与模板仓库", en="Task pool and starter repositories"),
-      desc: t(locale, zh="通过 Starter Repo、Good First Issue 与任务池，让不同能力层级的开发者都有明确入口。", en="Use starter repositories, good first issues, and curated task pools to give developers at different levels a clear entry point."),
-    },
-    {
-      title: t(locale, zh="与开源之夏式项目孵化衔接", en="Incubation beyond the contest"),
-      desc: t(locale, zh="把 MGPIC 中表现突出的学生与项目导向更长期的导师制、项目制和深度开源贡献通道。", en="Guide strong students and projects toward longer-term mentorship, project incubation, and deeper open-source collaboration."),
-    },
+    t(locale, zh="MoonBit 为主要实现语言，仓库公开可访问。", en="MoonBit is the primary language and the repository is public."),
+    t(locale, zh="README 写清目标、安装、使用方法、示例和可复现方式。", en="README covers goals, installation, usage, examples, and reproducibility."),
+    t(locale, zh="源代码结构清晰，能够完成声明的核心功能。", en="Source structure is clear and implements the declared core functionality."),
+    t(locale, zh="CI 覆盖检查、构建、测试流程，并提供覆盖核心功能路径的测试。", en="CI covers checks, build, tests, and tests for core functionality paths."),
+    t(locale, zh="至少一个可运行示例，并发布到 mooncakes.io。", en="At least one runnable example and publication to mooncakes.io."),
+    t(locale, zh="采用 OSI 认可的开源许可证；移植项目需符合原项目许可证要求。", en="Use an OSI-approved open-source license; ports must comply with upstream license requirements."),
   ]
 }
 
@@ -464,43 +516,44 @@ fn support_cards(locale : Locale) -> Array[InfoCard] {
 fn faq_items(locale : Locale) -> Array[FaqItem] {
   [
     {
-      question: t(locale, zh="这次赛事和往年最大的区别是什么？", en="What is the biggest difference from previous years?"),
-      answer: t(locale, zh="2026 更强调开源协作、工程实践与长期沉淀，不只是一次性提交作品，而是围绕公开仓库与持续开发展开。", en="The 2026 edition puts much more weight on open-source collaboration, engineering practice, and long-term outcomes instead of one-off submissions."),
+      question: t(locale, zh="报名后如何获得反馈？", en="What happens after registration?"),
+      answer: t(locale, zh="提交项目申报表后，赛方会通过邮件通知是否通过申报审核。通过项目可获得启动支持，并进入开发与验收流程；未通过时邮件会说明原因，参赛者可以调整项目内容后继续申报。", en="After submitting the proposal form, organizers will notify participants by email about review results. Approved projects may receive kickoff support and continue into development and acceptance. If not approved, the email will explain why, and participants may revise and resubmit."),
       opened: true,
     },
     {
-      question: t(locale, zh="没有 MoonBit 经验也能参加吗？", en="Can beginners with no MoonBit experience still join?"),
-      answer: t(locale, zh="可以。网站结构里已经预留 Starter Repo、任务池和入门训练营入口，便于新人完成启动。", en="Yes. The site already reserves space for starter repositories, task pools, and beginner bootcamp materials to help newcomers get started."),
+      question: t(locale, zh="之前已经发布或维护过的库还能参赛吗？", en="Can existing or previously published libraries join?"),
+      answer: t(locale, zh="可以。2026 年 4 月 29 日前已经存在、已经发布或已经有一定代码基础的库，可以按“继续维护”的方式参与；本次赛事只计算 2026 年 4 月 29 日之后产生的有效新增 commits、新功能、测试、文档和发布改进。申报时请说明项目已有基础、本次计划新增内容和新增贡献范围，避免把旧工作量重复计入本次成果。", en="Yes. Libraries that existed, were published, or already had code before April 29, 2026 can join as continued maintenance projects. The contest only counts effective new commits, features, tests, documentation, and release improvements made after April 29, 2026. Please describe the existing baseline, planned new work, and contribution scope in the proposal, so previous work is not counted again as contest output."),
       opened: false,
     },
     {
-      question: t(locale, zh="AI 辅助会在什么阶段发挥作用？", en="At which stage will AI assistance be most useful?"),
-      answer: t(locale, zh="更适合项目启动、任务拆解、文档搭建、样例生成和开发提速阶段，后续可根据项目表现分层支持。", en="It is most useful during project kickoff, task planning, documentation setup, sample generation, and development acceleration, with further support layered by project progress."),
+      question: t(locale, zh="可以移植其他语言生态里的库吗？", en="Can I port libraries from other ecosystems?"),
+      answer: t(locale, zh="可以。鼓励参考 Rust、Go、TypeScript、Python、OCaml、Scala、Java 等生态中的成熟库，但必须注明原项目、链接、许可证和移植范围。", en="Yes. Mature libraries from Rust, Go, TypeScript, Python, OCaml, Scala, Java, and other ecosystems are welcome, with upstream project, link, license, and scope documented."),
       opened: false,
     },
     {
-      question: t(locale, zh="是否会和开源之夏形成联动？", en="Will it connect with a summer-of-code style program?"),
-      answer: t(locale, zh="页面已按照可联动方向预留结构，后续可继续补充正式合作信息、项目机制与导师安排。", en="The current structure already reserves room for that direction, and future updates can add formal collaboration details, project mechanisms, and mentor plans."),
+      question: t(locale, zh="AI 生成代码是否允许？", en="Is AI-generated code allowed?"),
+      answer: t(locale, zh="允许合理使用 AI 辅助代码、测试、文档和移植分析，但不得提交未经授权的私有代码、闭源代码或商业代码。", en="Responsible AI assistance is allowed for code, tests, docs, and porting analysis, but unauthorized private, closed-source, or commercial code must not be submitted."),
+      opened: false,
+    },
+    {
+      question: t(locale, zh="项目规模一定要到 4~10k 行吗？", en="Must the project reach 4-10k LOC?"),
+      answer: t(locale, zh="这是参考范围。验收更看重项目真实可用、边界清晰、文档完整、测试可运行和后续可维护。", en="It is a reference range. Acceptance focuses more on usability, clear scope, complete docs, runnable tests, and maintainability."),
+      opened: false,
+    },
+    {
+      question: t(locale, zh="验收什么时候开放？", en="When does acceptance open?"),
+      answer: t(locale, zh="验收申请计划于 6 月 1 日至 7 月 1 日开放。项目完成后可通过验收表提交申请，通过验收的项目可获得 350 元 / 项目的完成支持，并继续参与优秀项目评选。", en="Acceptance is planned from June 1 to July 1. Completed projects can submit the acceptance form. Accepted projects may receive RMB 350 completion support and continue into the final selection."),
       opened: false,
     },
   ]
 }
 
 ///|
-fn section_intro(
-  _locale : Locale,
-  eyebrow : String,
-  title : String,
-  desc : String,
-) -> Html {
+fn section_intro(eyebrow : String, title : String, desc : String) -> Html {
   div(class="section-head", [
     p(class="eyebrow", eyebrow),
     h2(title),
-    if desc == "" {
-      nothing
-    } else {
-      p(desc)
-    },
+    if desc == "" { nothing } else { p(desc) },
   ])
 }
 
@@ -508,113 +561,36 @@ fn section_intro(
 fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
   header(class="site-header", [
     div(class="container nav-shell", [
-      a(class="brand", href="#top", [
-        span(class="brand-badge", "M"),
+      a(class="brand", href=page_href("#top"), [
+        img(
+          class="brand-logo",
+          src="site-assets/moonbit-logo.png?v=20260428-progress-page",
+          alt=t(model.locale, zh="MoonBit Logo", en="MoonBit logo"),
+          nothing,
+        ),
         div(class="brand-copy", [
-          strong("MGPIC 2026"),
+          strong(t(model.locale, zh="MoonBit 开源大赛", en="MoonBit Open Source Contest")),
           p(
             class="brand-subtitle",
-            t(model.locale, zh="MoonBit 开源创新挑战计划", en="MoonBit Open Source Challenge"),
+            t(model.locale, zh="2026 国产开源生态大赛", en="2026 Open Source Ecosystem Competition"),
           ),
         ]),
       ]),
       nav(class="nav-links", nav_items(model.locale).map(fn(item) {
-        a(href=item.href, item.label)
+        a(href=page_href(item.href), item.label)
       })),
       div(class="toolbar", [
-        button(class="toolbar-btn", on_click=dispatch(ToggleLocale), locale_toggle_label(model.locale)),
-        button(class="toolbar-btn toolbar-btn--primary", on_click=dispatch(ToggleTheme), theme_toggle_label(model)),
         a(
-          class="nav-action",
-          href="#join",
-          t(model.locale, zh="关注赛事", en="Follow the event"),
+          class="nav-action nav-action--signup",
+          href=registration_href(),
+          t(model.locale, zh="项目申报", en="Submit"),
         ),
-      ]),
-    ]),
-  ])
-}
-
-///|
-fn view_hero_banner(model : Model) -> Html {
-  div(class="hero-banner", [
-    div(class="hero-banner-grid", [
-      div(class="hero-banner-copy", [
-        p(class="hero-banner-kicker", hero_eyebrow(model.locale)),
-        div(class="hero-banner-wordmark", [
-          span(class="hero-banner-word", "MGPIC"),
-          span(class="hero-banner-year", "2026"),
-        ]),
-        h2(class="hero-banner-title", hero_kv_title(model.locale)),
-        p(class="hero-banner-subtitle", hero_kv_subtitle(model.locale)),
-        div(class="hero-banner-tags", hero_kv_tags(model.locale).map(fn(label) {
-          span(class="hero-banner-tag", label)
-        })),
-        div(class="hero-prize-chip", [
-          span(class="hero-prize-label", hero_prize_label(model.locale)),
-          strong(class="hero-prize-value", hero_prize_value(model.locale)),
-          p(class="hero-prize-note", hero_prize_note(model.locale)),
-        ]),
-      ]),
-      div(class="hero-banner-art", [
-        div(class="hero-stage-m", "M"),
-        span(class="hero-stage-orb hero-stage-orb--left", ""),
-        span(class="hero-stage-orb hero-stage-orb--right", ""),
-        div(class="hero-rabbita", [
-          span(class="hero-rabbita-ear hero-rabbita-ear--left", ""),
-          span(class="hero-rabbita-ear hero-rabbita-ear--right", ""),
-          span(class="hero-rabbita-head", ""),
-          span(class="hero-rabbita-body", ""),
-          span(class="hero-rabbita-arm hero-rabbita-arm--left", ""),
-          span(class="hero-rabbita-arm hero-rabbita-arm--right", ""),
-          span(class="hero-rabbita-foot hero-rabbita-foot--left", ""),
-          span(class="hero-rabbita-foot hero-rabbita-foot--right", ""),
-          span(class="hero-rabbita-tail", ""),
-        ]),
-        div(class="hero-stage-panel hero-stage-panel--left", [
-          span(class="hero-stage-panel-label", t(model.locale, zh="任务池", en="Task pool")),
-          strong(
-            class="hero-stage-panel-value",
-            t(
-              model.locale,
-              zh="公开仓库 / Good First Issue",
-              en="Public repos / good first issues",
-            ),
-          ),
-        ]),
-        div(class="hero-stage-panel hero-stage-panel--right", [
-          span(class="hero-stage-panel-label", t(model.locale, zh="项目交付", en="Project delivery")),
-          strong(
-            class="hero-stage-panel-value",
-            t(
-              model.locale,
-              zh="Demo Day / 孵化推荐",
-              en="Demo day / incubation",
-            ),
-          ),
-        ]),
-        div(class="hero-console", [
-          div(class="hero-console-top", [
-            span(class="hero-console-topline", "moon check --target js"),
-            span(class="hero-console-status", t(model.locale, zh="生态构建中", en="Build in progress")),
-          ]),
-          div(class="hero-console-screen", [
-            p(class="hero-console-line hero-console-line--strong", "Open Source x Engineering"),
-            p(class="hero-console-line", "GitHub / Starter Repo / AI"),
-            p(
-              class="hero-console-line",
-              t(
-                model.locale,
-                zh="面向 1000 名开发者的年度挑战计划",
-                en="A challenge program for 1,000 builders",
-              ),
-            ),
-          ]),
-          div(class="hero-console-tags", [
-            span(class="hero-console-tag", "GitHub"),
-            span(class="hero-console-tag", "AI"),
-            span(class="hero-console-tag", "MoonBit"),
-          ]),
-        ]),
+        a(
+          class="nav-action nav-action--progress",
+          href="progress.html",
+          t(model.locale, zh="个人进度（开发中）", en="Progress (in development)"),
+        ),
+        button(class="toolbar-btn", on_click=dispatch(ToggleTheme), theme_toggle_label(model)),
       ]),
     ]),
   ])
@@ -622,19 +598,14 @@ fn view_hero_banner(model : Model) -> Html {
 
 ///|
 fn view_hero(model : Model) -> Html {
-  section(id="top", class="hero", [
+  section(id="top", class="hero hero--clean", [
     div(class="container", [
-      view_hero_banner(model),
-      div(class="hero-entry-strip", [
-        a(
-          class="button primary hero-entry-button",
-          href="#join",
-          t(model.locale, zh="报名入口", en="Sign up"),
-        ),
-        a(
-          class="button secondary hero-entry-button",
-          href="#learn",
-          t(model.locale, zh="了解 MoonBit", en="Learn MoonBit"),
+      div(class="hero-banner hero-banner--kv", [
+        img(
+          class="hero-kv-image",
+          src="site-assets/main-kv.png?v=20260428-progress-page",
+          alt=hero_kv_alt(model.locale),
+          nothing,
         ),
       ]),
     ]),
@@ -644,76 +615,89 @@ fn view_hero(model : Model) -> Html {
 ///|
 fn view_info_card(card : InfoCard) -> Html {
   article(class="info-card", [
-    h3(card.title),
-    p(card.desc),
-  ])
-}
-
-///|
-fn view_path_card(card : PathCard) -> Html {
-  article(class="path-card", [
     span(class="tag", card.badge),
     h3(card.title),
     p(card.desc),
-    ul(class="path-points", card.bullets.map(fn(item) {
-      li(item)
-    })),
   ])
 }
 
 ///|
-fn view_learn_card(card : LearnCard) -> Html {
-  article(class="learn-card", [
-    span(class="tag", card.badge),
+fn view_list_card(card : ListCard) -> Html {
+  article(class="showcase-card direction-card", [
     h3(card.title),
     p(card.desc),
-    a(
-      class="learn-link",
-      href=card.href,
-      target=Blank,
-      rel="noreferrer",
-      card.cta,
-    ),
+    ul(class="path-points", card.items.map(fn(item) { li(item) })),
   ])
 }
 
 ///|
-fn view_showcase_card(card : ShowcaseCard) -> Html {
-  article(class="showcase-card", [
-    div(class="showcase-card-top", [
-      span(class="tag", card.badge),
-      a(
-        class="showcase-card-link",
-        href=card.href,
-        target=Blank,
-        rel="noreferrer",
-        "GitHub",
-      ),
-    ]),
-    h3(card.title),
-    p(card.desc),
-    p(class="showcase-card-note", card.note),
+fn view_process_row(item : ProcessItem) -> Html {
+  tr([
+    td(class="process-table-time", item.time),
+    td(class="process-table-title", item.title),
+    td(class="process-table-desc", item.desc),
   ])
 }
 
 ///|
-fn view_learn_step(item : LearnStep) -> Html {
-  article(class="learn-step-card", [
-    strong(class="learn-step-index", item.step),
-    div(class="learn-step-body", [
-      h3(item.title),
-      p(item.desc),
+fn view_prize_row(item : PrizeItem) -> Html {
+  tr([
+    td(class="prize-table-award", item.award),
+    td(class="prize-table-money", item.prize),
+    td(class="prize-table-count", item.count),
+  ])
+}
+
+///|
+fn view_prize_table(title : String, locale : Locale, items : Array[PrizeItem]) -> Html {
+  article(class="prize-table-card", [
+    h3(title),
+    table(class="prize-table", [
+      thead([
+        tr([
+          th(t(locale, zh="奖项", en="Award")),
+          th(t(locale, zh="奖金", en="Prize")),
+          th(t(locale, zh="数量", en="Count")),
+        ]),
+      ]),
+      tbody(items.map(fn(item) { view_prize_row(item) })),
     ]),
   ])
 }
 
 ///|
-fn view_timeline_item(item : TimelineItem) -> Html {
-  article(class="timeline-item", [
-    strong(class="timeline-step", item.step),
-    div(class="timeline-body", [
-      h3(item.title),
-      p(item.desc),
+fn view_showcase_signal(signal : ShowcaseSignal) -> Html {
+  article(class="showcase-signal-card", [
+    strong(signal.value),
+    span(signal.label),
+  ])
+}
+
+///|
+fn view_showcase_link(link : ShowcaseLink) -> Html {
+  a(class="showcase-project-link", href=link.href, link.label)
+}
+
+///|
+fn view_showcase_project(card : ShowcaseProject) -> Html {
+  article(class="showcase-project-card", [
+    div(class="showcase-project-body", [
+      div(class="showcase-project-meta", [
+        span(card.status),
+        span(card.category),
+      ]),
+      h3(class="showcase-project-title", card.title),
+      p(class="showcase-project-subtitle", card.subtitle),
+      p(class="showcase-project-desc", card.desc),
+      div(class="showcase-project-highlights", card.highlights.map(fn(item) {
+        div(class="showcase-project-highlight", item)
+      })),
+      div(class="showcase-project-tags", card.tags.map(fn(tag) {
+        span(class="showcase-project-tag", tag)
+      })),
+      div(class="showcase-project-links", card.links.map(fn(link) {
+        view_showcase_link(link)
+      })),
     ]),
   ])
 }
@@ -727,98 +711,212 @@ fn view_faq_item(item : FaqItem) -> Html {
 }
 
 ///|
+fn view_progress_step(step : ProgressStep) -> Html {
+  article(class=step.class_name, [
+    span(class="progress-step-index", step.index),
+    div([
+      div(class="progress-step-top", [
+        h3(step.title),
+        span(class="progress-status", step.status),
+      ]),
+      p(step.desc),
+    ]),
+  ])
+}
+
+///|
+fn view_progress_page(model : Model) -> Html {
+  section(id="progress", class="section section--progress progress-page-section", [
+    div(class="container", [
+      div(class="progress-portal progress-page-portal", [
+        div(class="progress-copy", [
+          p(class="eyebrow", t(model.locale, zh="个人进度", en="Personal progress")),
+          h2(t(model.locale, zh="GitHub 登录查看比赛进程", en="Track contest progress with GitHub")),
+          p(
+            t(
+              model.locale,
+              zh="用于展示参赛者从报名、仓库建设、验收到作品展示的个人状态。当前为试验版，只验证页面结构和交互入口。",
+              en="Shows a participant's status from registration and repository work to acceptance and showcase. This is an experimental page for layout and interaction validation.",
+            ),
+          ),
+          div(class="progress-page-actions", [
+            a(class="button primary", href=registration_href(), t(model.locale, zh="提交项目申报", en="Submit proposal")),
+            a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
+          ]),
+        ]),
+        article(class="progress-dashboard", [
+          div(class="progress-user-row", [
+            div(class="progress-avatar", "M"),
+            div([
+              strong("@moonbit-builder"),
+              p(t(model.locale, zh="GitHub 已连接 · 试验数据", en="GitHub connected · test data")),
+            ]),
+            span(class="toolbar-btn progress-logout", t(model.locale, zh="退出测试登录", en="Exit test login")),
+          ]),
+          div(class="progress-meter", [
+            div(class="progress-meter-fill", nothing),
+          ]),
+          div(class="progress-summary-grid", [
+            div(class="progress-summary-item", [
+              span(t(model.locale, zh="当前阶段", en="Current stage")),
+              strong(t(model.locale, zh="申报审核", en="Proposal review")),
+            ]),
+            div(class="progress-summary-item", [
+              span(t(model.locale, zh="仓库检查", en="Repo check")),
+              strong("2 / 6"),
+            ]),
+            div(class="progress-summary-item", [
+              span(t(model.locale, zh="下一步", en="Next")),
+              strong(t(model.locale, zh="补充 README / CI", en="Add README / CI")),
+            ]),
+          ]),
+          div(class="progress-step-list", progress_steps(model.locale).map(fn(step) {
+            view_progress_step(step)
+          })),
+        ]),
+      ]),
+    ]),
+  ])
+}
+
+///|
 fn view_about(model : Model) -> Html {
   section(id="about", class="section", [
     div(class="container", [
       section_intro(
-        model.locale,
         t(model.locale, zh="赛事定位", en="Positioning"),
-        t(model.locale, zh="把一场赛事，做成一次真正的开源生态增长", en="Turn a contest into real open-source ecosystem growth"),
-        t(model.locale, zh="MGPIC 2026 的重点不只是“交作品”，而是推动更多开发者围绕 MoonBit 建立公开仓库、持续提交代码、完成项目演进，并沉淀可展示、可复用、可继续维护的开源成果。", en="MGPIC 2026 is not only about shipping a final entry. It is about helping more developers build public repositories around MoonBit, keep contributing code, evolve projects, and leave behind reusable, maintainable open-source work."),
+        t(model.locale, zh="用 MoonBit，一起建设国产开源生态", en="Build an open-source ecosystem with MoonBit"),
+        t(model.locale, zh="以 MoonBit 编程语言及其工具链为基础，面向在校生群体，鼓励参赛者利用 AI 工具完成开源生态库、开发工具和示例工程的设计、移植、实现与完善。", en="Based on MoonBit and its toolchain, the contest is open to students and encourages AI-assisted design, porting, implementation, and improvement of ecosystem libraries, developer tools, and example projects."),
       ),
+      div(class="summary-grid position-summary-grid", summary_cards(model.locale).map(fn(card) {
+        view_info_card(card)
+      })),
       div(class="card-grid", about_cards(model.locale).map(fn(card) { view_info_card(card) })),
     ]),
   ])
 }
 
 ///|
-fn view_paths(model : Model) -> Html {
-  section(id="paths", class="section section--alt", [
+fn view_awards(model : Model) -> Html {
+  section(id="awards", class="section section--prize", [
     div(class="container", [
-      section_intro(
-        model.locale,
-        t(model.locale, zh="参与路径", en="Tracks"),
-        t(model.locale, zh="让不同阶段的开发者，都能顺利进入 MoonBit 开源生态", en="Create clear entry points for developers at different stages"),
-        "",
-      ),
-      div(class="card-grid", path_cards(model.locale).map(fn(card) { view_path_card(card) })),
-    ]),
-  ])
-}
-
-///|
-fn view_learn(model : Model) -> Html {
-  section(id="learn", class="section section--alt", [
-    div(class="container", [
-      section_intro(
-        model.locale,
-        t(model.locale, zh="学习了解 MoonBit", en="Learn MoonBit"),
-        t(model.locale, zh="在报名和开工之前，先用官方入口把 MoonBit 了解清楚", en="Use the official entry points to understand MoonBit before you sign up and start building"),
-        t(model.locale, zh="这个板块是给第一次接触 MoonBit 的参赛者准备的。先补齐语言、工具链和生态入口，再进入任务池、仓库和项目开发，会顺很多。", en="This section is for participants who are new to MoonBit. Learn the language, toolchain, and ecosystem entry points first, then move into task pools, repositories, and project work with less friction."),
-      ),
-      div(class="learn-journey", [
-        div(class="learn-subhead", [
-          h3(t(model.locale, zh="3 步快速入门", en="A 3-step quick start")),
-          p(t(model.locale, zh="如果你还没确定该从哪开始，可以按这个顺序走。", en="If you are not sure where to begin, follow this order.")),
+      div(class="prize-spotlight", [
+        div(class="prize-copy", [
+          p(class="eyebrow", t(model.locale, zh="奖金激励", en="Awards")),
+          h2(t(model.locale, zh="优秀项目奖金池 15 万元", en="RMB 150,000 award pool")),
+          p(
+            t(
+              model.locale,
+              zh="通过验收的项目可继续参与优秀项目评选。基础共建激励不计入优秀项目奖金，完成一个可用 MoonBit 包也能获得基础支持。",
+              en="Accepted projects can continue into the outstanding-project selection. Base support is separate from the award pool, so usable MoonBit packages can receive support too.",
+            ),
+          ),
+          div(class="prize-pills", [
+            span(t(model.locale, zh="基础激励 500 元 / 项目", en="RMB 500 base support / project")),
+            span(t(model.locale, zh="特等奖 15,000 元", en="Grand Prize RMB 15,000")),
+            span(t(model.locale, zh="生态优异奖 4,000 元", en="Ecosystem Excellence RMB 4,000")),
+          ]),
         ]),
-        div(class="learn-step-grid", learn_steps(model.locale).map(fn(item) { view_learn_step(item) })),
+        div(class="prize-total-card", [
+          span(t(model.locale, zh="总奖金池", en="Award Pool")),
+          strong("150,000"),
+          p(t(model.locale, zh="元人民币", en="RMB")),
+          a(class="button primary", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
+        ]),
       ]),
-      div(class="learn-grid", learn_cards(model.locale).map(fn(card) { view_learn_card(card) })),
+      div(class="prize-table-grid", [
+        view_prize_table(t(model.locale, zh="优秀项目奖励", en="Outstanding Project Awards"), model.locale, prize_items(model.locale)),
+        view_prize_table(t(model.locale, zh="生态与专项奖励", en="Ecosystem and Special Awards"), model.locale, bonus_prize_items(model.locale)),
+      ]),
     ]),
   ])
 }
 
 ///|
-fn view_timeline(model : Model) -> Html {
-  section(id="timeline", class="section", [
+fn view_showcase_wall(model : Model) -> Html {
+  section(id="showcase", class="section section--showcase-wall", [
+    div(class="container", [
+      div(class="showcase-wall-panel", [
+        div(class="showcase-wall-head", [
+          section_intro(
+            t(model.locale, zh="优秀作品展示墙", en="Showcase Wall"),
+            t(model.locale, zh="项目通过申报、公开开发和验收后，会按作品卡片集中展示", en="Projects are featured as cards after proposal review, public development, and acceptance"),
+            t(model.locale, zh="参考 MoonBit 展示墙的信息结构：公开仓库、项目简介、核心亮点、标签和后续演示入口都放在同一张卡片里。", en="Following the MoonBit showcase pattern, each card groups the public repository, project summary, highlights, tags, and demo links together."),
+          ),
+          a(class="button secondary", href=registration_href(), t(model.locale, zh="报名争取上墙", en="Register to be featured")),
+        ]),
+        div(class="showcase-signal-grid", showcase_signals(model.locale).map(fn(signal) {
+          view_showcase_signal(signal)
+        })),
+      ]),
+      div(class="showcase-wall-list-head", [
+        p(t(model.locale, zh="展示位预留", en="Reserved slots")),
+        h3(t(model.locale, zh="后续收录的优秀项目会按下面格式更新", en="Accepted projects will be updated in this format")),
+      ]),
+      div(class="showcase-wall-grid", showcase_projects(model.locale).map(fn(card) {
+        view_showcase_project(card)
+      })),
+    ]),
+  ])
+}
+
+fn view_process(model : Model) -> Html {
+  section(id="process", class="section section--alt", [
     div(class="container", [
       section_intro(
-        model.locale,
-        t(model.locale, zh="时间安排", en="Timeline"),
-        t(model.locale, zh="建议采用五阶段推进赛事与开源增长", en="A five-stage rhythm for the event and ecosystem growth"),
+        t(model.locale, zh="比赛流程", en="Process"),
+        t(model.locale, zh="项目申报、开发、验收、评选展示", en="Proposal, development, acceptance, final showcase"),
         "",
       ),
-      div(class="timeline-list", timeline_items(model.locale).map(fn(item) { view_timeline_item(item) })),
+      div(class="process-table-wrap", [
+        table(class="process-table", [
+          thead([
+            tr([
+              th(t(model.locale, zh="时间", en="Time")),
+              th(t(model.locale, zh="流程", en="Stage")),
+              th(t(model.locale, zh="说明", en="Details")),
+            ]),
+          ]),
+          tbody(process_items(model.locale).map(fn(item) { view_process_row(item) })),
+        ]),
+      ]),
     ]),
   ])
 }
 
 ///|
-fn view_showcase(model : Model) -> Html {
-  section(id="showcase", class="section section--alt", [
+fn view_directions(model : Model) -> Html {
+  section(id="directions", class="section", [
     div(class="container", [
       section_intro(
-        model.locale,
-        t(model.locale, zh="赛事展示墙", en="Showcase"),
-        t(model.locale, zh="已收录的 MoonBit 赛事项目", en="Selected MoonBit contest projects"),
-        t(model.locale, zh="先把已经出现的项目放进展示墙，后面可以继续补更多仓库、截图和在线预览入口。", en="This wall starts with the projects already in play and can later grow with more repositories, screenshots, and live previews."),
+        t(model.locale, zh="项目方向", en="Directions"),
+        t(model.locale, zh="从一个可发布的 MoonBit 包开始", en="Start with one publishable MoonBit package"),
+        t(model.locale, zh="项目可以原创，也可以移植成熟生态里的开源库；避免直接重复 MoonBit 生态中已有且功能高度重合的成熟项目。", en="Projects can be original or ports of mature open-source libraries, while avoiding mature MoonBit projects with highly overlapping functionality."),
       ),
-      div(class="showcase-grid", showcase_cards(model.locale).map(fn(card) { view_showcase_card(card) })),
+      div(class="showcase-grid direction-grid", direction_cards(model.locale).map(fn(card) {
+        view_list_card(card)
+      })),
     ]),
   ])
 }
 
 ///|
-fn view_support(model : Model) -> Html {
-  section(id="support", class="section section--alt", [
+fn view_requirements(model : Model) -> Html {
+  section(id="requirements", class="section", [
     div(class="container", [
       section_intro(
-        model.locale,
-        t(model.locale, zh="支持计划", en="Support"),
-        t(model.locale, zh="降低启动门槛，同时把优秀项目引向更长期的开源路径", en="Lower the starting barrier and guide strong projects into longer-term open-source paths"),
+        t(model.locale, zh="验收要求", en="Acceptance"),
+        t(model.locale, zh="提交前至少满足这些条件", en="Meet these basics before submission"),
         "",
       ),
-      div(class="card-grid", support_cards(model.locale).map(fn(card) { view_info_card(card) })),
+      div(class="requirements-layout", [
+        article(class="path-card checklist-card", [
+          span(class="tag", t(model.locale, zh="验收底线", en="Acceptance")),
+          h3(t(model.locale, zh="验收清单", en="Acceptance checklist")),
+          ul(class="path-points", acceptance_items(model.locale).map(fn(item) { li(item) })),
+          a(class="button secondary", href=acceptance_href(), t(model.locale, zh="验收入口", en="Acceptance form")),
+        ]),
+      ]),
     ]),
   ])
 }
@@ -827,43 +925,39 @@ fn view_support(model : Model) -> Html {
 fn view_join(model : Model) -> Html {
   section(id="join", class="section", [
     div(class="container", [
-      div(class="join-card", [
+      div(class="join-card join-card--clean", [
         div(class="join-copy", [
-          p(class="eyebrow", t(model.locale, zh="Call for Builders", en="Call for Builders")),
+          p(class="eyebrow", t(model.locale, zh="下一步", en="Next")),
           h2(
             t(
               model.locale,
-              zh="加入 MGPIC 2026，\n一起把 MoonBit 开源生态真正做起来",
-              en="Join MGPIC 2026 and help build the MoonBit open-source ecosystem for real",
+              zh="项目申报入口已开放，\n先提交一页 PDF 申报书",
+              en="Registration is open. Submit your proposal first.",
             ),
           ),
           p(
             t(
               model.locale,
-              zh="这一版官网已经重构为 MoonBit + Rabbita 单入口结构，后续可以继续接入正式报名链接、合作伙伴、评委阵容、项目库与动态展示数据。",
-              en="This edition of the site has been restructured into a single MoonBit + Rabbita entry, so formal sign-up links, partners, judges, project listings, and live showcase data can be added incrementally.",
+              zh="请通过项目申报表提交个人信息、项目 GitHub 链接和一页左右 PDF 申报书。赛方会通过邮件反馈审核结果。",
+              en="Use the form to submit your information, project GitHub link, and concise proposal. Organizers will follow up by email.",
             ),
           ),
         ]),
         div(class="join-actions", [
           a(
             class="button primary",
-            href="https://github.com/zongen01/MGPIC2026",
-            target=Blank,
-            rel="noreferrer",
-            t(model.locale, zh="查看 GitHub 仓库", en="View GitHub repository"),
+            href=registration_href(),
+            t(model.locale, zh="提交项目申报", en="Submit proposal"),
           ),
           a(
             class="button secondary",
-            href="https://www.moonbitlang.cn/",
-            target=Blank,
-            rel="noreferrer",
-            t(model.locale, zh="MoonBit 中文官网", en="MoonBit website"),
+            href="#process",
+            t(model.locale, zh="查看流程", en="View process"),
           ),
           a(
             class="button secondary",
-            href="mailto:hello@moonbitlang.com",
-            t(model.locale, zh="联系主办方", en="Contact organizer"),
+            href="#requirements",
+            t(model.locale, zh="查看验收", en="View acceptance"),
           ),
         ]),
       ]),
@@ -876,7 +970,6 @@ fn view_faq(model : Model) -> Html {
   section(id="faq", class="section section--alt", [
     div(class="container", [
       section_intro(
-        model.locale,
         "FAQ",
         t(model.locale, zh="常见问题", en="Frequently asked questions"),
         "",
@@ -887,17 +980,51 @@ fn view_faq(model : Model) -> Html {
 }
 
 ///|
+fn view_qq_float(model : Model) -> Html {
+  div(class="qq-float", [
+    a(class="qr-float-card qr-float-card--primary", href=registration_href(), [
+      div(class="qq-float-copy", [
+        strong(t(model.locale, zh="项目申报", en="Proposal")),
+        p(t(model.locale, zh="扫码提交申报表", en="Scan to submit")),
+      ]),
+      div(class="qq-qr-box", [
+        img(
+          class="qq-qr-img",
+          src="site-assets/registration-qr.png?v=20260428-progress-page",
+          alt=t(model.locale, zh="赛事报名二维码", en="Event registration QR code"),
+          nothing,
+        ),
+      ]),
+    ]),
+    div(class="qr-float-card", [
+      div(class="qq-float-copy", [
+        strong(t(model.locale, zh="赛事交流群", en="QQ Group")),
+        p(t(model.locale, zh="扫码加入 QQ 群", en="Scan to join")),
+      ]),
+      div(class="qq-qr-box", [
+        img(
+          class="qq-qr-img",
+          src="site-assets/qq-group-qr.png?v=20260428-progress-page",
+          alt=t(model.locale, zh="赛事 QQ 群二维码", en="Event QQ group QR code"),
+          nothing,
+        ),
+      ]),
+    ]),
+  ])
+}
+
+///|
 fn view_footer(model : Model) -> Html {
   footer(class="site-footer", [
     div(class="container footer-inner", [
       div(class="footer-copy", [
-        strong("MGPIC 2026"),
-        p(t(model.locale, zh="MoonBit 开源创新挑战计划", en="MoonBit Open Source Challenge")),
+        strong(t(model.locale, zh="MoonBit 开源大赛", en="MoonBit Open Source Contest")),
+        p(t(model.locale, zh="2026 MoonBit 国产开源生态大赛", en="2026 MoonBit Open Source Ecosystem Competition")),
       ]),
       div(class="footer-links", [
         a(href="https://www.moonbitlang.cn/", target=Blank, rel="noreferrer", t(model.locale, zh="MoonBit 中文官网", en="MoonBit website")),
+        a(href="https://mooncakes.io/", target=Blank, rel="noreferrer", "Mooncakes"),
         a(href="https://github.com/zongen01/MGPIC2026", target=Blank, rel="noreferrer", "GitHub"),
-        a(href="https://mooncakes.io/docs/moonbit-community/rabbita@0.11.5", target=Blank, rel="noreferrer", "Rabbita"),
       ]),
     ]),
   ])
@@ -907,18 +1034,25 @@ fn view_footer(model : Model) -> Html {
 fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
   div(class=site_class(model.theme), [
     view_header(dispatch, model),
-    main_(class="page-main", [
-      view_hero(model),
-      view_about(model),
-      view_timeline(model),
-      view_showcase(model),
-      view_learn(model),
-      view_paths(model),
-      view_support(model),
-      view_join(model),
-      view_faq(model),
-    ]),
+    if is_progress_page() {
+      main_(class="page-main", [
+        view_progress_page(model),
+      ])
+    } else {
+      main_(class="page-main", [
+        view_hero(model),
+        view_about(model),
+        view_awards(model),
+        view_showcase_wall(model),
+        view_process(model),
+        view_directions(model),
+        view_requirements(model),
+        view_join(model),
+        view_faq(model),
+      ])
+    },
     view_footer(model),
+    if is_progress_page() { nothing } else { view_qq_float(model) },
   ])
 }
 

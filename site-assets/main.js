@@ -48,6 +48,10 @@ function _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime5VNode4Slot(param0
   this._0 = param0;
 }
 _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime5VNode4Slot.prototype.$tag = 3;
+function _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(param0, param1) {
+  this.label = param0;
+  this.href = param1;
+}
 class $PanicError extends Error {}
 function $panic() {
   throw new $PanicError();
@@ -607,49 +611,57 @@ function _M0TP219moonbit_2dcommunity7rabbita9TypedCellGRP38zongen0116mgpic2026_2
   this.view = param4;
   this.flags = param5;
 }
-const _M0FP38zongen0116mgpic2026_2dsite4main18get__browser__lang = () => navigator.language || document.documentElement.lang || "zh-CN";
+const _M0FP38zongen0116mgpic2026_2dsite4main20get__initial__locale = () => new URLSearchParams(window.location.search).get("lang") === "en" ? 1 : 0;
+const _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page = () => window.location.pathname.endsWith("/progress.html");
 const _M0FP38zongen0116mgpic2026_2dsite4main19prefers__dark__mode = () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
 function _M0TP38zongen0116mgpic2026_2dsite4main5Model(param0, param1) {
   this.locale = param0;
   this.theme = param1;
 }
-function _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(param0, param1) {
+function _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(param0, param1, param2) {
+  this.badge = param0;
+  this.title = param1;
+  this.desc = param2;
+}
+function _M0TP38zongen0116mgpic2026_2dsite4main11ProcessItem(param0, param1, param2) {
+  this.time = param0;
+  this.title = param1;
+  this.desc = param2;
+}
+function _M0TP38zongen0116mgpic2026_2dsite4main12ProgressStep(param0, param1, param2, param3, param4) {
+  this.class_name = param0;
+  this.index = param1;
+  this.title = param2;
+  this.desc = param3;
+  this.status = param4;
+}
+function _M0TP38zongen0116mgpic2026_2dsite4main8ListCard(param0, param1, param2) {
+  this.title = param0;
+  this.desc = param1;
+  this.items = param2;
+}
+function _M0TP38zongen0116mgpic2026_2dsite4main14ShowcaseSignal(param0, param1) {
+  this.value = param0;
+  this.label = param1;
+}
+function _M0TP38zongen0116mgpic2026_2dsite4main15ShowcaseProject(param0, param1, param2, param3, param4, param5, param6, param7) {
+  this.status = param0;
+  this.category = param1;
+  this.title = param2;
+  this.subtitle = param3;
+  this.desc = param4;
+  this.highlights = param5;
+  this.tags = param6;
+  this.links = param7;
+}
+function _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseLink(param0, param1) {
   this.label = param0;
   this.href = param1;
 }
-function _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(param0, param1) {
-  this.title = param0;
-  this.desc = param1;
-}
-function _M0TP38zongen0116mgpic2026_2dsite4main8PathCard(param0, param1, param2, param3) {
-  this.badge = param0;
-  this.title = param1;
-  this.desc = param2;
-  this.bullets = param3;
-}
-function _M0TP38zongen0116mgpic2026_2dsite4main9LearnCard(param0, param1, param2, param3, param4) {
-  this.badge = param0;
-  this.title = param1;
-  this.desc = param2;
-  this.href = param3;
-  this.cta = param4;
-}
-function _M0TP38zongen0116mgpic2026_2dsite4main9LearnStep(param0, param1, param2) {
-  this.step = param0;
-  this.title = param1;
-  this.desc = param2;
-}
-function _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseCard(param0, param1, param2, param3, param4) {
-  this.badge = param0;
-  this.title = param1;
-  this.desc = param2;
-  this.note = param3;
-  this.href = param4;
-}
-function _M0TP38zongen0116mgpic2026_2dsite4main12TimelineItem(param0, param1, param2) {
-  this.step = param0;
-  this.title = param1;
-  this.desc = param2;
+function _M0TP38zongen0116mgpic2026_2dsite4main9PrizeItem(param0, param1, param2) {
+  this.award = param0;
+  this.prize = param1;
+  this.count = param2;
 }
 function _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(param0, param1, param2) {
   this.question = param0;
@@ -681,160 +693,162 @@ const _M0FP319moonbit_2dcommunity7rabbita3url5parseN7_2abindS231 = "#";
 const _M0MP419moonbit_2dcommunity7rabbita8internal7runtime7Sandbox3newN7_2abindS1309 = "";
 const _M0FP419moonbit_2dcommunity7rabbita8internal7runtime4none = _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime3Cmd5Empty__;
 const _M0FP319moonbit_2dcommunity7rabbita4html11push__styleN7_2abindS1975 = ";";
-const _M0FP38zongen0116mgpic2026_2dsite4main14initial__modelN7_2abindS64 = "zh";
-const _M0FPB33brute__force__find_2econstr_2f343 = 0;
-const _M0FPB43boyer__moore__horspool__find_2econstr_2f329 = 0;
 const _M0FP419moonbit_2dcommunity7rabbita8internal7runtime17global__id__count = _M0FPC13ref3newGiE(0);
 const _M0FP319moonbit_2dcommunity7rabbita3cmd4none = _M0FP419moonbit_2dcommunity7rabbita8internal7runtime4none;
 const _M0FPB4seed = _M0FPB12random__seed();
-const _M0FP319moonbit_2dcommunity7rabbita3url21parse_2econstr_2f1917 = new _M0DTP319moonbit_2dcommunity7rabbita3url8Protocol5Other("");
+const _M0FPB33brute__force__find_2econstr_2f343 = 0;
+const _M0FPB43boyer__moore__horspool__find_2econstr_2f329 = 0;
+const _M0FP319moonbit_2dcommunity7rabbita3url21parse_2econstr_2f1928 = new _M0DTP319moonbit_2dcommunity7rabbita3url8Protocol5Other("");
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3661 = "site-footer";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3662 = "container footer-inner";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3663 = "footer-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3664 = "footer-links";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3665 = 1;
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3666 = "noreferrer";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3667 = 1;
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3668 = "noreferrer";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3669 = 1;
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3670 = "noreferrer";
 const _p = [];
 const _M0FP319moonbit_2dcommunity7rabbita4html7nothing = new _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime5VNode4Frag(_p);
-const _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3237 = "section-head";
-const _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3238 = "eyebrow";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__timeline__item_2econstr_2f3338 = "timeline-item";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__timeline__item_2econstr_2f3339 = "timeline-step";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__timeline__item_2econstr_2f3340 = "timeline-body";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3366 = "timeline";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3367 = "section";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3368 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3369 = "timeline-list";
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__step_2econstr_2f3334 = "learn-step-card";
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__step_2econstr_2f3335 = "learn-step-index";
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__step_2econstr_2f3336 = "learn-step-body";
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3320 = "learn-card";
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3321 = "tag";
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3322 = "learn-link";
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3323 = 1;
-const _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3324 = "noreferrer";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3356 = "learn";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3357 = "section section--alt";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3358 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3359 = "learn-journey";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3360 = "learn-subhead";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3361 = "learn-step-grid";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3362 = "learn-grid";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3405 = "site-footer";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3406 = "container footer-inner";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3407 = "footer-copy";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3408 = "footer-links";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3409 = 1;
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3410 = "noreferrer";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3411 = 1;
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3412 = "noreferrer";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3413 = 1;
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3414 = "noreferrer";
-const _M0FP38zongen0116mgpic2026_2dsite4main31view__faq__item_2econstr_2f3342 = "faq-item";
-const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3399 = "faq";
-const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3400 = "section section--alt";
-const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3401 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3402 = "faq-list";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3243 = "site-header";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3244 = "container nav-shell";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3245 = "brand";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3246 = "brand-badge";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3247 = "brand-copy";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3248 = "brand-subtitle";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3249 = "nav-links";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3250 = "toolbar";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3251 = "toolbar-btn";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3252 = "toolbar-btn toolbar-btn--primary";
-const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3253 = "nav-action";
-const _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3313 = "info-card";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3344 = "about";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3345 = "section";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3346 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3347 = "card-grid";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3326 = "showcase-card";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3327 = "showcase-card-top";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3328 = "tag";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3329 = "showcase-card-link";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3330 = 1;
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3331 = "noreferrer";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3332 = "showcase-card-note";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3372 = "showcase";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3373 = "section section--alt";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3374 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3375 = "showcase-grid";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3384 = "join";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3385 = "section";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3386 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3387 = "join-card";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3388 = "join-copy";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3389 = "eyebrow";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3390 = "join-actions";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3391 = "button primary";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3392 = 1;
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3393 = "noreferrer";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3394 = "button secondary";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3395 = 1;
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3396 = "noreferrer";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3397 = "button secondary";
-const _M0FP38zongen0116mgpic2026_2dsite4main32view__path__card_2econstr_2f3315 = "path-card";
-const _M0FP38zongen0116mgpic2026_2dsite4main32view__path__card_2econstr_2f3316 = "tag";
-const _M0FP38zongen0116mgpic2026_2dsite4main32view__path__card_2econstr_2f3317 = "path-points";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3350 = "paths";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3351 = "section section--alt";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3352 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3353 = "card-grid";
-const _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3378 = "support";
-const _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3379 = "section section--alt";
-const _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3380 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3381 = "card-grid";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3257 = "hero-banner";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3258 = "hero-banner-grid";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3259 = "hero-banner-copy";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3260 = "hero-banner-kicker";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3261 = "hero-banner-wordmark";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3262 = "hero-banner-word";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3263 = "hero-banner-year";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3264 = "hero-banner-title";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3265 = "hero-banner-subtitle";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3266 = "hero-banner-tags";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3267 = "hero-banner-tag";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3268 = "hero-prize-chip";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3269 = "hero-prize-label";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3270 = "hero-prize-value";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3271 = "hero-prize-note";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3272 = "hero-banner-art";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3273 = "hero-stage-m";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3274 = "hero-stage-orb hero-stage-orb--left";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3275 = "hero-stage-orb hero-stage-orb--right";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3276 = "hero-rabbita";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3277 = "hero-rabbita-ear hero-rabbita-ear--left";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3278 = "hero-rabbita-ear hero-rabbita-ear--right";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3279 = "hero-rabbita-head";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3280 = "hero-rabbita-body";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3281 = "hero-rabbita-arm hero-rabbita-arm--left";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3282 = "hero-rabbita-arm hero-rabbita-arm--right";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3283 = "hero-rabbita-foot hero-rabbita-foot--left";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3284 = "hero-rabbita-foot hero-rabbita-foot--right";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3285 = "hero-rabbita-tail";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3286 = "hero-stage-panel hero-stage-panel--left";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3287 = "hero-stage-panel-label";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3288 = "hero-stage-panel-value";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3289 = "hero-stage-panel hero-stage-panel--right";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3290 = "hero-stage-panel-label";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3291 = "hero-stage-panel-value";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3292 = "hero-console";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3293 = "hero-console-top";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3294 = "hero-console-topline";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3295 = "hero-console-status";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3296 = "hero-console-screen";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3297 = "hero-console-line hero-console-line--strong";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3298 = "hero-console-line";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3299 = "hero-console-line";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3300 = "hero-console-tags";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3301 = "hero-console-tag";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3302 = "hero-console-tag";
-const _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3303 = "hero-console-tag";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3306 = "top";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3307 = "hero";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3308 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3309 = "hero-entry-strip";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3310 = "button primary hero-entry-button";
-const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3311 = "button secondary hero-entry-button";
-const _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3416 = "page-main";
+const _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3483 = "section-head";
+const _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3484 = "eyebrow";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__faq__item_2econstr_2f3550 = "faq-item";
+const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3643 = "faq";
+const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3644 = "section section--alt";
+const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3645 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3646 = "faq-list";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__prize__row_2econstr_2f3521 = "prize-table-award";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__prize__row_2econstr_2f3522 = "prize-table-money";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__prize__row_2econstr_2f3523 = "prize-table-count";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__prize__table_2econstr_2f3525 = "prize-table-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__prize__table_2econstr_2f3526 = "prize-table";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3586 = "awards";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3587 = "section section--prize";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3588 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3589 = "prize-spotlight";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3590 = "prize-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3591 = "eyebrow";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3592 = "prize-pills";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3593 = "prize-total-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3594 = "button primary";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3595 = "prize-table-grid";
+const _M0FP38zongen0116mgpic2026_2dsite4main26nav__items_2erecord_2f3469 = new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem("FAQ", "#faq");
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3488 = "site-header";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3489 = "container nav-shell";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3490 = "brand";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3491 = "brand-logo";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3492 = "site-assets/moonbit-logo.png?v=20260428-progress-page";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3493 = "brand-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3494 = "brand-subtitle";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3495 = "nav-links";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3496 = "toolbar";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3497 = "nav-action nav-action--signup";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3498 = "nav-action nav-action--progress";
+const _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3499 = "toolbar-btn";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3649 = "qq-float";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3650 = "qr-float-card qr-float-card--primary";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3651 = "qq-float-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3652 = "qq-qr-box";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3653 = "qq-qr-img";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3654 = "site-assets/registration-qr.png?v=20260428-progress-page";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3655 = "qr-float-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3656 = "qq-float-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3657 = "qq-qr-box";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3658 = "qq-qr-img";
+const _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3659 = "site-assets/qq-group-qr.png?v=20260428-progress-page";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3552 = "progress-step-index";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3553 = "progress-step-top";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3554 = "progress-status";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3556 = "progress";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3557 = "section section--progress progress-page-section";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3558 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3559 = "progress-portal progress-page-portal";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3560 = "progress-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3561 = "eyebrow";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3562 = "progress-page-actions";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3563 = "button primary";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3564 = "button secondary";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3565 = "progress-dashboard";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3566 = "progress-user-row";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3567 = "progress-avatar";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3568 = "toolbar-btn progress-logout";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3569 = "progress-meter";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3570 = "progress-meter-fill";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3571 = "progress-summary-grid";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3572 = "progress-summary-item";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3573 = "progress-summary-item";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3574 = "progress-summary-item";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3575 = "progress-step-list";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3510 = "info-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3511 = "tag";
+const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3578 = "about";
+const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3579 = "section";
+const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3580 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3581 = "summary-grid position-summary-grid";
+const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3582 = "card-grid";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__list__card_2econstr_2f3513 = "showcase-card direction-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__list__card_2econstr_2f3514 = "path-points";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3616 = "directions";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3617 = "section";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3618 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3619 = "showcase-grid direction-grid";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3632 = "join";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3633 = "section";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3634 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3635 = "join-card join-card--clean";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3636 = "join-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3637 = "eyebrow";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3638 = "join-actions";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3639 = "button primary";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3640 = "button secondary";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3641 = "button secondary";
+const _M0FP38zongen0116mgpic2026_2dsite4main38view__showcase__signal_2econstr_2f3531 = "showcase-signal-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__link_2econstr_2f3533 = "showcase-project-link";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3535 = "showcase-project-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3536 = "showcase-project-body";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3537 = "showcase-project-meta";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3538 = "showcase-project-title";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3539 = "showcase-project-subtitle";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3540 = "showcase-project-desc";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3541 = "showcase-project-highlights";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3542 = "showcase-project-highlight";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3543 = "showcase-project-tags";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3544 = "showcase-project-tag";
+const _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3545 = "showcase-project-links";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3597 = "showcase";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3598 = "section section--showcase-wall";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3599 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3600 = "showcase-wall-panel";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3601 = "showcase-wall-head";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3602 = "button secondary";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3603 = "showcase-signal-grid";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3604 = "showcase-wall-list-head";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3605 = "showcase-wall-grid";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3622 = "requirements";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3623 = "section";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3624 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3625 = "requirements-layout";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3626 = "path-card checklist-card";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3627 = "tag";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3628 = "path-points";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3629 = "button secondary";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__process__row_2econstr_2f3517 = "process-table-time";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__process__row_2econstr_2f3518 = "process-table-title";
+const _M0FP38zongen0116mgpic2026_2dsite4main34view__process__row_2econstr_2f3519 = "process-table-desc";
+const _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3609 = "process";
+const _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3610 = "section section--alt";
+const _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3611 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3612 = "process-table-wrap";
+const _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3613 = "process-table";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3503 = "top";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3504 = "hero hero--clean";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3505 = "container";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3506 = "hero-banner hero-banner--kv";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3507 = "hero-kv-image";
+const _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3508 = "site-assets/main-kv.png?v=20260428-progress-page";
+const _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3672 = "page-main";
+const _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3673 = "page-main";
 function _M0FPC15abort5abortGuE(msg) {
   $panic();
 }
@@ -1764,19 +1778,6 @@ function _M0FPB18brute__force__find(haystack, needle) {
 }
 function _M0MPC16string10StringView4find(self, str) {
   return (str.end - str.start | 0) <= 4 ? _M0FPB18brute__force__find(self, str) : _M0FPB28boyer__moore__horspool__find(self, str);
-}
-function _M0MPC16string10StringView11has__prefix(self, str) {
-  const _bind = _M0MPC16string10StringView4find(self, str);
-  if (_bind === undefined) {
-    return false;
-  } else {
-    const _Some = _bind;
-    const _i = _Some;
-    return _i === 0;
-  }
-}
-function _M0MPC16string6String11has__prefix(self, str) {
-  return _M0MPC16string10StringView11has__prefix(new _M0TPC16string10StringView(self, 0, self.length), str);
 }
 function _M0MPC15array5Array11new_2einnerGRP419moonbit_2dcommunity7rabbita8internal7runtime2IdE(capacity) {
   return [];
@@ -5410,7 +5411,7 @@ function _M0FP319moonbit_2dcommunity7rabbita3url5parse(url) {
       } else {
         if (_bind$2.length === 1) {
           const _remain = _bind$2[0];
-          _bind = { _0: _M0FP319moonbit_2dcommunity7rabbita3url21parse_2econstr_2f1917, _1: _remain };
+          _bind = { _0: _M0FP319moonbit_2dcommunity7rabbita3url21parse_2econstr_2f1928, _1: _remain };
         } else {
           const _bind$3 = _M0FPB4failGURP319moonbit_2dcommunity7rabbita3url8ProtocolRPC16string10StringViewEE("Invalid protocol", "@moonbit-community/rabbita/url:url.mbt:66:10-66:34");
           if (_bind$3.$tag === 1) {
@@ -7238,6 +7239,26 @@ function _M0FP319moonbit_2dcommunity7rabbita4html25push__value__attr__string(val
     return;
   }
 }
+function _M0FP319moonbit_2dcommunity7rabbita4html9push__src(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "src", _v);
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html9push__alt(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "alt", _v);
+    return;
+  }
+}
 function _M0FP319moonbit_2dcommunity7rabbita4html11push__title(value, attrs) {
   if (value === undefined) {
     return;
@@ -7245,6 +7266,26 @@ function _M0FP319moonbit_2dcommunity7rabbita4html11push__title(value, attrs) {
     const _Some = value;
     const _v = _Some;
     _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "title", _v);
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html11push__width(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "width", _M0MPC13int3Int18to__string_2einner(_v, 10));
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html12push__height(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "height", _M0MPC13int3Int18to__string_2einner(_v, 10));
     return;
   }
 }
@@ -7265,6 +7306,74 @@ function _M0FP319moonbit_2dcommunity7rabbita4html14push__disabled(value, attrs) 
     const _Some = value;
     const _v = _Some;
     _M0MP319moonbit_2dcommunity7rabbita4html5Attrs8property(attrs, "disabled", new _M0DTP319moonbit_2dcommunity7rabbita7variant7Variant7Boolean(_v));
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html13push__colspan(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "colspan", _M0MPC13int3Int18to__string_2einner(_v, 10));
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html13push__rowspan(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "rowspan", _M0MPC13int3Int18to__string_2einner(_v, 10));
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html13push__headers(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "headers", _v);
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html10push__abbr(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "abbr", _v);
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html11push__scope(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _scope = _Some;
+    let s;
+    switch (_scope) {
+      case 0: {
+        s = "row";
+        break;
+      }
+      case 1: {
+        s = "col";
+        break;
+      }
+      case 2: {
+        s = "rowgroup";
+        break;
+      }
+      default: {
+        s = "colgroup";
+      }
+    }
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "scope", s);
     return;
   }
 }
@@ -7298,6 +7407,16 @@ function _M0FP319moonbit_2dcommunity7rabbita4html14push__download(value, attrs) 
     return;
   }
 }
+function _M0FP319moonbit_2dcommunity7rabbita4html11push__sizes(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "sizes", _v);
+    return;
+  }
+}
 function _M0FP319moonbit_2dcommunity7rabbita4html10push__type(value, attrs) {
   if (value === undefined) {
     return;
@@ -7318,9 +7437,45 @@ function _M0FP319moonbit_2dcommunity7rabbita4html15push__autofocus(value, attrs)
     return;
   }
 }
+function _M0FP319moonbit_2dcommunity7rabbita4html12push__srcset(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "srcset", _v);
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html13push__loading(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "loading", _v);
+    return;
+  }
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html14push__decoding(value, attrs) {
+  if (value === undefined) {
+    return;
+  } else {
+    const _Some = value;
+    const _v = _Some;
+    _M0MP319moonbit_2dcommunity7rabbita4html5Attrs9attribute(attrs, "decoding", _v);
+    return;
+  }
+}
 function _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(tag, attrs, children) {
   const props = attrs;
   const _p$2 = _M0IPC15array5ArrayP319moonbit_2dcommunity7rabbita4html10IsChildren12to__children(children);
+  const _p$3 = undefined;
+  return new _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime5VNode4Elem(tag, props, _p$2, _p$3);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRP319moonbit_2dcommunity7rabbita4html4HtmlE(tag, attrs, children) {
+  const props = attrs;
+  const _p$2 = new _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime8ChildrenGRP419moonbit_2dcommunity7rabbita8internal7runtime5VNodeE5Array([children]);
   const _p$3 = undefined;
   return new _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime5VNode4Elem(tag, props, _p$2, _p$3);
 }
@@ -7445,6 +7600,21 @@ function _M0FP319moonbit_2dcommunity7rabbita4html11div_2einnerGsE(style, id, cla
   _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
   return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGsE("div", attrs$2, children);
 }
+function _M0FP319moonbit_2dcommunity7rabbita4html11div_2einnerGRP319moonbit_2dcommunity7rabbita4html4HtmlE(style, id, class_, title, hidden, on_click, on_mousedown, on_mouseup, on_scroll, on_keydown, on_keyup, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__click(on_click, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html15push__mousedown(on_mousedown, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__mouseup(on_mouseup, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__scroll(on_scroll, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__keydown(on_keydown, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__keyup(on_keyup, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRP319moonbit_2dcommunity7rabbita4html4HtmlE("div", attrs$2, children);
+}
 function _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style$46$opt, id, class_, title, hidden, on_click, on_mousedown, on_mouseup, on_scroll, on_keydown, on_keyup, attrs, children) {
   let style;
   if (style$46$opt.$tag === 1) {
@@ -7464,6 +7634,16 @@ function _M0FP319moonbit_2dcommunity7rabbita4html3divGsE(style$46$opt, id, class
     style = [];
   }
   return _M0FP319moonbit_2dcommunity7rabbita4html11div_2einnerGsE(style, id, class_, title, hidden, on_click, on_mousedown, on_mouseup, on_scroll, on_keydown, on_keyup, attrs, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html3divGRP319moonbit_2dcommunity7rabbita4html4HtmlE(style$46$opt, id, class_, title, hidden, on_click, on_mousedown, on_mouseup, on_scroll, on_keydown, on_keyup, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html11div_2einnerGRP319moonbit_2dcommunity7rabbita4html4HtmlE(style, id, class_, title, hidden, on_click, on_mousedown, on_mouseup, on_scroll, on_keydown, on_keyup, attrs, children);
 }
 function _M0FP319moonbit_2dcommunity7rabbita4html9p_2einnerGsE(style, id, class_, title, hidden, attrs, children) {
   const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
@@ -7791,6 +7971,155 @@ function _M0FP319moonbit_2dcommunity7rabbita4html2liGsE(style$46$opt, value, id,
   }
   return _M0FP319moonbit_2dcommunity7rabbita4html10li_2einnerGsE(style, value, id, class_, title, hidden, on_click, attrs, children);
 }
+function _M0FP319moonbit_2dcommunity7rabbita4html11img_2einnerGRP319moonbit_2dcommunity7rabbita4html4HtmlE(style, id, class_, hidden, src, alt, title, width, height, srcset, sizes, loading, decoding, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html9push__src(src, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html9push__alt(alt, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__width(width, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__height(height, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__srcset(srcset, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__sizes(sizes, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__loading(loading, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html14push__decoding(decoding, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRP319moonbit_2dcommunity7rabbita4html4HtmlE("img", attrs$2, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html3imgGRP319moonbit_2dcommunity7rabbita4html4HtmlE(style$46$opt, id, class_, hidden, src, alt, title, width, height, srcset, sizes, loading, decoding, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html11img_2einnerGRP319moonbit_2dcommunity7rabbita4html4HtmlE(style, id, class_, hidden, src, alt, title, width, height, srcset, sizes, loading, decoding, attrs, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html13table_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE("table", attrs$2, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html5tableGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style$46$opt, id, class_, title, hidden, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html13table_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html13thead_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE("thead", attrs$2, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html5theadGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style$46$opt, id, class_, title, hidden, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html13thead_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html13tbody_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE("tbody", attrs$2, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html5tbodyGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style$46$opt, id, class_, title, hidden, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html13tbody_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html10tr_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE("tr", attrs$2, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html2trGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style$46$opt, id, class_, title, hidden, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html10tr_2einnerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(style, id, class_, title, hidden, attrs, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html10td_2einnerGsE(style, id, colspan, rowspan, headers, class_, title, hidden, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__colspan(colspan, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__rowspan(rowspan, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__headers(headers, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGsE("td", attrs$2, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html2tdGsE(style$46$opt, id, colspan, rowspan, headers, class_, title, hidden, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html10td_2einnerGsE(style, id, colspan, rowspan, headers, class_, title, hidden, attrs, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html10th_2einnerGsE(style, id, abbr, colspan, rowspan, headers, scope, class_, title, hidden, attrs, children) {
+  const attrs$2 = _M0FP319moonbit_2dcommunity7rabbita4html14resolve__attrs(attrs);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__title(title, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html12push__hidden(hidden, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__colspan(colspan, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__rowspan(rowspan, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html13push__headers(headers, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html10push__abbr(abbr, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__scope(scope, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__style(style, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html11push__class(class_, attrs$2);
+  _M0FP319moonbit_2dcommunity7rabbita4html8push__id(id, attrs$2);
+  return _M0FP319moonbit_2dcommunity7rabbita4html4nodeGsE("th", attrs$2, children);
+}
+function _M0FP319moonbit_2dcommunity7rabbita4html2thGsE(style$46$opt, id, abbr, colspan, rowspan, headers, scope, class_, title, hidden, attrs, children) {
+  let style;
+  if (style$46$opt.$tag === 1) {
+    const _Some = style$46$opt;
+    style = _Some._0;
+  } else {
+    style = [];
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html10th_2einnerGsE(style, id, abbr, colspan, rowspan, headers, scope, class_, title, hidden, attrs, children);
+}
 function _M0IPC16string6StringP319moonbit_2dcommunity7rabbita4html10IsChildren12to__children(str) {
   return new _M0DTP419moonbit_2dcommunity7rabbita8internal7runtime8ChildrenGRP419moonbit_2dcommunity7rabbita8internal7runtime5VNodeE5Array([_M0FP319moonbit_2dcommunity7rabbita4html4text(str)]);
 }
@@ -7904,29 +8233,18 @@ function _M0FP219moonbit_2dcommunity7rabbita20cell__with__dispatchGRP38zongen011
   return { _0: dispatch, _1: { self: new _M0TP219moonbit_2dcommunity7rabbita9TypedCellGRP38zongen0116mgpic2026_2dsite4main5ModelRP38zongen0116mgpic2026_2dsite4main3MsgE(model$2, dispatcher, dispatch, update, view, flags), method_table: _M0FP0205moonbit_2dcommunity_2frabbita_2fTypedCell_5bzongen01_2fmgpic2026_2dsite_2fmain_2fModel_2c_20zongen01_2fmgpic2026_2dsite_2fmain_2fMsg_5d_24as_24_40moonbit_2dcommunity_2frabbita_2finternal_2fruntime_2eIsCell } };
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main14initial__model() {
-  return new _M0TP38zongen0116mgpic2026_2dsite4main5Model(_M0MPC16string6String11has__prefix(_M0FP38zongen0116mgpic2026_2dsite4main18get__browser__lang(), new _M0TPC16string10StringView(_M0FP38zongen0116mgpic2026_2dsite4main14initial__modelN7_2abindS64, 0, _M0FP38zongen0116mgpic2026_2dsite4main14initial__modelN7_2abindS64.length)) ? 0 : 1, _M0FP38zongen0116mgpic2026_2dsite4main19prefers__dark__mode() ? 1 : 0);
+  return new _M0TP38zongen0116mgpic2026_2dsite4main5Model(_M0FP38zongen0116mgpic2026_2dsite4main20get__initial__locale(), _M0FP38zongen0116mgpic2026_2dsite4main19prefers__dark__mode() ? 1 : 0);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main6update(dispatch, msg, model) {
-  if (msg === 0) {
-    const _bind = model.locale;
-    let _tmp;
-    if (_bind === 0) {
-      _tmp = 1;
-    } else {
-      _tmp = 0;
-    }
-    return { _0: _M0FP319moonbit_2dcommunity7rabbita3cmd4none, _1: new _M0TP38zongen0116mgpic2026_2dsite4main5Model(_tmp, model.theme) };
+  const _tmp = model.locale;
+  const _bind = model.theme;
+  let _tmp$2;
+  if (_bind === 0) {
+    _tmp$2 = 1;
   } else {
-    const _tmp = model.locale;
-    const _bind = model.theme;
-    let _tmp$2;
-    if (_bind === 0) {
-      _tmp$2 = 1;
-    } else {
-      _tmp$2 = 0;
-    }
-    return { _0: _M0FP319moonbit_2dcommunity7rabbita3cmd4none, _1: new _M0TP38zongen0116mgpic2026_2dsite4main5Model(_tmp, _tmp$2) };
+    _tmp$2 = 0;
   }
+  return { _0: _M0FP319moonbit_2dcommunity7rabbita3cmd4none, _1: new _M0TP38zongen0116mgpic2026_2dsite4main5Model(_tmp, _tmp$2) };
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, zh, en) {
   if (locale === 0) {
@@ -7942,13 +8260,6 @@ function _M0FP38zongen0116mgpic2026_2dsite4main11site__class(theme) {
     return "site site--dark";
   }
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main21locale__toggle__label(locale) {
-  if (locale === 0) {
-    return "EN";
-  } else {
-    return "中文";
-  }
-}
 function _M0FP38zongen0116mgpic2026_2dsite4main20theme__toggle__label(model) {
   const _bind = model.theme;
   if (_bind === 0) {
@@ -7957,56 +8268,85 @@ function _M0FP38zongen0116mgpic2026_2dsite4main20theme__toggle__label(model) {
     return _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "日间", "Light");
   }
 }
+function _M0FP38zongen0116mgpic2026_2dsite4main10page__href(anchor) {
+  if (_M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page()) {
+    switch (anchor) {
+      case "#top": {
+        return "index.html#top";
+      }
+      case "#about": {
+        return "index.html#about";
+      }
+      case "#process": {
+        return "index.html#process";
+      }
+      case "#directions": {
+        return "index.html#directions";
+      }
+      case "#awards": {
+        return "index.html#awards";
+      }
+      case "#showcase": {
+        return "index.html#showcase";
+      }
+      case "#requirements": {
+        return "index.html#requirements";
+      }
+      case "#faq": {
+        return "index.html#faq";
+      }
+      default: {
+        return "index.html";
+      }
+    }
+  } else {
+    return anchor;
+  }
+}
 function _M0FP38zongen0116mgpic2026_2dsite4main10nav__items(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "介绍", "About"), "#about"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "展示墙", "Showcase"), "#showcase"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "学习了解", "Learn"), "#learn"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "参与路径", "Tracks"), "#paths"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "时间安排", "Timeline"), "#timeline"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "支持计划", "Support"), "#support"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "FAQ", "FAQ"), "#faq")];
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "定位", "About"), "#about"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "流程", "Process"), "#process"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "方向", "Directions"), "#directions"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "奖励", "Awards"), "#awards"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "作品墙", "Showcase"), "#showcase"), new _M0TP38zongen0116mgpic2026_2dsite4main7NavItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "验收", "Acceptance"), "#requirements"), _M0FP38zongen0116mgpic2026_2dsite4main26nav__items_2erecord_2f3469];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main13hero__eyebrow(locale) {
-  return _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "MoonBit Programming Innovation Challenge 2026", "MoonBit Programming Innovation Challenge 2026");
+function _M0FP38zongen0116mgpic2026_2dsite4main13hero__kv__alt(locale) {
+  return _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "MoonBit 开源大赛主视觉", "MoonBit Open Source Competition key visual");
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main15hero__kv__title(locale) {
-  return _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "MoonBit 开源创新挑战计划", "MoonBit Open Source Challenge");
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main18hero__kv__subtitle(locale) {
-  return _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "以开源协作、工程实践与长期生态沉淀为主线的 2026 年度开发者赛事", "A 2026 developer challenge for open-source collaboration, engineering practice, and long-term ecosystem growth");
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main14hero__kv__tags(locale) {
-  return [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "奖金激励", "Prize incentive"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开源协作", "Open source"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "工程实践", "Engineering"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目孵化", "Incubation"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "GitHub 协作", "GitHub collaboration")];
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main18hero__prize__label(locale) {
-  return _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "往届奖金规模参考", "Reference prize scale");
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main17hero__prize__note(locale) {
-  return _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "按 2025 双赛道公开奖金设置估算；2026 正式奖金以赛事章程公布为准。", "Estimated from the published 2025 awards across two tracks; the official 2026 prize setup will follow the final rules.");
+function _M0FP38zongen0116mgpic2026_2dsite4main14summary__cards(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "参赛对象", "Participants"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "在校生开放", "Students"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "面向所有对 MoonBit、AI 编程、开源生态和基础软件感兴趣的在校生。", "Open to students interested in MoonBit, AI programming, open source, and infrastructure software.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目规模", "Scope"), "4~10k LOC", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "参考有效 MoonBit 代码行数，重质量、边界和可维护性。", "A reference range for effective MoonBit code, with quality first.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "基础激励", "Base support"), "150 + 350 元", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "立项启动支持 + 验收完成支持，优秀作品奖励另计。", "Kickoff support plus completion support; awards are separate."))];
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main12about__cards(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开源优先", "Open-source first"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "围绕 GitHub 仓库、提交历史、README、演示与持续维护展开，鼓励真实协作与长期积累。", "The program centers on GitHub repositories, commit history, READMEs, demos, and ongoing maintenance to encourage real collaboration and durable results.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "工程导向", "Engineering oriented"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "重点关注系统设计、实现质量、可运行性、文档、测试与后续演进能力。", "It focuses on system design, implementation quality, runnability, documentation, testing, and long-term evolution.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "生态沉淀", "Ecosystem growth"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "优秀项目将进入展示、孵化与长期共建通道，反哺 MoonBit 样例、内容与工具生态。", "Strong projects can move into showcase, incubation, and long-term collaboration tracks that feed back into MoonBit examples, content, and tooling."))];
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "AI 辅助", "AI-assisted"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "用 AI 提效，但成果要可解释", "Use AI, keep accountability"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "AI 可用于代码生成、接口设计、测试补全和文档撰写；最终项目目标、技术路径、质量边界和开源合规由参赛者把控。", "AI may help with code generation, API design, tests, and documentation. Participants remain responsible for goals, technical direction, quality boundaries, and open-source compliance.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "生态包", "Packages"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "聚焦开源生态库建设", "Focus on ecosystem libraries"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目可以是原创库、成熟生态库的 MoonBit 移植，也可以是围绕实际需求的开发工具或示例项目。", "Projects can be original libraries, MoonBit ports of mature ecosystem libraries, developer tools, or example projects.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "可验收", "Acceptable"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "真实可用、可测试、可维护", "Usable, tested, maintainable"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "官网只保留关键规则：边界清晰、文档完整、测试可运行、后续可维护，细则以后续正式章程为准。", "The site keeps the key rules: clear scope, complete docs, runnable tests, and maintainability. Details follow the official rules."))];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main11path__cards(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main8PathCard("Path A", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开源入门组", "Open-source starter track"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "面向第一次接触 MoonBit 的开发者，通过 Starter Repo、示例任务与工作坊完成从 0 到 1 的启动。", "For developers who are new to MoonBit, with starter repositories, example tasks, and workshops that help them get from zero to one."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "环境搭建与最小项目", "Environment setup and a minimal project"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "首个 Issue / PR", "First issue or PR"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "新手任务池", "Starter task pool")]), new _M0TP38zongen0116mgpic2026_2dsite4main8PathCard("Path B", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开源贡献组", "Contribution track"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "围绕 MoonBit 生态项目、文档、测试、工具链与社区仓库进行持续贡献，强调贡献质量与活跃度。", "For continuous contribution to MoonBit ecosystem projects, docs, tests, tooling, and community repositories, with an emphasis on contribution quality and consistency."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "Good First Issue", "Good first issue"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "文档 / 测试 / 示例任务", "Docs, tests, and example tasks"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "周度贡献榜", "Weekly contribution leaderboard")]), new _M0TP38zongen0116mgpic2026_2dsite4main8PathCard("Path C", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目挑战组", "Project challenge track"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "面向希望做出完整项目和冲击重点展示的开发者，以项目申报、里程碑开发和最终答辩为主线推进。", "For builders aiming to deliver full projects and reach the featured showcase through project proposals, milestone development, and a final presentation."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目申报与预答辩", "Project proposal and early review"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "中期验收与 Demo Day", "Midterm review and demo day"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目展示与孵化推荐", "Showcase and incubation recommendations")])];
+function _M0FP38zongen0116mgpic2026_2dsite4main14process__items(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main11ProcessItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "即日起 - 7/1", "Now - Jul 1"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目申报", "Project proposal"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "通过官方表单提交参赛信息、GitHub 仓库和一页 PDF 项目申报书；仓库需包含 10-20 个有效 commits。通过申报审核可获得 150 元启动支持。", "Submit participant info, GitHub repository, and a one-page PDF proposal through the official form. The repository should contain 10-20 valid commits. Approved proposals may receive RMB 150 kickoff support.")), new _M0TP38zongen0116mgpic2026_2dsite4main11ProcessItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "即日起 - 7/1", "Now - Jul 1"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目开发与社区活动", "Development and community"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "围绕公开仓库持续开发，保持提交记录、工单、合并请求和更新日志可追踪；赛事组提供指南、模板、答疑、宣讲和阶段展示。", "Build in public with traceable commits, issues, pull requests, and changelogs. Organizers provide guides, templates, Q&A, talks, and stage showcases.")), new _M0TP38zongen0116mgpic2026_2dsite4main11ProcessItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "6/1 - 7/1", "Jun 1 - Jul 1"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目验收", "Project acceptance"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目完成后通过验收表提交申请。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。", "After completion, submit the acceptance form. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project.")), new _M0TP38zongen0116mgpic2026_2dsite4main11ProcessItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "7/5", "Jul 5"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "优秀项目评选与展示", "Final selection and showcase"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "赛事组根据完成度、MoonBit 生态贡献、工程质量和展示表现综合评估，入选项目需要参加决赛答辩。", "Organizers evaluate completion, MoonBit ecosystem contribution, engineering quality, and presentation. Selected projects join the final defense."))];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main12learn__cards(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main9LearnCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "官方网站", "Official site"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "先快速认识 MoonBit", "Start with the official overview"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "先看 MoonBit 的语言定位、核心特性、生态入口和最新动态，建立整体认识。", "Get the big picture first: language positioning, core features, ecosystem entry points, and recent updates."), "https://www.moonbitlang.cn/", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "查看官网", "Open website")), new _M0TP38zongen0116mgpic2026_2dsite4main9LearnCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "官方文档", "Documentation"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "按文档完成入门与安装", "Follow the docs for setup"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "从安装、项目结构、构建系统到语法基础，按官方文档走一遍最快。", "The fastest path is the official documentation: installation, project structure, build system, and language basics."), "https://docs.moonbitlang.cn", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "阅读文档", "Read docs")), new _M0TP38zongen0116mgpic2026_2dsite4main9LearnCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "B 站视频课程", "Bilibili videos"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "跟着视频课程快速上手", "Learn from the video courses"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "如果你更习惯视频学习，可以直接看 MoonBit 官方 B 站账号上的课程与讲解视频。", "If you prefer learning from videos, start with the tutorials and walkthroughs on MoonBit's official Bilibili channel."), "https://space.bilibili.com/1453436642", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "打开 B 站课程", "Open Bilibili")), new _M0TP38zongen0116mgpic2026_2dsite4main9LearnCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "在线体验", "Try online"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "先写一个最小示例", "Try a minimal example"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "如果暂时不想先装环境，可以直接在线试写 MoonBit，快速感受语法和反馈。", "If you do not want to install locally first, try MoonBit online and get a quick feel for the syntax and feedback loop."), "https://try.moonbitlang.cn/", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "打开在线环境", "Open playground")), new _M0TP38zongen0116mgpic2026_2dsite4main9LearnCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "生态与样例", "Ecosystem"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "看看包、样例和导览", "Explore packages and examples"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "通过 Mooncakes 和交互导览了解现成库、样例项目和常见开发路径。", "Use Mooncakes and the interactive tour to explore packages, example projects, and common development paths."), "https://mooncakes.io/", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "查看生态", "Explore ecosystem"))];
+function _M0FP38zongen0116mgpic2026_2dsite4main15progress__steps(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main12ProgressStep("progress-step progress-step--done", "01", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "GitHub 账号", "GitHub account"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "用于识别参赛者、关联项目仓库和同步公开提交记录。", "Used to identify the participant, link the project repository, and sync public commits."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "已连接", "Connected")), new _M0TP38zongen0116mgpic2026_2dsite4main12ProgressStep("progress-step progress-step--active", "02", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目申报", "Proposal"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "提交报名表后可显示申报审核状态、项目名称和联系邮箱。", "After submission, this can show proposal review status, project name, and contact email."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "待同步", "Pending sync")), new _M0TP38zongen0116mgpic2026_2dsite4main12ProgressStep("progress-step progress-step--active", "03", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "仓库进度", "Repository progress"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "计划展示 GitHub 仓库、有效提交数、README、CI、测试和许可证状态。", "Planned to show repository, valid commits, README, CI, tests, and license status."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "检查中", "Checking")), new _M0TP38zongen0116mgpic2026_2dsite4main12ProgressStep("progress-step", "04", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "验收与展示", "Acceptance and showcase"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目完成后可查看验收材料、审核反馈、奖励状态和作品墙展示状态。", "After completion, this can show acceptance materials, feedback, reward status, and showcase status."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "未开始", "Not started"))];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main12learn__steps(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main9LearnStep("01", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "先看 MoonBit 是什么", "Understand what MoonBit is"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "先建立对语言定位、适用场景和生态入口的整体认识，不急着一上来就写大项目。", "Build a quick mental model of the language, its use cases, and ecosystem before jumping into a larger project.")), new _M0TP38zongen0116mgpic2026_2dsite4main9LearnStep("02", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "完成安装并跑通最小项目", "Install it and run a minimal project"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "先把安装、构建、运行和最小示例打通，后面做赛事任务时会顺很多。", "Get installation, build, run, and the smallest working example done first so the contest tasks feel smoother later.")), new _M0TP38zongen0116mgpic2026_2dsite4main9LearnStep("03", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "按自己的背景选择入口", "Pick the right entry for your background"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "如果你是零基础、已有开发经验、或者想做编译器方向，推荐的起步路线并不一样。", "The best first path differs depending on whether you are brand new, already experienced, or aiming at compiler work."))];
+function _M0FP38zongen0116mgpic2026_2dsite4main16direction__cards(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main8ListCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "入门友好型", "Starter"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "适合第一次参与 MoonBit 开源生态。", "Good first MoonBit ecosystem projects."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "日志库 / tracing 工具（可基于 moonbitlang/async）", "Logging / tracing, optionally based on moonbitlang/async"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "indexmap、bitmask、Stopwatch / benchmark 小工具", "indexmap, bitmask, Stopwatch / benchmark helpers"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "模板渲染器、deterministic simulation 框架", "Template renderer or deterministic simulation framework")]), new _M0TP38zongen0116mgpic2026_2dsite4main8ListCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "标准生态包", "Ecosystem packages"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "补齐 MoonBit 常用开发能力。", "Fill common MoonBit development gaps."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "Graph 相关算法库、Pathfinding 工具库", "Graph algorithms and pathfinding libraries"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "通用算法库，可结合 moon prove 验证", "General algorithm libraries, optionally verified with moon prove"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "编译器底层基础设施，例如寄存器分配库", "Compiler infrastructure such as register allocation libraries")]), new _M0TP38zongen0116mgpic2026_2dsite4main8ListCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "工具与格式", "Tools and formats"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "适合官网展示和社区传播。", "Good for demos and community sharing."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "Markdown to HTML", "Markdown to HTML"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "构建工具，类似 n2 / ninja", "Build tools similar to n2 / ninja"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "特定格式的序列化 / 反序列化工具，类似 protobuf", "Format-specific serialization / deserialization tools similar to protobuf")]), new _M0TP38zongen0116mgpic2026_2dsite4main8ListCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "绑定与应用", "Bindings and applications"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "适合做可演示、可复用的生态项目。", "Good for demonstrable and reusable ecosystem projects."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "小型 2D 游戏工具库或流行游戏引擎绑定", "Small 2D game toolkits or popular game-engine bindings"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "流行数据库的 MoonBit 绑定", "MoonBit bindings for popular databases"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "基于 moonbitlang/async 的并发框架，例如 actor 框架", "Concurrency frameworks based on moonbitlang/async, such as actor frameworks")])];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main15showcase__cards(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "SCC 参赛项目", "SCC project"), "MoonSEO", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "一个用 MoonBit 实现的 SEO 落地页生成与审计 MVP，可把品牌 brief 生成静态页面草稿，并做可验证的规则检查。", "A MoonBit-first MVP for generating and auditing SEO landing pages from a brief, with deterministic checks and static page export."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "关键词：SEO 落地页、规则审计、静态 HTML 导出", "SEO landing pages, rule audit, static HTML export"), "https://github.com/lauraraccoon/MoonSEO"), new _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "Demo 项目", "Demo project"), "MoonMarkMind", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "一个用 MoonBit 编写的 Markdown 脑图编辑 Demo，支持结构解析、交互编辑、预览，以及导出 PNG、SVG、HTML。", "A MoonBit Markdown mind-map demo with parsing, interactive editing, preview, and export to PNG, SVG, and HTML."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "关键词：Markdown、脑图编辑、可视化导出", "Markdown, mind-map editing, visual export"), "https://github.com/Xiao-li-He/MoonMarkMind"), new _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "工具项目", "Tooling project"), "moonink", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "一个用 MoonBit 编写的静态站点生成器，已经实现 `help`、`onboard`、`build`、`serve` 等 CLI 流程，并支持页面构建、模板渲染和本地预览。", "A static site generator written in MoonBit, with `help`, `onboard`, `build`, and `serve` commands plus page building, template rendering, and local preview."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "关键词：静态站点生成、CLI、模板渲染", "Static site generation, CLI, template rendering"), "https://github.com/Kozmosa/moonink")];
+function _M0FP38zongen0116mgpic2026_2dsite4main17showcase__signals(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main14ShowcaseSignal(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "待收录", "Coming soon"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "通过申报、公开开发并达到展示标准后上墙。", "Projects are listed after proposal review, public development, and showcase readiness.")), new _M0TP38zongen0116mgpic2026_2dsite4main14ShowcaseSignal(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "公开仓库", "Public repo"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "卡片会直接展示 GitHub、Mooncakes 和 Demo 入口。", "Cards will expose GitHub, Mooncakes, and demo links.")), new _M0TP38zongen0116mgpic2026_2dsite4main14ShowcaseSignal(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "持续更新", "Updated"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目介绍、亮点、文档和演示可随开发进展补充。", "Profiles, highlights, docs, and demos can be added as projects evolve.")), new _M0TP38zongen0116mgpic2026_2dsite4main14ShowcaseSignal(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "展示推荐", "Promotion"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "优秀项目可获得官网、社区和后续生态维护推荐。", "Standout projects may receive site, community, and ecosystem-maintenance promotion."))];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main15timeline__items(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main12TimelineItem("01", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "预热与合作招募", "Warm-up and partnerships"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "发布视觉与主张，启动社区、高校与合作伙伴联动。", "Launch the brand, narrative, and coordination with communities, universities, and partners.")), new _M0TP38zongen0116mgpic2026_2dsite4main12TimelineItem("02", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "报名与训练营", "Registration and bootcamp"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开放预登记，发布 Starter Repo、任务池与直播答疑。", "Open early registration and publish starter repositories, task pools, and live Q&A support.")), new _M0TP38zongen0116mgpic2026_2dsite4main12TimelineItem("03", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开源贡献与项目开发", "Contribution and project build"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "围绕公开仓库、持续提交与项目孵化展开正式开发。", "Enter the active build phase around public repositories, continuous commits, and project incubation.")), new _M0TP38zongen0116mgpic2026_2dsite4main12TimelineItem("04", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "中期验收与 Demo Day", "Midterm review and demo day"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "通过活跃度、里程碑与项目质量筛选重点项目。", "Use activity, milestones, and project quality to identify standout work.")), new _M0TP38zongen0116mgpic2026_2dsite4main12TimelineItem("05", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "决赛答辩与成果开放", "Final review and open release"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "展示优秀项目，发布榜单，并开启后续生态共建通道。", "Present standout projects, publish final results, and open the next stage of ecosystem collaboration."))];
+function _M0FP38zongen0116mgpic2026_2dsite4main18showcase__projects(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main15ShowcaseProject(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "待上墙", "Pending"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "生态库", "Library"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目名称待公布", "Project name TBD"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "通过验收后展示公开仓库、Mooncakes 包和 Demo", "Public repo, Mooncakes package, and demo after acceptance"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "用于展示真实可用的 MoonBit 开源库：项目目标、核心 API、使用示例、测试和文档都会在卡片中清楚呈现。", "For usable MoonBit open-source libraries. Goals, core APIs, examples, tests, and documentation will be shown clearly in the card."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "公开 README、源码、提交记录和许可证", "Public README, source, commits, and license"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "突出核心功能、适用场景和生态价值", "Highlight core features, use cases, and ecosystem value"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "保留 GitHub / Mooncakes / Demo 入口", "Reserve GitHub / Mooncakes / Demo entry points")], ["MoonBit", "GitHub", "Mooncakes"], [new _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseLink(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目申报", "Submit project"), "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf")]), new _M0TP38zongen0116mgpic2026_2dsite4main15ShowcaseProject(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "待上墙", "Pending"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开发工具", "Tooling"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "工具项目待公布", "Tooling project TBD"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "适合展示 CLI、解析器、构建工具或 AI 辅助开发工具", "For CLI, parsers, build tools, or AI-assisted development tools"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "工具类项目会重点展示使用方式、最小示例、工程结构和可复现流程，让其他 MoonBit 开发者能直接参考。", "Tooling projects will emphasize usage, minimal examples, engineering structure, and reproducible workflows for MoonBit developers."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "展示安装、运行和最小使用样例", "Show installation, running, and minimal examples"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "展示 CI、测试和文档完成度", "Show CI, tests, and documentation completeness"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "可补充技术文章或演示视频链接", "Can include technical articles or demo videos")], ["MoonBit", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "工具链", "Tooling"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "示例", "Examples")], [new _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseLink(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "验收入口", "Acceptance form"), "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg")]), new _M0TP38zongen0116mgpic2026_2dsite4main15ShowcaseProject(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "待上墙", "Pending"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "高校实践", "Campus"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "高校项目待公布", "Campus project TBD"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "适合展示课程、社团、训练营或实验室产出的代表项目", "For representative projects from courses, clubs, bootcamps, or labs"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "高校实践项目会突出共建场景、学习材料、可复用成果和后续维护计划，便于更多学生继续参与 MoonBit 生态。", "Campus projects will highlight collaboration context, learning material, reusable output, and maintenance plans so more students can join the MoonBit ecosystem."), [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "展示作者、学校 / 社团和项目方向", "Show author, campus/community, and project direction"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "展示课程实践或开源训练成果", "Show course practice or open-source training output"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "优秀内容可进入社区传播和访谈", "Strong projects may enter community promotion and interviews")], ["MoonBit", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "高校", "Campus"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开源实践", "Open Source")], [new _M0TP38zongen0116mgpic2026_2dsite4main12ShowcaseLink(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "报名争取上墙", "Register to be featured"), "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf")])];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main14support__cards(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "AI 启动支持", "AI kickoff support"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "帮助选手完成仓库初始化、任务拆解、样例生成、文档搭建与开发提速，重点解决“不会开始”和“起步太慢”的问题。", "Help participants initialize repositories, break down tasks, generate examples, build documentation, and accelerate development so they can actually get started.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "开源任务池与模板仓库", "Task pool and starter repositories"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "通过 Starter Repo、Good First Issue 与任务池，让不同能力层级的开发者都有明确入口。", "Use starter repositories, good first issues, and curated task pools to give developers at different levels a clear entry point.")), new _M0TP38zongen0116mgpic2026_2dsite4main8InfoCard(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "与开源之夏式项目孵化衔接", "Incubation beyond the contest"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "把 MGPIC 中表现突出的学生与项目导向更长期的导师制、项目制和深度开源贡献通道。", "Guide strong students and projects toward longer-term mentorship, project incubation, and deeper open-source collaboration."))];
+function _M0FP38zongen0116mgpic2026_2dsite4main12prize__items(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main9PrizeItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "特等奖", "Grand Prize"), "15,000 元", "1 名"), new _M0TP38zongen0116mgpic2026_2dsite4main9PrizeItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "一等奖", "First Prize"), "10,000 元", "1 名"), new _M0TP38zongen0116mgpic2026_2dsite4main9PrizeItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "二等奖", "Second Prize"), "8,000 元", "2 名"), new _M0TP38zongen0116mgpic2026_2dsite4main9PrizeItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "三等奖", "Third Prize"), "6,000 元", "3 名")];
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main19bonus__prize__items(locale) {
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main9PrizeItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "生态优异奖", "Ecosystem Excellence"), "4,000 元", _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "若干名", "Several")), new _M0TP38zongen0116mgpic2026_2dsite4main9PrizeItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "专项鼓励奖", "Special Encouragement"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "金额及数量视实际情况确定", "Amount and count TBD"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "若干名", "Several"))];
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main17acceptance__items(locale) {
+  return [_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "MoonBit 为主要实现语言，仓库公开可访问。", "MoonBit is the primary language and the repository is public."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "README 写清目标、安装、使用方法、示例和可复现方式。", "README covers goals, installation, usage, examples, and reproducibility."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "源代码结构清晰，能够完成声明的核心功能。", "Source structure is clear and implements the declared core functionality."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "CI 覆盖检查、构建、测试流程，并提供覆盖核心功能路径的测试。", "CI covers checks, build, tests, and tests for core functionality paths."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "至少一个可运行示例，并发布到 mooncakes.io。", "At least one runnable example and publication to mooncakes.io."), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "采用 OSI 认可的开源许可证；移植项目需符合原项目许可证要求。", "Use an OSI-approved open-source license; ports must comply with upstream license requirements.")];
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main10faq__items(locale) {
-  return [new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "这次赛事和往年最大的区别是什么？", "What is the biggest difference from previous years?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "2026 更强调开源协作、工程实践与长期沉淀，不只是一次性提交作品，而是围绕公开仓库与持续开发展开。", "The 2026 edition puts much more weight on open-source collaboration, engineering practice, and long-term outcomes instead of one-off submissions."), true), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "没有 MoonBit 经验也能参加吗？", "Can beginners with no MoonBit experience still join?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "可以。网站结构里已经预留 Starter Repo、任务池和入门训练营入口，便于新人完成启动。", "Yes. The site already reserves space for starter repositories, task pools, and beginner bootcamp materials to help newcomers get started."), false), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "AI 辅助会在什么阶段发挥作用？", "At which stage will AI assistance be most useful?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "更适合项目启动、任务拆解、文档搭建、样例生成和开发提速阶段，后续可根据项目表现分层支持。", "It is most useful during project kickoff, task planning, documentation setup, sample generation, and development acceleration, with further support layered by project progress."), false), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "是否会和开源之夏形成联动？", "Will it connect with a summer-of-code style program?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "页面已按照可联动方向预留结构，后续可继续补充正式合作信息、项目机制与导师安排。", "The current structure already reserves room for that direction, and future updates can add formal collaboration details, project mechanisms, and mentor plans."), false)];
+  return [new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "报名后如何获得反馈？", "What happens after registration?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "提交项目申报表后，赛方会通过邮件通知是否通过申报审核。通过项目可获得启动支持，并进入开发与验收流程；未通过时邮件会说明原因，参赛者可以调整项目内容后继续申报。", "After submitting the proposal form, organizers will notify participants by email about review results. Approved projects may receive kickoff support and continue into development and acceptance. If not approved, the email will explain why, and participants may revise and resubmit."), true), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "之前已经发布或维护过的库还能参赛吗？", "Can existing or previously published libraries join?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "可以。2026 年 4 月 29 日前已经存在、已经发布或已经有一定代码基础的库，可以按“继续维护”的方式参与；本次赛事只计算 2026 年 4 月 29 日之后产生的有效新增 commits、新功能、测试、文档和发布改进。申报时请说明项目已有基础、本次计划新增内容和新增贡献范围，避免把旧工作量重复计入本次成果。", "Yes. Libraries that existed, were published, or already had code before April 29, 2026 can join as continued maintenance projects. The contest only counts effective new commits, features, tests, documentation, and release improvements made after April 29, 2026. Please describe the existing baseline, planned new work, and contribution scope in the proposal, so previous work is not counted again as contest output."), false), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "可以移植其他语言生态里的库吗？", "Can I port libraries from other ecosystems?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "可以。鼓励参考 Rust、Go、TypeScript、Python、OCaml、Scala、Java 等生态中的成熟库，但必须注明原项目、链接、许可证和移植范围。", "Yes. Mature libraries from Rust, Go, TypeScript, Python, OCaml, Scala, Java, and other ecosystems are welcome, with upstream project, link, license, and scope documented."), false), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "AI 生成代码是否允许？", "Is AI-generated code allowed?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "允许合理使用 AI 辅助代码、测试、文档和移植分析，但不得提交未经授权的私有代码、闭源代码或商业代码。", "Responsible AI assistance is allowed for code, tests, docs, and porting analysis, but unauthorized private, closed-source, or commercial code must not be submitted."), false), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "项目规模一定要到 4~10k 行吗？", "Must the project reach 4-10k LOC?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "这是参考范围。验收更看重项目真实可用、边界清晰、文档完整、测试可运行和后续可维护。", "It is a reference range. Acceptance focuses more on usability, clear scope, complete docs, runnable tests, and maintainability."), false), new _M0TP38zongen0116mgpic2026_2dsite4main7FaqItem(_M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "验收什么时候开放？", "When does acceptance open?"), _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "验收申请计划于 6 月 1 日至 7 月 1 日开放。项目完成后可通过验收表提交申请，通过验收的项目可获得 350 元 / 项目的完成支持，并继续参与优秀项目评选。", "Acceptance is planned from June 1 to July 1. Completed projects can submit the acceptance form. Accepted projects may receive RMB 350 completion support and continue into the final selection."), false)];
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(_locale, eyebrow, title, desc) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3237, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3238, undefined, -1, undefined, eyebrow), _M0FP319moonbit_2dcommunity7rabbita4html2h2GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, title), desc === "" ? _M0FP319moonbit_2dcommunity7rabbita4html7nothing : _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, desc)]);
+function _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(eyebrow, title, desc) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3483, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30section__intro_2econstr_2f3484, undefined, -1, undefined, eyebrow), _M0FP319moonbit_2dcommunity7rabbita4html2h2GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, title), desc === "" ? _M0FP319moonbit_2dcommunity7rabbita4html7nothing : _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, desc)]);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main12view__header(dispatch, model) {
-  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html1aGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3245, undefined, -1, "#top", undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3246, undefined, -1, undefined, "M"), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3247, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, "MGPIC 2026"), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3248, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 开源创新挑战计划", "MoonBit Open Source Challenge"))])], -1);
+  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html1aGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3490, undefined, -1, _M0FP38zongen0116mgpic2026_2dsite4main10page__href("#top"), undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3imgGRP319moonbit_2dcommunity7rabbita4html4HtmlE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3491, -1, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3492, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit Logo", "MoonBit logo"), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _M0FP319moonbit_2dcommunity7rabbita4html7nothing), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3493, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 开源大赛", "MoonBit Open Source Contest")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3494, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "2026 国产开源生态大赛", "2026 Open Source Ecosystem Competition"))])], -1);
   const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main10nav__items(model.locale);
   const _p$3 = new Array(_p$2.length);
   const _p$4 = _p$2.length;
@@ -8015,21 +8355,78 @@ function _M0FP38zongen0116mgpic2026_2dsite4main12view__header(dispatch, model) {
     const _p$5 = _tmp$2;
     if (_p$5 < _p$4) {
       const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, _p$6.href, undefined, undefined, undefined, undefined, _p$6.label, -1);
+      _p$3[_p$5] = _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, _M0FP38zongen0116mgpic2026_2dsite4main10page__href(_p$6.href), undefined, undefined, undefined, undefined, _p$6.label, -1);
       _tmp$2 = _p$5 + 1 | 0;
       continue;
     } else {
       break;
     }
   }
-  return _M0FP319moonbit_2dcommunity7rabbita4html6headerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3243, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3244, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3navGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3249, undefined, -1, undefined, _p$3), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3250, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6buttonGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3251, undefined, -1, undefined, -1, undefined, undefined, -1, dispatch(0), undefined, _M0FP38zongen0116mgpic2026_2dsite4main21locale__toggle__label(model.locale)), _M0FP319moonbit_2dcommunity7rabbita4html6buttonGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3252, undefined, -1, undefined, -1, undefined, undefined, -1, dispatch(1), undefined, _M0FP38zongen0116mgpic2026_2dsite4main20theme__toggle__label(model)), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3253, undefined, -1, "#join", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "关注赛事", "Follow the event"), -1)])])]);
+  return _M0FP319moonbit_2dcommunity7rabbita4html6headerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3488, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3489, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3navGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3495, undefined, -1, undefined, _p$3), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3496, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3497, undefined, -1, "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目申报", "Submit"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3498, undefined, -1, "progress.html", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "个人进度（开发中）", "Progress (in development)"), -1), _M0FP319moonbit_2dcommunity7rabbita4html6buttonGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__header_2econstr_2f3499, undefined, -1, undefined, -1, undefined, undefined, -1, dispatch(0), undefined, _M0FP38zongen0116mgpic2026_2dsite4main20theme__toggle__label(model))])])]);
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main18view__hero__banner(model) {
-  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3260, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main13hero__eyebrow(model.locale));
-  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3261, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3262, undefined, -1, undefined, "MGPIC"), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3263, undefined, -1, undefined, "2026")]);
-  const _tmp$3 = _M0FP319moonbit_2dcommunity7rabbita4html2h2GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3264, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main15hero__kv__title(model.locale));
-  const _tmp$4 = _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3265, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main18hero__kv__subtitle(model.locale));
-  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main14hero__kv__tags(model.locale);
+function _M0FP38zongen0116mgpic2026_2dsite4main10view__hero(model) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3503, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3504, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3505, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3506, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3imgGRP319moonbit_2dcommunity7rabbita4html4HtmlE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3507, -1, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3508, _M0FP38zongen0116mgpic2026_2dsite4main13hero__kv__alt(model.locale), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _M0FP319moonbit_2dcommunity7rabbita4html7nothing)])])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main16view__info__card(card) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3510, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3511, undefined, -1, undefined, card.badge), _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.title), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.desc)]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main16view__list__card(card) {
+  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.title);
+  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.desc);
+  const _p$2 = card.items;
+  const _p$3 = new Array(_p$2.length);
+  const _p$4 = _p$2.length;
+  let _tmp$3 = 0;
+  while (true) {
+    const _p$5 = _tmp$3;
+    if (_p$5 < _p$4) {
+      const _p$6 = _p$2[_p$5];
+      _p$3[_p$5] = _M0FP319moonbit_2dcommunity7rabbita4html2liGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, -1, undefined, undefined, _p$6);
+      _tmp$3 = _p$5 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__list__card_2econstr_2f3513, undefined, -1, undefined, [_tmp, _tmp$2, _M0FP319moonbit_2dcommunity7rabbita4html2ulGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__list__card_2econstr_2f3514, undefined, -1, undefined, undefined, _p$3)]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main18view__process__row(item) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html2trGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2tdGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__process__row_2econstr_2f3517, undefined, -1, undefined, item.time), _M0FP319moonbit_2dcommunity7rabbita4html2tdGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__process__row_2econstr_2f3518, undefined, -1, undefined, item.title), _M0FP319moonbit_2dcommunity7rabbita4html2tdGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__process__row_2econstr_2f3519, undefined, -1, undefined, item.desc)]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main16view__prize__row(item) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html2trGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2tdGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__prize__row_2econstr_2f3521, undefined, -1, undefined, item.award), _M0FP319moonbit_2dcommunity7rabbita4html2tdGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__prize__row_2econstr_2f3522, undefined, -1, undefined, item.prize), _M0FP319moonbit_2dcommunity7rabbita4html2tdGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__prize__row_2econstr_2f3523, undefined, -1, undefined, item.count)]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main18view__prize__table(title, locale, items) {
+  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, title);
+  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html5theadGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2trGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2thGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "奖项", "Award")), _M0FP319moonbit_2dcommunity7rabbita4html2thGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "奖金", "Prize")), _M0FP319moonbit_2dcommunity7rabbita4html2thGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(locale, "数量", "Count"))])]);
+  const _p$2 = new Array(items.length);
+  const _p$3 = items.length;
+  let _tmp$3 = 0;
+  while (true) {
+    const _p$4 = _tmp$3;
+    if (_p$4 < _p$3) {
+      const _p$5 = items[_p$4];
+      _p$2[_p$4] = _M0FP38zongen0116mgpic2026_2dsite4main16view__prize__row(_p$5);
+      _tmp$3 = _p$4 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__prize__table_2econstr_2f3525, undefined, -1, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html5tableGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__prize__table_2econstr_2f3526, undefined, -1, undefined, [_tmp$2, _M0FP319moonbit_2dcommunity7rabbita4html5tbodyGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _p$2)])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main22view__showcase__signal(signal) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main38view__showcase__signal_2econstr_2f3531, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, signal.value), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, signal.label)]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__link(link) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__link_2econstr_2f3533, undefined, -1, link.href, undefined, undefined, undefined, undefined, link.label, -1);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main23view__showcase__project(card) {
+  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3537, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.status), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.category)]);
+  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3538, undefined, -1, undefined, card.title);
+  const _tmp$3 = _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3539, undefined, -1, undefined, card.subtitle);
+  const _tmp$4 = _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3540, undefined, -1, undefined, card.desc);
+  const _p$2 = card.highlights;
   const _p$3 = new Array(_p$2.length);
   const _p$4 = _p$2.length;
   let _tmp$5 = 0;
@@ -8037,28 +8434,193 @@ function _M0FP38zongen0116mgpic2026_2dsite4main18view__hero__banner(model) {
     const _p$5 = _tmp$5;
     if (_p$5 < _p$4) {
       const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3267, undefined, -1, undefined, _p$6);
+      _p$3[_p$5] = _M0FP319moonbit_2dcommunity7rabbita4html3divGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3542, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$6);
       _tmp$5 = _p$5 + 1 | 0;
       continue;
     } else {
       break;
     }
   }
-  const _tmp$6 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3266, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3);
-  const _tmp$7 = _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3269, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main18hero__prize__label(model.locale));
-  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3257, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3258, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3259, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _tmp$2, _tmp$3, _tmp$4, _tmp$6, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3268, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp$7, _M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3270, undefined, -1, undefined, "¥84,000"), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3271, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main17hero__prize__note(model.locale))])]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3272, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3273, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "M"), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3274, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3275, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3276, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3277, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3278, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3279, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3280, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3281, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3282, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3283, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3284, undefined, -1, undefined, ""), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3285, undefined, -1, undefined, "")]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3286, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3287, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "任务池", "Task pool")), _M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3288, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "公开仓库 / Good First Issue", "Public repos / good first issues"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3289, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3290, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目交付", "Project delivery")), _M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3291, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "Demo Day / 孵化推荐", "Demo day / incubation"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3292, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3293, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3294, undefined, -1, undefined, "moon check --target js"), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3295, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "生态构建中", "Build in progress"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3296, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3297, undefined, -1, undefined, "Open Source x Engineering"), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3298, undefined, -1, undefined, "GitHub / Starter Repo / AI"), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3299, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "面向 1000 名开发者的年度挑战计划", "A challenge program for 1,000 builders"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3300, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3301, undefined, -1, undefined, "GitHub"), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3302, undefined, -1, undefined, "AI"), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__hero__banner_2econstr_2f3303, undefined, -1, undefined, "MoonBit")])])])])]);
+  const _tmp$6 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3541, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3);
+  const _p$5 = card.tags;
+  const _p$6 = new Array(_p$5.length);
+  const _p$7 = _p$5.length;
+  let _tmp$7 = 0;
+  while (true) {
+    const _p$8 = _tmp$7;
+    if (_p$8 < _p$7) {
+      const _p$9 = _p$5[_p$8];
+      _p$6[_p$8] = _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3544, undefined, -1, undefined, _p$9);
+      _tmp$7 = _p$8 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  const _tmp$8 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3543, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$6);
+  const _p$8 = card.links;
+  const _p$9 = new Array(_p$8.length);
+  const _p$10 = _p$8.length;
+  let _tmp$9 = 0;
+  while (true) {
+    const _p$11 = _tmp$9;
+    if (_p$11 < _p$10) {
+      const _p$12 = _p$8[_p$11];
+      _p$9[_p$11] = _M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__link(_p$12);
+      _tmp$9 = _p$11 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3535, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3536, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _tmp$2, _tmp$3, _tmp$4, _tmp$6, _tmp$8, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main39view__showcase__project_2econstr_2f3545, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$9)])]);
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main10view__hero(model) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3306, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3307, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3308, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main18view__hero__banner(model), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3309, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3310, undefined, -1, "#join", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "报名入口", "Sign up"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__hero_2econstr_2f3311, undefined, -1, "#learn", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "了解 MoonBit", "Learn MoonBit"), -1)])])]);
+function _M0FP38zongen0116mgpic2026_2dsite4main15view__faq__item(item) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html7detailsGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__faq__item_2econstr_2f3550, undefined, -1, item.opened, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html7summaryGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.question), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.answer)]);
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main16view__info__card(card) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3313, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.title), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.desc)]);
+function _M0FP38zongen0116mgpic2026_2dsite4main20view__progress__step(step) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, step.class_name, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3552, undefined, -1, undefined, step.index), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3553, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, step.title), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__step_2econstr_2f3554, undefined, -1, undefined, step.status)]), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, step.desc)])]);
 }
-function _M0FP38zongen0116mgpic2026_2dsite4main16view__path__card(card) {
-  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__path__card_2econstr_2f3316, undefined, -1, undefined, card.badge);
-  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.title);
-  const _tmp$3 = _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.desc);
-  const _p$2 = card.bullets;
+function _M0FP38zongen0116mgpic2026_2dsite4main20view__progress__page(model) {
+  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3560, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3561, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "个人进度", "Personal progress")), _M0FP319moonbit_2dcommunity7rabbita4html2h2GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "GitHub 登录查看比赛进程", "Track contest progress with GitHub")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "用于展示参赛者从报名、仓库建设、验收到作品展示的个人状态。当前为试验版，只验证页面结构和交互入口。", "Shows a participant's status from registration and repository work to acceptance and showcase. This is an experimental page for layout and interaction validation.")), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3562, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3563, undefined, -1, "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "提交项目申报", "Submit proposal"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3564, undefined, -1, "index.html#top", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "返回赛事首页", "Back to home"), -1)])]);
+  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3566, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3567, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, "M"), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, "@moonbit-builder"), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "GitHub 已连接 · 试验数据", "GitHub connected · test data"))]), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3568, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "退出测试登录", "Exit test login"))]);
+  const _tmp$3 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3569, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRP319moonbit_2dcommunity7rabbita4html4HtmlE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3570, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _M0FP319moonbit_2dcommunity7rabbita4html7nothing)]);
+  const _tmp$4 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3571, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3572, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "当前阶段", "Current stage")), _M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "申报审核", "Proposal review"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3573, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "仓库检查", "Repo check")), _M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, "2 / 6")]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3574, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "下一步", "Next")), _M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "补充 README / CI", "Add README / CI"))])]);
+  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main15progress__steps(model.locale);
+  const _p$3 = new Array(_p$2.length);
+  const _p$4 = _p$2.length;
+  let _tmp$5 = 0;
+  while (true) {
+    const _p$5 = _tmp$5;
+    if (_p$5 < _p$4) {
+      const _p$6 = _p$2[_p$5];
+      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main20view__progress__step(_p$6);
+      _tmp$5 = _p$5 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3556, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3557, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3558, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3559, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3565, undefined, -1, undefined, [_tmp$2, _tmp$3, _tmp$4, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__progress__page_2econstr_2f3575, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])])])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main11view__about(model) {
+  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事定位", "Positioning"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "用 MoonBit，一起建设国产开源生态", "Build an open-source ecosystem with MoonBit"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "以 MoonBit 编程语言及其工具链为基础，面向在校生群体，鼓励参赛者利用 AI 工具完成开源生态库、开发工具和示例工程的设计、移植、实现与完善。", "Based on MoonBit and its toolchain, the contest is open to students and encourages AI-assisted design, porting, implementation, and improvement of ecosystem libraries, developer tools, and example projects."));
+  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main14summary__cards(model.locale);
+  const _p$3 = new Array(_p$2.length);
+  const _p$4 = _p$2.length;
+  let _tmp$2 = 0;
+  while (true) {
+    const _p$5 = _tmp$2;
+    if (_p$5 < _p$4) {
+      const _p$6 = _p$2[_p$5];
+      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main16view__info__card(_p$6);
+      _tmp$2 = _p$5 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  const _tmp$3 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3581, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3);
+  const _p$5 = _M0FP38zongen0116mgpic2026_2dsite4main12about__cards(model.locale);
+  const _p$6 = new Array(_p$5.length);
+  const _p$7 = _p$5.length;
+  let _tmp$4 = 0;
+  while (true) {
+    const _p$8 = _tmp$4;
+    if (_p$8 < _p$7) {
+      const _p$9 = _p$5[_p$8];
+      _p$6[_p$8] = _M0FP38zongen0116mgpic2026_2dsite4main16view__info__card(_p$9);
+      _tmp$4 = _p$8 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3578, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3579, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3580, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _tmp$3, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3582, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$6)])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main12view__awards(model) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3586, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3587, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3588, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3589, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3590, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3591, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "奖金激励", "Awards")), _M0FP319moonbit_2dcommunity7rabbita4html2h2GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "优秀项目奖金池 15 万元", "RMB 150,000 award pool")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "通过验收的项目可继续参与优秀项目评选。基础共建激励不计入优秀项目奖金，完成一个可用 MoonBit 包也能获得基础支持。", "Accepted projects can continue into the outstanding-project selection. Base support is separate from the award pool, so usable MoonBit packages can receive support too.")), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3592, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "基础激励 500 元 / 项目", "RMB 500 base support / project")), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "特等奖 15,000 元", "Grand Prize RMB 15,000")), _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "生态优异奖 4,000 元", "Ecosystem Excellence RMB 4,000"))])]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3593, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "总奖金池", "Award Pool")), _M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, "150,000"), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "元人民币", "RMB")), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3594, undefined, -1, "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "立即报名", "Register now"), -1)])]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__awards_2econstr_2f3595, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main18view__prize__table(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "优秀项目奖励", "Outstanding Project Awards"), model.locale, _M0FP38zongen0116mgpic2026_2dsite4main12prize__items(model.locale)), _M0FP38zongen0116mgpic2026_2dsite4main18view__prize__table(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "生态与专项奖励", "Ecosystem and Special Awards"), model.locale, _M0FP38zongen0116mgpic2026_2dsite4main19bonus__prize__items(model.locale))])])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__wall(model) {
+  const _tmp = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3601, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main14section__intro(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "优秀作品展示墙", "Showcase Wall"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目通过申报、公开开发和验收后，会按作品卡片集中展示", "Projects are featured as cards after proposal review, public development, and acceptance"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "参考 MoonBit 展示墙的信息结构：公开仓库、项目简介、核心亮点、标签和后续演示入口都放在同一张卡片里。", "Following the MoonBit showcase pattern, each card groups the public repository, project summary, highlights, tags, and demo links together.")), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3602, undefined, -1, "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "报名争取上墙", "Register to be featured"), -1)]);
+  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main17showcase__signals(model.locale);
+  const _p$3 = new Array(_p$2.length);
+  const _p$4 = _p$2.length;
+  let _tmp$2 = 0;
+  while (true) {
+    const _p$5 = _tmp$2;
+    if (_p$5 < _p$4) {
+      const _p$6 = _p$2[_p$5];
+      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main22view__showcase__signal(_p$6);
+      _tmp$2 = _p$5 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  const _tmp$3 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3600, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3603, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)]);
+  const _tmp$4 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3604, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "展示位预留", "Reserved slots")), _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "后续收录的优秀项目会按下面格式更新", "Accepted projects will be updated in this format"))]);
+  const _p$5 = _M0FP38zongen0116mgpic2026_2dsite4main18showcase__projects(model.locale);
+  const _p$6 = new Array(_p$5.length);
+  const _p$7 = _p$5.length;
+  let _tmp$5 = 0;
+  while (true) {
+    const _p$8 = _tmp$5;
+    if (_p$8 < _p$7) {
+      const _p$9 = _p$5[_p$8];
+      _p$6[_p$8] = _M0FP38zongen0116mgpic2026_2dsite4main23view__showcase__project(_p$9);
+      _tmp$5 = _p$8 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3597, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3598, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3599, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp$3, _tmp$4, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__wall_2econstr_2f3605, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$6)])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main13view__process(model) {
+  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "比赛流程", "Process"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目申报、开发、验收、评选展示", "Proposal, development, acceptance, final showcase"), "");
+  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html5theadGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2trGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2thGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "时间", "Time")), _M0FP319moonbit_2dcommunity7rabbita4html2thGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "流程", "Stage")), _M0FP319moonbit_2dcommunity7rabbita4html2thGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "说明", "Details"))])]);
+  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main14process__items(model.locale);
+  const _p$3 = new Array(_p$2.length);
+  const _p$4 = _p$2.length;
+  let _tmp$3 = 0;
+  while (true) {
+    const _p$5 = _tmp$3;
+    if (_p$5 < _p$4) {
+      const _p$6 = _p$2[_p$5];
+      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main18view__process__row(_p$6);
+      _tmp$3 = _p$5 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3609, _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3610, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3611, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3612, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html5tableGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main29view__process_2econstr_2f3613, undefined, -1, undefined, [_tmp$2, _M0FP319moonbit_2dcommunity7rabbita4html5tbodyGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _p$3)])])])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main16view__directions(model) {
+  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目方向", "Directions"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "从一个可发布的 MoonBit 包开始", "Start with one publishable MoonBit package"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目可以原创，也可以移植成熟生态里的开源库；避免直接重复 MoonBit 生态中已有且功能高度重合的成熟项目。", "Projects can be original or ports of mature open-source libraries, while avoiding mature MoonBit projects with highly overlapping functionality."));
+  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main16direction__cards(model.locale);
+  const _p$3 = new Array(_p$2.length);
+  const _p$4 = _p$2.length;
+  let _tmp$2 = 0;
+  while (true) {
+    const _p$5 = _tmp$2;
+    if (_p$5 < _p$4) {
+      const _p$6 = _p$2[_p$5];
+      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main16view__list__card(_p$6);
+      _tmp$2 = _p$5 + 1 | 0;
+      continue;
+    } else {
+      break;
+    }
+  }
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3616, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3617, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3618, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3619, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main18view__requirements(model) {
+  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "验收要求", "Acceptance"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "提交前至少满足这些条件", "Meet these basics before submission"), "");
+  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3627, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "验收底线", "Acceptance"));
+  const _tmp$3 = _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "验收清单", "Acceptance checklist"));
+  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main17acceptance__items(model.locale);
   const _p$3 = new Array(_p$2.length);
   const _p$4 = _p$2.length;
   let _tmp$4 = 0;
@@ -8073,159 +8635,13 @@ function _M0FP38zongen0116mgpic2026_2dsite4main16view__path__card(card) {
       break;
     }
   }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__path__card_2econstr_2f3315, undefined, -1, undefined, [_tmp, _tmp$2, _tmp$3, _M0FP319moonbit_2dcommunity7rabbita4html2ulGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__path__card_2econstr_2f3317, undefined, -1, undefined, undefined, _p$3)]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main17view__learn__card(card) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3320, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3321, undefined, -1, undefined, card.badge), _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.title), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.desc), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3322, undefined, -1, card.href, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3323, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__card_2econstr_2f3324, undefined, undefined, card.cta, -1)]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__card(card) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3326, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3327, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html4spanGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3328, undefined, -1, undefined, card.badge), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3329, undefined, -1, card.href, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3330, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3331, undefined, undefined, "GitHub", -1)]), _M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.title), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, card.desc), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__showcase__card_2econstr_2f3332, undefined, -1, undefined, card.note)]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main17view__learn__step(item) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__step_2econstr_2f3334, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__step_2econstr_2f3335, undefined, -1, undefined, item.step), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main33view__learn__step_2econstr_2f3336, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.title), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.desc)])]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main20view__timeline__item(item) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__timeline__item_2econstr_2f3338, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__timeline__item_2econstr_2f3339, undefined, -1, undefined, item.step), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main36view__timeline__item_2econstr_2f3340, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.title), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.desc)])]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main15view__faq__item(item) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7detailsGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__faq__item_2econstr_2f3342, undefined, -1, item.opened, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html7summaryGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.question), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, item.answer)]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main11view__about(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(model.locale, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事定位", "Positioning"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "把一场赛事，做成一次真正的开源生态增长", "Turn a contest into real open-source ecosystem growth"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MGPIC 2026 的重点不只是“交作品”，而是推动更多开发者围绕 MoonBit 建立公开仓库、持续提交代码、完成项目演进，并沉淀可展示、可复用、可继续维护的开源成果。", "MGPIC 2026 is not only about shipping a final entry. It is about helping more developers build public repositories around MoonBit, keep contributing code, evolve projects, and leave behind reusable, maintainable open-source work."));
-  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main12about__cards(model.locale);
-  const _p$3 = new Array(_p$2.length);
-  const _p$4 = _p$2.length;
-  let _tmp$2 = 0;
-  while (true) {
-    const _p$5 = _tmp$2;
-    if (_p$5 < _p$4) {
-      const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main16view__info__card(_p$6);
-      _tmp$2 = _p$5 + 1 | 0;
-      continue;
-    } else {
-      break;
-    }
-  }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3344, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3345, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3346, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3347, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main11view__paths(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(model.locale, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "参与路径", "Tracks"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "让不同阶段的开发者，都能顺利进入 MoonBit 开源生态", "Create clear entry points for developers at different stages"), "");
-  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main11path__cards(model.locale);
-  const _p$3 = new Array(_p$2.length);
-  const _p$4 = _p$2.length;
-  let _tmp$2 = 0;
-  while (true) {
-    const _p$5 = _tmp$2;
-    if (_p$5 < _p$4) {
-      const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main16view__path__card(_p$6);
-      _tmp$2 = _p$5 + 1 | 0;
-      continue;
-    } else {
-      break;
-    }
-  }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3350, _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3351, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3352, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__paths_2econstr_2f3353, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main11view__learn(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(model.locale, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "学习了解 MoonBit", "Learn MoonBit"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "在报名和开工之前，先用官方入口把 MoonBit 了解清楚", "Use the official entry points to understand MoonBit before you sign up and start building"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "这个板块是给第一次接触 MoonBit 的参赛者准备的。先补齐语言、工具链和生态入口，再进入任务池、仓库和项目开发，会顺很多。", "This section is for participants who are new to MoonBit. Learn the language, toolchain, and ecosystem entry points first, then move into task pools, repositories, and project work with less friction."));
-  const _tmp$2 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3360, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html2h3GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "3 步快速入门", "A 3-step quick start")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "如果你还没确定该从哪开始，可以按这个顺序走。", "If you are not sure where to begin, follow this order."))]);
-  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main12learn__steps(model.locale);
-  const _p$3 = new Array(_p$2.length);
-  const _p$4 = _p$2.length;
-  let _tmp$3 = 0;
-  while (true) {
-    const _p$5 = _tmp$3;
-    if (_p$5 < _p$4) {
-      const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main17view__learn__step(_p$6);
-      _tmp$3 = _p$5 + 1 | 0;
-      continue;
-    } else {
-      break;
-    }
-  }
-  const _tmp$4 = _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3359, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp$2, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3361, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)]);
-  const _p$5 = _M0FP38zongen0116mgpic2026_2dsite4main12learn__cards(model.locale);
-  const _p$6 = new Array(_p$5.length);
-  const _p$7 = _p$5.length;
-  let _tmp$5 = 0;
-  while (true) {
-    const _p$8 = _tmp$5;
-    if (_p$8 < _p$7) {
-      const _p$9 = _p$5[_p$8];
-      _p$6[_p$8] = _M0FP38zongen0116mgpic2026_2dsite4main17view__learn__card(_p$9);
-      _tmp$5 = _p$8 + 1 | 0;
-      continue;
-    } else {
-      break;
-    }
-  }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3356, _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3357, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3358, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _tmp$4, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main27view__learn_2econstr_2f3362, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$6)])]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main14view__timeline(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(model.locale, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "时间安排", "Timeline"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "建议采用五阶段推进赛事与开源增长", "A five-stage rhythm for the event and ecosystem growth"), "");
-  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main15timeline__items(model.locale);
-  const _p$3 = new Array(_p$2.length);
-  const _p$4 = _p$2.length;
-  let _tmp$2 = 0;
-  while (true) {
-    const _p$5 = _tmp$2;
-    if (_p$5 < _p$4) {
-      const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main20view__timeline__item(_p$6);
-      _tmp$2 = _p$5 + 1 | 0;
-      continue;
-    } else {
-      break;
-    }
-  }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3366, _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3367, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3368, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30view__timeline_2econstr_2f3369, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main14view__showcase(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(model.locale, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事展示墙", "Showcase"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "已收录的 MoonBit 赛事项目", "Selected MoonBit contest projects"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "先把已经出现的项目放进展示墙，后面可以继续补更多仓库、截图和在线预览入口。", "This wall starts with the projects already in play and can later grow with more repositories, screenshots, and live previews."));
-  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main15showcase__cards(model.locale);
-  const _p$3 = new Array(_p$2.length);
-  const _p$4 = _p$2.length;
-  let _tmp$2 = 0;
-  while (true) {
-    const _p$5 = _tmp$2;
-    if (_p$5 < _p$4) {
-      const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__card(_p$6);
-      _tmp$2 = _p$5 + 1 | 0;
-      continue;
-    } else {
-      break;
-    }
-  }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3372, _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3373, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3374, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main30view__showcase_2econstr_2f3375, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
-}
-function _M0FP38zongen0116mgpic2026_2dsite4main13view__support(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(model.locale, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "支持计划", "Support"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "降低启动门槛，同时把优秀项目引向更长期的开源路径", "Lower the starting barrier and guide strong projects into longer-term open-source paths"), "");
-  const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main14support__cards(model.locale);
-  const _p$3 = new Array(_p$2.length);
-  const _p$4 = _p$2.length;
-  let _tmp$2 = 0;
-  while (true) {
-    const _p$5 = _tmp$2;
-    if (_p$5 < _p$4) {
-      const _p$6 = _p$2[_p$5];
-      _p$3[_p$5] = _M0FP38zongen0116mgpic2026_2dsite4main16view__info__card(_p$6);
-      _tmp$2 = _p$5 + 1 | 0;
-      continue;
-    } else {
-      break;
-    }
-  }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3378, _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3379, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3380, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main29view__support_2econstr_2f3381, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3622, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3623, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3624, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3625, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html7articleGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3626, undefined, -1, undefined, [_tmp$2, _tmp$3, _M0FP319moonbit_2dcommunity7rabbita4html2ulGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3628, undefined, -1, undefined, undefined, _p$3), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3629, undefined, -1, "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "验收入口", "Acceptance form"), -1)])])])]);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main10view__join(model) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3384, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3385, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3386, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3387, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3388, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3389, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "Call for Builders", "Call for Builders")), _M0FP319moonbit_2dcommunity7rabbita4html2h2GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "加入 MGPIC 2026，\n一起把 MoonBit 开源生态真正做起来", "Join MGPIC 2026 and help build the MoonBit open-source ecosystem for real")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "这一版官网已经重构为 MoonBit + Rabbita 单入口结构，后续可以继续接入正式报名链接、合作伙伴、评委阵容、项目库与动态展示数据。", "This edition of the site has been restructured into a single MoonBit + Rabbita entry, so formal sign-up links, partners, judges, project listings, and live showcase data can be added incrementally."))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3390, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3391, undefined, -1, "https://github.com/zongen01/MGPIC2026", _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3392, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3393, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "查看 GitHub 仓库", "View GitHub repository"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3394, undefined, -1, "https://www.moonbitlang.cn/", _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3395, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3396, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 中文官网", "MoonBit website"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3397, undefined, -1, "mailto:hello@moonbitlang.com", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "联系主办方", "Contact organizer"), -1)])])])]);
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3632, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3633, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3634, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3635, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3636, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3637, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "下一步", "Next")), _M0FP319moonbit_2dcommunity7rabbita4html2h2GsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目申报入口已开放，\n先提交一页 PDF 申报书", "Registration is open. Submit your proposal first.")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "请通过项目申报表提交个人信息、项目 GitHub 链接和一页左右 PDF 申报书。赛方会通过邮件反馈审核结果。", "Use the form to submit your information, project GitHub link, and concise proposal. Organizers will follow up by email."))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3638, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3639, undefined, -1, "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "提交项目申报", "Submit proposal"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3640, undefined, -1, "#process", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "查看流程", "View process"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main26view__join_2econstr_2f3641, undefined, -1, "#requirements", undefined, undefined, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "查看验收", "View acceptance"), -1)])])])]);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main9view__faq(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(model.locale, "FAQ", _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "常见问题", "Frequently asked questions"), "");
+  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro("FAQ", _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "常见问题", "Frequently asked questions"), "");
   const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main10faq__items(model.locale);
   const _p$3 = new Array(_p$2.length);
   const _p$4 = _p$2.length;
@@ -8241,13 +8657,16 @@ function _M0FP38zongen0116mgpic2026_2dsite4main9view__faq(model) {
       break;
     }
   }
-  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3399, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3400, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3401, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3402, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
+  return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3643, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3644, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3645, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main25view__faq_2econstr_2f3646, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
+}
+function _M0FP38zongen0116mgpic2026_2dsite4main15view__qq__float(model) {
+  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3649, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3650, undefined, -1, "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf", undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3651, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "项目申报", "Proposal")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "扫码提交申报表", "Scan to submit"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3652, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3imgGRP319moonbit_2dcommunity7rabbita4html4HtmlE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3653, -1, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3654, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事报名二维码", "Event registration QR code"), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _M0FP319moonbit_2dcommunity7rabbita4html7nothing)])], -1), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3655, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3656, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事交流群", "QQ Group")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "扫码加入 QQ 群", "Scan to join"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3657, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3imgGRP319moonbit_2dcommunity7rabbita4html4HtmlE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3658, -1, _M0FP38zongen0116mgpic2026_2dsite4main31view__qq__float_2econstr_2f3659, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事 QQ 群二维码", "Event QQ group QR code"), undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _M0FP319moonbit_2dcommunity7rabbita4html7nothing)])])]);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main12view__footer(model) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html6footerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3405, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3406, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3407, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, "MGPIC 2026"), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 开源创新挑战计划", "MoonBit Open Source Challenge"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3408, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://www.moonbitlang.cn/", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3409, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3410, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 中文官网", "MoonBit website"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://github.com/zongen01/MGPIC2026", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3411, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3412, undefined, undefined, "GitHub", -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://mooncakes.io/docs/moonbit-community/rabbita@0.11.5", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3413, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3414, undefined, undefined, "Rabbita", -1)])])]);
+  return _M0FP319moonbit_2dcommunity7rabbita4html6footerGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3661, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3662, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3663, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html6strongGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 开源大赛", "MoonBit Open Source Contest")), _M0FP319moonbit_2dcommunity7rabbita4html1pGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "2026 MoonBit 国产开源生态大赛", "2026 MoonBit Open Source Ecosystem Competition"))]), _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3664, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://www.moonbitlang.cn/", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3665, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3666, undefined, undefined, _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "MoonBit 中文官网", "MoonBit website"), -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://mooncakes.io/", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3667, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3668, undefined, undefined, "Mooncakes", -1), _M0FP319moonbit_2dcommunity7rabbita4html1aGsE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, undefined, undefined, -1, "https://github.com/zongen01/MGPIC2026", _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3669, _M0FP38zongen0116mgpic2026_2dsite4main28view__footer_2econstr_2f3670, undefined, undefined, "GitHub", -1)])])]);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main4view(dispatch, model) {
-  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main11site__class(model.theme), undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main12view__header(dispatch, model), _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3416, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main10view__hero(model), _M0FP38zongen0116mgpic2026_2dsite4main11view__about(model), _M0FP38zongen0116mgpic2026_2dsite4main14view__timeline(model), _M0FP38zongen0116mgpic2026_2dsite4main14view__showcase(model), _M0FP38zongen0116mgpic2026_2dsite4main11view__learn(model), _M0FP38zongen0116mgpic2026_2dsite4main11view__paths(model), _M0FP38zongen0116mgpic2026_2dsite4main13view__support(model), _M0FP38zongen0116mgpic2026_2dsite4main10view__join(model), _M0FP38zongen0116mgpic2026_2dsite4main9view__faq(model)]), _M0FP38zongen0116mgpic2026_2dsite4main12view__footer(model)]);
+  return _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main11site__class(model.theme), undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main12view__header(dispatch, model), _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page() ? _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3672, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main20view__progress__page(model)]) : _M0FP319moonbit_2dcommunity7rabbita4html6main__GRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main20view_2econstr_2f3673, undefined, -1, undefined, [_M0FP38zongen0116mgpic2026_2dsite4main10view__hero(model), _M0FP38zongen0116mgpic2026_2dsite4main11view__about(model), _M0FP38zongen0116mgpic2026_2dsite4main12view__awards(model), _M0FP38zongen0116mgpic2026_2dsite4main20view__showcase__wall(model), _M0FP38zongen0116mgpic2026_2dsite4main13view__process(model), _M0FP38zongen0116mgpic2026_2dsite4main16view__directions(model), _M0FP38zongen0116mgpic2026_2dsite4main18view__requirements(model), _M0FP38zongen0116mgpic2026_2dsite4main10view__join(model), _M0FP38zongen0116mgpic2026_2dsite4main9view__faq(model)]), _M0FP38zongen0116mgpic2026_2dsite4main12view__footer(model), _M0FP38zongen0116mgpic2026_2dsite4main18is__progress__page() ? _M0FP319moonbit_2dcommunity7rabbita4html7nothing : _M0FP38zongen0116mgpic2026_2dsite4main15view__qq__float(model)]);
 }
 (() => {
   const _bind = _M0FP219moonbit_2dcommunity7rabbita20cell__with__dispatchGRP38zongen0116mgpic2026_2dsite4main5ModelRP38zongen0116mgpic2026_2dsite4main3MsgE(_M0FP38zongen0116mgpic2026_2dsite4main14initial__model(), _M0FP38zongen0116mgpic2026_2dsite4main6update, _M0FP38zongen0116mgpic2026_2dsite4main4view);
