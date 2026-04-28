@@ -343,12 +343,12 @@ fn about_cards(locale : Locale) -> Array[InfoCard] {
 fn process_items(locale : Locale) -> Array[ProcessItem] {
   [
     {
-      time: t(locale, zh="即日起 - 7/1", en="Now - Jul 1"),
+      time: t(locale, zh="4 月 29 日 - 7/1", en="Apr 29 - Jul 1"),
       title: t(locale, zh="项目申报", en="Project proposal"),
       desc: t(locale, zh="通过官方表单提交参赛信息、GitHub 仓库和一页 PDF 项目申报书；仓库需包含 10-20 个有效 commits。通过申报审核可获得 150 元启动支持。", en="Submit participant info, GitHub repository, and a one-page PDF proposal through the official form. The repository should contain 10-20 valid commits. Approved proposals may receive RMB 150 kickoff support."),
     },
     {
-      time: t(locale, zh="即日起 - 7/1", en="Now - Jul 1"),
+      time: t(locale, zh="4 月 29 日 - 7/1", en="Apr 29 - Jul 1"),
       title: t(locale, zh="项目开发与社区活动", en="Development and community"),
       desc: t(locale, zh="围绕公开仓库持续开发，保持提交记录、工单、合并请求和更新日志可追踪；赛事组提供指南、模板、答疑、宣讲和阶段展示。", en="Build in public with traceable commits, issues, pull requests, and changelogs. Organizers provide guides, templates, Q&A, talks, and stage showcases."),
     },
@@ -646,7 +646,7 @@ fn view_hero(model : Model) -> Html {
       div(class="hero-cta-row", [
         div(class="hero-cta-copy", [
           strong(t(model.locale, zh="项目申报已开放", en="Proposal submission is open")),
-          p(t(model.locale, zh="即日起至 7 月 1 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal by July 1.")),
+          p(t(model.locale, zh="4 月 29 日至 7 月 1 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 1.")),
         ]),
         div(class="hero-cta-actions", [
           a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
