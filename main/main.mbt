@@ -564,7 +564,7 @@ fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
       a(class="brand", href=page_href("#top"), [
         img(
           class="brand-logo",
-          src="site-assets/moonbit-logo.png?v=20260428-progress-page",
+          src="site-assets/moonbit-logo.png?v=20260428-hero-signup",
           alt=t(model.locale, zh="MoonBit Logo", en="MoonBit logo"),
           nothing,
         ),
@@ -603,10 +603,17 @@ fn view_hero(model : Model) -> Html {
       div(class="hero-banner hero-banner--kv", [
         img(
           class="hero-kv-image",
-          src="site-assets/main-kv.png?v=20260428-progress-page",
+          src="site-assets/main-kv.png?v=20260428-hero-signup",
           alt=hero_kv_alt(model.locale),
           nothing,
         ),
+      ]),
+      div(class="hero-cta-row", [
+        div(class="hero-cta-copy", [
+          strong(t(model.locale, zh="项目申报已开放", en="Proposal submission is open")),
+          p(t(model.locale, zh="即日起至 7 月 1 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal by July 1.")),
+        ]),
+        a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
       ]),
     ]),
   ])
@@ -990,7 +997,7 @@ fn view_qq_float(model : Model) -> Html {
       div(class="qq-qr-box", [
         img(
           class="qq-qr-img",
-          src="site-assets/registration-qr.png?v=20260428-progress-page",
+          src="site-assets/registration-qr.png?v=20260428-hero-signup",
           alt=t(model.locale, zh="赛事报名二维码", en="Event registration QR code"),
           nothing,
         ),
@@ -1004,7 +1011,7 @@ fn view_qq_float(model : Model) -> Html {
       div(class="qq-qr-box", [
         img(
           class="qq-qr-img",
-          src="site-assets/qq-group-qr.png?v=20260428-progress-page",
+          src="site-assets/qq-group-qr.png?v=20260428-hero-signup",
           alt=t(model.locale, zh="赛事 QQ 群二维码", en="Event QQ group QR code"),
           nothing,
         ),
