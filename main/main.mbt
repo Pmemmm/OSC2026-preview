@@ -283,7 +283,7 @@ fn nav_items(locale : Locale) -> Array[NavItem] {
     { label: t(locale, zh="方向", en="Directions"), href: "#directions" },
     { label: t(locale, zh="奖励", en="Awards"), href: "#awards" },
     { label: t(locale, zh="作品墙", en="Showcase"), href: "showcase.html" },
-    { label: t(locale, zh="验收", en="Acceptance"), href: "#requirements" },
+    { label: t(locale, zh="注意事项", en="Notes"), href: "#requirements" },
     { label: "FAQ", href: "#faq" },
   ]
 }
@@ -536,14 +536,14 @@ fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
 }
 
 ///|
-fn acceptance_items(locale : Locale) -> Array[String] {
+fn attention_items(locale : Locale) -> Array[String] {
   [
-    t(locale, zh="MoonBit 为主要实现语言，仓库公开可访问。", en="MoonBit is the primary language and the repository is public."),
-    t(locale, zh="README 写清目标、安装、使用方法、示例和可复现方式。", en="README covers goals, installation, usage, examples, and reproducibility."),
-    t(locale, zh="源代码结构清晰，能够完成声明的核心功能。", en="Source structure is clear and implements the declared core functionality."),
-    t(locale, zh="CI 覆盖检查、构建、测试流程，并提供覆盖核心功能路径的测试。", en="CI covers checks, build, tests, and tests for core functionality paths."),
-    t(locale, zh="至少一个可运行示例，并发布到 mooncakes.io。", en="At least one runnable example and publication to mooncakes.io."),
-    t(locale, zh="采用 OSI 认可的开源许可证；移植项目需符合原项目许可证要求。", en="Use an OSI-approved open-source license; ports must comply with upstream license requirements."),
+    t(locale, zh="项目申报截止到 7 月 1 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。", en="Proposal submission closes on July 1. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits."),
+    t(locale, zh="4 月 29 日前已存在或已发布的库可以继续维护参赛，但有效工作量只统计 4 月 29 日后新增的 commits、功能、测试、文档和发布改进。", en="Existing or previously published libraries can join as continued-maintenance projects, but only commits, features, tests, docs, and release improvements after April 29 count."),
+    t(locale, zh="验收项目需以 MoonBit 为主要实现语言，仓库公开可访问，并提供清晰 README、可运行示例、CI、测试和 mooncakes.io 发布。", en="For acceptance, MoonBit should be the primary language, the repository must be public, and the project should provide a clear README, runnable example, CI, tests, and mooncakes.io publication."),
+    t(locale, zh="原创、移植或参考已有开源项目都可以；移植项目必须说明原项目、链接、许可证和本次移植范围。", en="Original projects, ports, or projects referencing existing open source are all allowed; ports must document the upstream project, link, license, and porting scope."),
+    t(locale, zh="项目必须采用 OSI 认可的开源许可证，不得提交未经授权的私有代码、闭源代码、商业代码或来源不明的生成内容。", en="Projects must use an OSI-approved open-source license and must not include unauthorized private, closed-source, commercial, or unclear-origin generated content."),
+    t(locale, zh="基础激励为 150 元启动支持 + 350 元完成支持；优秀项目奖金池单独评选，不与基础激励冲突。", en="Base support is RMB 150 kickoff plus RMB 350 completion support; outstanding-project awards are selected separately and do not conflict with base support."),
   ]
 }
 
@@ -651,7 +651,7 @@ fn view_hero(model : Model) -> Html {
         div(class="hero-cta-actions", [
           a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
           a(class="button secondary hero-cta-button", href="#process", t(model.locale, zh="查看流程", en="View process")),
-          a(class="button secondary hero-cta-button", href="#requirements", t(model.locale, zh="查看验收", en="View acceptance")),
+          a(class="button secondary hero-cta-button", href="#requirements", t(model.locale, zh="注意事项", en="Notes")),
           a(class="button secondary hero-cta-button", href="progress.html", t(model.locale, zh="比赛进度", en="Contest progress")),
         ]),
       ]),
@@ -1062,16 +1062,20 @@ fn view_requirements(model : Model) -> Html {
   section(id="requirements", class="section", [
     div(class="container", [
       section_intro(
-        t(model.locale, zh="验收要求", en="Acceptance"),
-        t(model.locale, zh="提交前至少满足这些条件", en="Meet these basics before submission"),
-        "",
+        t(model.locale, zh="注意事项", en="Notes"),
+        t(model.locale, zh="报名、开发、验收前先确认这些关键信息", en="Confirm these key points before registration, development, and acceptance"),
+        t(model.locale, zh="这里合并放置参赛过程中最容易漏掉的信息，包含报名材料、有效工作量、验收底线、开源合规和奖励说明。", en="This section collects the most commonly missed information, including proposal materials, valid work scope, acceptance baseline, open-source compliance, and rewards."),
       ),
       div(class="requirements-layout", [
         article(class="path-card checklist-card", [
-          span(class="tag", t(model.locale, zh="验收底线", en="Acceptance")),
-          h3(t(model.locale, zh="验收清单", en="Acceptance checklist")),
-          ul(class="path-points", acceptance_items(model.locale).map(fn(item) { li(item) })),
-          a(class="button secondary", href=acceptance_href(), t(model.locale, zh="验收入口", en="Acceptance form")),
+          span(class="tag", t(model.locale, zh="参赛必读", en="Must read")),
+          h3(t(model.locale, zh="重要信息清单", en="Key information checklist")),
+          ul(class="path-points", attention_items(model.locale).map(fn(item) { li(item) })),
+          div(class="checklist-actions", [
+            a(class="button primary", href=registration_href(), t(model.locale, zh="项目申报", en="Submit proposal")),
+            a(class="button secondary", href=acceptance_href(), t(model.locale, zh="验收入口", en="Acceptance form")),
+            a(class="button secondary", href="progress.html", t(model.locale, zh="比赛进度", en="Contest progress")),
+          ]),
         ]),
       ]),
     ]),

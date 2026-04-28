@@ -2162,6 +2162,17 @@ a {
   margin-top: 18px;
 }
 
+.checklist-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.checklist-actions .button {
+  margin-top: 0;
+}
+
 .faq-list {
   display: grid;
   gap: 12px;
