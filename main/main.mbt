@@ -779,16 +779,16 @@ fn view_progress_page(model : Model) -> Html {
       div(class="progress-portal progress-page-portal", [
         div(class="progress-copy", [
           p(class="eyebrow", t(model.locale, zh="比赛进度", en="Contest progress")),
-          h2(t(model.locale, zh="GitHub 登录查看比赛进程", en="Track contest progress with GitHub")),
+          h2(t(model.locale, zh="查看比赛进度与仓库状态", en="Track contest progress and repository status")),
           p(
             t(
               model.locale,
-              zh="这里会把报名状态、GitHub 仓库检查、验收材料和作品墙状态串起来。当前先做页面和流程结构，等飞书表字段或自建后端确定后接入真实数据。",
-              en="This page connects registration status, GitHub repository checks, acceptance materials, and showcase status. It currently defines the flow and UI before real Feishu or backend data is connected.",
+              zh="这里会把报名状态、GitHub 仓库检查、验收材料和作品墙状态串起来。当前已支持本地报名记录、飞书 CSV/JSON 导入匹配、自建状态演示和公开 GitHub 仓库检查。",
+              en="This page connects registration status, GitHub repository checks, acceptance materials, and showcase status. It now supports local registration records, Feishu CSV/JSON import matching, local status simulation, and public GitHub repository checks.",
             ),
           ),
           div(class="progress-page-actions", [
-            a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
+            a(class="button primary", href="#progress-login", t(model.locale, zh="连接 GitHub 查看进度", en="Connect GitHub and view progress")),
             a(class="button secondary", href="register.html", t(model.locale, zh="自建报名系统原型", en="Registration prototype")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
@@ -799,8 +799,8 @@ fn view_progress_page(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="登录后用 GitHub 账号匹配报名数据，并读取公开仓库状态。正式接入前不会发起真实授权。",
-              en="After sign-in, the GitHub account will match registration data and read public repository status. No real authorization is triggered before integration.",
+              zh="当前静态版使用 GitHub 公开资料和公开仓库地址进行连接和检查；正式 OAuth 接入后可用 GitHub 账号自动匹配报名数据。",
+              en="The current static version connects through public GitHub profile data and public repository URLs. After OAuth integration, the GitHub account can automatically match registration data.",
             ),
           ),
           a(class="button primary github-login-button", href="#progress-plans", t(model.locale, zh="使用 GitHub 登录（开发中）", en="Sign in with GitHub (WIP)")),
@@ -884,8 +884,8 @@ fn view_register_page(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="这是第二套方案的前台原型：不依赖飞书表单，选手通过 GitHub 登录后提交项目信息，后台维护审核和验收状态。当前只做展示，不提交真实数据。",
-              en="This is the frontend prototype for option B. It does not rely on Feishu forms; participants sign in with GitHub, submit project information, and admins maintain review states. It does not submit real data yet.",
+              zh="这是第二套方案的前台原型：不依赖飞书表单，选手填写项目信息后先保存到本地浏览器，并可同步到比赛进度页；当前支持本地导出，后续可接数据库、后台审核和 GitHub OAuth。",
+              en="This is the frontend prototype for option B. It does not rely on Feishu forms; participants can save project information locally and sync it to the progress page. It supports local export now; database, admin review, and GitHub OAuth can be connected later.",
             ),
           ),
           div(class="progress-page-actions", [
