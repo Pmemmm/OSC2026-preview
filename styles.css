@@ -1685,6 +1685,178 @@ a {
   font-weight: 900;
 }
 
+.progress-login-card {
+  min-height: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+
+.progress-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 18px;
+}
+
+.progress-plan-card {
+  min-height: 360px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 10%, transparent), transparent 30%),
+    var(--panel);
+}
+
+.progress-plan-card .button {
+  margin-top: auto;
+  width: fit-content;
+}
+
+.progress-dashboard--preview {
+  margin-top: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow);
+}
+
+.register-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(420px, 1fr);
+  gap: 22px;
+  align-items: stretch;
+  padding: clamp(22px, 3vw, 30px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--primary) 12%, transparent), transparent 48%),
+    var(--panel-strong);
+  box-shadow: var(--shadow);
+}
+
+.register-copy {
+  display: grid;
+  align-content: center;
+}
+
+.register-copy h2 {
+  margin: 0;
+  max-width: 11ch;
+  color: var(--text);
+  font-size: clamp(34px, 5vw, 56px);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
+.register-copy p:not(.eyebrow) {
+  max-width: 560px;
+  color: var(--text-soft);
+  line-height: 1.72;
+}
+
+.register-form-card {
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.register-form-head {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.register-form-head h3 {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 30px);
+}
+
+.register-form-head p {
+  margin: 4px 0 0;
+  color: var(--text-soft);
+}
+
+.register-field-grid,
+.register-upload-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.register-field,
+.register-textarea,
+.register-upload,
+.register-system-note {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--panel) 76%, transparent);
+}
+
+.register-field {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+}
+
+.register-field span,
+.register-textarea span {
+  color: var(--text);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.register-input {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  color: var(--text-soft);
+  font-size: 0.92rem;
+}
+
+.register-textarea {
+  margin-top: 12px;
+  min-height: 120px;
+  padding: 14px;
+}
+
+.register-textarea p,
+.register-upload p,
+.register-system-note p {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.register-upload-grid {
+  margin-top: 12px;
+}
+
+.register-upload {
+  min-height: 116px;
+  padding: 14px;
+}
+
+.register-upload strong,
+.register-system-note strong {
+  color: var(--text);
+}
+
+.register-system-note {
+  margin-top: 12px;
+  padding: 14px;
+}
+
+.register-disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
 .learn-journey {
   margin-bottom: 18px;
 }
@@ -2126,7 +2298,9 @@ a {
   .prize-table-grid,
   .showcase-wall-head,
   .progress-portal,
-  .progress-summary-grid {
+  .progress-plan-grid,
+  .progress-summary-grid,
+  .register-shell {
     grid-template-columns: 1fr;
   }
 
@@ -2287,12 +2461,21 @@ a {
 
   .progress-portal,
   .github-login-card,
-  .progress-dashboard {
+  .progress-dashboard,
+  .progress-plan-card,
+  .register-shell,
+  .register-form-card {
     padding: 16px;
   }
 
-  .progress-copy h2 {
+  .progress-copy h2,
+  .register-copy h2 {
     font-size: clamp(30px, 9vw, 42px);
+  }
+
+  .register-field-grid,
+  .register-upload-grid {
+    grid-template-columns: 1fr;
   }
 
   .progress-step-top {

@@ -66,6 +66,17 @@ fn is_showcase_page() -> Bool {
 
 ///|
 #cfg(target="js")
+extern "js" fn is_register_page() -> Bool =
+  #| () => window.location.pathname.endsWith("/register.html")
+
+///|
+#cfg(not(target="js"))
+fn is_register_page() -> Bool {
+  false
+}
+
+///|
+#cfg(target="js")
 extern "js" fn prefers_dark_mode() -> Bool =
   #| () => window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
 
@@ -234,7 +245,13 @@ fn acceptance_href() -> String {
 
 ///|
 fn is_standalone_page() -> Bool {
-  if is_progress_page() { true } else { is_showcase_page() }
+  if is_progress_page() {
+    true
+  } else if is_showcase_page() {
+    true
+  } else {
+    is_register_page()
+  }
 }
 
 ///|
@@ -352,25 +369,25 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
 fn progress_steps(locale : Locale) -> Array[ProgressStep] {
   [
     {
-      class_name: "progress-step progress-step--done",
+      class_name: "progress-step progress-step--active",
       index: "01",
-      title: t(locale, zh="GitHub 账号", en="GitHub account"),
-      desc: t(locale, zh="用于识别参赛者、关联项目仓库和同步公开提交记录。", en="Used to identify the participant, link the project repository, and sync public commits."),
-      status: t(locale, zh="已连接", en="Connected"),
+      title: t(locale, zh="GitHub 点击登录", en="GitHub sign-in"),
+      desc: t(locale, zh="用于识别参赛者、关联项目仓库和同步公开提交记录；正式接入后只读取公开资料与公开仓库。", en="Used to identify participants, link project repositories, and sync public commits. The final integration only reads public profile and public repository data."),
+      status: t(locale, zh="开发中", en="In development"),
     },
     {
-      class_name: "progress-step progress-step--active",
+      class_name: "progress-step",
       index: "02",
       title: t(locale, zh="项目申报", en="Proposal"),
-      desc: t(locale, zh="提交报名表后可显示申报审核状态、项目名称和联系邮箱。", en="After submission, this can show proposal review status, project name, and contact email."),
-      status: t(locale, zh="待同步", en="Pending sync"),
+      desc: t(locale, zh="方案一从飞书报名数据同步，方案二由官网自建报名系统直接写入。", en="Option A syncs from Feishu registration data, while option B writes directly through the self-hosted registration system."),
+      status: t(locale, zh="待接入", en="Pending"),
     },
     {
-      class_name: "progress-step progress-step--active",
+      class_name: "progress-step",
       index: "03",
       title: t(locale, zh="仓库进度", en="Repository progress"),
-      desc: t(locale, zh="计划展示 GitHub 仓库、有效提交数、README、CI、测试和许可证状态。", en="Planned to show repository, valid commits, README, CI, tests, and license status."),
-      status: t(locale, zh="检查中", en="Checking"),
+      desc: t(locale, zh="展示 GitHub 仓库、有效 commits、README、CI、测试、许可证和 Mooncakes 发布状态。", en="Shows GitHub repository, valid commits, README, CI, tests, license, and Mooncakes release status."),
+      status: t(locale, zh="规则已规划", en="Planned"),
     },
     {
       class_name: "progress-step",
@@ -582,7 +599,7 @@ fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
       a(class="brand", href=page_href("#top"), [
         img(
           class="brand-logo",
-          src="site-assets/moonbit-logo.png?v=20260428-showcase-page",
+          src="site-assets/moonbit-logo.png?v=20260428-progress-system",
           alt=t(model.locale, zh="MoonBit Logo", en="MoonBit logo"),
           nothing,
         ),
@@ -606,7 +623,7 @@ fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
         a(
           class="nav-action nav-action--progress",
           href="progress.html",
-          t(model.locale, zh="个人进度（开发中）", en="Progress (in development)"),
+          t(model.locale, zh="比赛进度（开发中）", en="Contest progress (in development)"),
         ),
         button(class="toolbar-btn", on_click=dispatch(ToggleTheme), theme_toggle_label(model)),
       ]),
@@ -621,7 +638,7 @@ fn view_hero(model : Model) -> Html {
       div(class="hero-banner hero-banner--kv", [
         img(
           class="hero-kv-image",
-          src="site-assets/main-kv.png?v=20260428-showcase-page",
+          src="site-assets/main-kv.png?v=20260428-progress-system",
           alt=hero_kv_alt(model.locale),
           nothing,
         ),
@@ -755,49 +772,159 @@ fn view_progress_page(model : Model) -> Html {
     div(class="container", [
       div(class="progress-portal progress-page-portal", [
         div(class="progress-copy", [
-          p(class="eyebrow", t(model.locale, zh="个人进度", en="Personal progress")),
+          p(class="eyebrow", t(model.locale, zh="比赛进度", en="Contest progress")),
           h2(t(model.locale, zh="GitHub 登录查看比赛进程", en="Track contest progress with GitHub")),
           p(
             t(
               model.locale,
-              zh="用于展示参赛者从报名、仓库建设、验收到作品展示的个人状态。当前为试验版，只验证页面结构和交互入口。",
-              en="Shows a participant's status from registration and repository work to acceptance and showcase. This is an experimental page for layout and interaction validation.",
+              zh="这里会把报名状态、GitHub 仓库检查、验收材料和作品墙状态串起来。当前先做页面和流程结构，等飞书表字段或自建后端确定后接入真实数据。",
+              en="This page connects registration status, GitHub repository checks, acceptance materials, and showcase status. It currently defines the flow and UI before real Feishu or backend data is connected.",
             ),
           ),
           div(class="progress-page-actions", [
-            a(class="button primary", href=registration_href(), t(model.locale, zh="提交项目申报", en="Submit proposal")),
+            a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
+            a(class="button secondary", href="register.html", t(model.locale, zh="自建报名系统原型", en="Registration prototype")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
         ]),
-        article(class="progress-dashboard", [
-          div(class="progress-user-row", [
-            div(class="progress-avatar", "M"),
+        article(id="progress-login", class="github-login-card progress-login-card", [
+          div(class="github-mark", "GH"),
+          h3(t(model.locale, zh="点击 GitHub 登录", en="Sign in with GitHub")),
+          p(
+            t(
+              model.locale,
+              zh="登录后用 GitHub 账号匹配报名数据，并读取公开仓库状态。正式接入前不会发起真实授权。",
+              en="After sign-in, the GitHub account will match registration data and read public repository status. No real authorization is triggered before integration.",
+            ),
+          ),
+          a(class="button primary github-login-button", href="#progress-plans", t(model.locale, zh="使用 GitHub 登录（开发中）", en="Sign in with GitHub (WIP)")),
+          p(class="github-login-note", t(model.locale, zh="后续接入 GitHub OAuth，权限只申请读取公开资料和公开仓库。", en="GitHub OAuth will request only public profile and public repository access.")),
+        ]),
+      ]),
+      div(id="progress-plans", class="progress-plan-grid", [
+        article(class="path-card progress-plan-card", [
+          span(class="tag", t(model.locale, zh="方案一", en="Option A")),
+          h3(t(model.locale, zh="飞书报名数据同步", en="Sync Feishu registration data")),
+          p(t(model.locale, zh="继续使用飞书表单收集报名信息，进度页通过 GitHub 登录识别选手，再按邮箱、GitHub 仓库或唯一报名 ID 匹配飞书表里的状态。", en="Continue collecting registrations through Feishu forms. The progress page identifies participants via GitHub login, then matches Feishu records by email, GitHub repository, or a unique registration ID.")),
+          ul(class="path-points", [
+            li(t(model.locale, zh="需要飞书表字段：姓名、邮箱、GitHub 仓库、项目名、申报审核状态、验收状态、奖励状态。", en="Needs Feishu fields: name, email, GitHub repository, project name, proposal review status, acceptance status, and reward status.")),
+            li(t(model.locale, zh="GitHub 登录只负责身份识别和公开仓库检查，不替代报名表。", en="GitHub login handles identity and public repository checks, not registration submission.")),
+            li(t(model.locale, zh="适合快速上线，继续沿用现有飞书报名流程。", en="Best for quick launch while keeping the existing Feishu registration flow.")),
+          ]),
+          a(class="button secondary", href=registration_href(), t(model.locale, zh="查看飞书报名入口", en="Open Feishu form")),
+        ]),
+        article(class="path-card progress-plan-card", [
+          span(class="tag", t(model.locale, zh="方案二", en="Option B")),
+          h3(t(model.locale, zh="自建报名系统", en="Self-hosted registration system")),
+          p(t(model.locale, zh="把报名、审核、仓库检查、验收和奖励状态都放到官网系统里。当前先做前台原型，后续再接数据库、后台审核和 GitHub OAuth。", en="Move registration, review, repository checks, acceptance, and reward status into the official site. This is the frontend prototype before database, admin review, and GitHub OAuth integration.")),
+          ul(class="path-points", [
+            li(t(model.locale, zh="选手用 GitHub 登录后提交报名材料。", en="Participants sign in with GitHub before submitting registration materials.")),
+            li(t(model.locale, zh="后台可维护申报审核、验收审核、奖励发放和作品墙状态。", en="Admins can maintain proposal review, acceptance review, reward, and showcase states.")),
+            li(t(model.locale, zh="正式上线前需要补齐隐私、安全、文件上传和敏感信息处理。", en="Before launch, privacy, security, file upload, and sensitive data handling must be completed.")),
+          ]),
+          a(class="button secondary", href="register.html", t(model.locale, zh="打开自建报名原型", en="Open registration prototype")),
+        ]),
+      ]),
+      article(class="progress-dashboard progress-dashboard--preview", [
+        div(class="progress-user-row", [
+          div(class="progress-avatar", "GH"),
+          div([
+            strong(t(model.locale, zh="登录后进度看板", en="Post-login dashboard")),
+            p(t(model.locale, zh="这里展示匹配到报名数据后的比赛进度结构。", en="This area shows the contest progress structure after a registration record is matched.")),
+          ]),
+          span(class="toolbar-btn progress-logout", t(model.locale, zh="展示结构", en="Preview")),
+        ]),
+        div(class="progress-meter", [
+          div(class="progress-meter-fill", nothing),
+        ]),
+        div(class="progress-summary-grid", [
+          div(class="progress-summary-item", [
+            span(t(model.locale, zh="当前阶段", en="Current stage")),
+            strong(t(model.locale, zh="申报审核", en="Proposal review")),
+          ]),
+          div(class="progress-summary-item", [
+            span(t(model.locale, zh="仓库检查", en="Repo check")),
+            strong("2 / 6"),
+          ]),
+          div(class="progress-summary-item", [
+            span(t(model.locale, zh="下一步", en="Next")),
+            strong(t(model.locale, zh="补充 README / CI", en="Add README / CI")),
+          ]),
+        ]),
+        div(class="progress-step-list", progress_steps(model.locale).map(fn(step) {
+          view_progress_step(step)
+        })),
+      ]),
+    ]),
+  ])
+}
+
+///|
+fn view_register_field(label : String, placeholder : String) -> Html {
+  div(class="register-field", [
+    span(label),
+    div(class="register-input", placeholder),
+  ])
+}
+
+///|
+fn view_register_page(model : Model) -> Html {
+  section(id="register-system", class="section section--progress progress-page-section", [
+    div(class="container", [
+      div(class="register-shell", [
+        div(class="register-copy", [
+          p(class="eyebrow", t(model.locale, zh="自建报名系统原型", en="Registration system prototype")),
+          h2(t(model.locale, zh="把报名、审核和比赛进度放进同一个系统", en="Unify registration, review, and progress tracking")),
+          p(
+            t(
+              model.locale,
+              zh="这是第二套方案的前台原型：不依赖飞书表单，选手通过 GitHub 登录后提交项目信息，后台维护审核和验收状态。当前只做展示，不提交真实数据。",
+              en="This is the frontend prototype for option B. It does not rely on Feishu forms; participants sign in with GitHub, submit project information, and admins maintain review states. It does not submit real data yet.",
+            ),
+          ),
+          div(class="progress-page-actions", [
+            a(class="button primary", href="#register-form", t(model.locale, zh="查看报名表单原型", en="View form prototype")),
+            a(class="button secondary", href="progress.html", t(model.locale, zh="返回比赛进度", en="Back to progress")),
+          ]),
+        ]),
+        article(id="register-form", class="register-form-card", [
+          div(class="register-form-head", [
+            div(class="github-mark", "GH"),
             div([
-              strong("@moonbit-builder"),
-              p(t(model.locale, zh="GitHub 已连接 · 试验数据", en="GitHub connected · test data")),
-            ]),
-            span(class="toolbar-btn progress-logout", t(model.locale, zh="退出测试登录", en="Exit test login")),
-          ]),
-          div(class="progress-meter", [
-            div(class="progress-meter-fill", nothing),
-          ]),
-          div(class="progress-summary-grid", [
-            div(class="progress-summary-item", [
-              span(t(model.locale, zh="当前阶段", en="Current stage")),
-              strong(t(model.locale, zh="申报审核", en="Proposal review")),
-            ]),
-            div(class="progress-summary-item", [
-              span(t(model.locale, zh="仓库检查", en="Repo check")),
-              strong("2 / 6"),
-            ]),
-            div(class="progress-summary-item", [
-              span(t(model.locale, zh="下一步", en="Next")),
-              strong(t(model.locale, zh="补充 README / CI", en="Add README / CI")),
+              h3(t(model.locale, zh="MoonBit 开源大赛报名", en="MoonBit contest registration")),
+              p(t(model.locale, zh="GitHub 登录后自动带入账号和公开仓库信息。", en="GitHub sign-in will prefill account and public repository data.")),
             ]),
           ]),
-          div(class="progress-step-list", progress_steps(model.locale).map(fn(step) {
-            view_progress_step(step)
-          })),
+          div(class="register-field-grid", [
+            view_register_field(t(model.locale, zh="姓名", en="Name"), t(model.locale, zh="请输入真实姓名", en="Enter real name")),
+            view_register_field(t(model.locale, zh="联系邮箱", en="Email"), "name@example.com"),
+            view_register_field(t(model.locale, zh="学校 / 组织", en="School / organization"), t(model.locale, zh="用于确认学生身份", en="Used for student verification")),
+            view_register_field(t(model.locale, zh="GitHub 仓库", en="GitHub repository"), "https://github.com/owner/project"),
+            view_register_field(t(model.locale, zh="项目名称", en="Project name"), t(model.locale, zh="MoonBit 生态库名称", en="MoonBit package name")),
+            view_register_field(t(model.locale, zh="项目方向", en="Project direction"), t(model.locale, zh="生态库 / 工具 / 示例 / 高校实践", en="Library / tool / example / campus")),
+          ]),
+          div(class="register-textarea", [
+            span(t(model.locale, zh="项目简介", en="Project summary")),
+            p(t(model.locale, zh="说明项目做什么、为什么值得做、计划如何实现、最终交付什么。", en="Describe what the project does, why it matters, how it will be built, and what will be delivered.")),
+          ]),
+          div(class="register-upload-grid", [
+            div(class="register-upload", [
+              strong(t(model.locale, zh="项目申报书 PDF", en="Proposal PDF")),
+              p(t(model.locale, zh="建议一页，正式系统接文件上传。", en="One page recommended; file upload is added in the real system.")),
+            ]),
+            div(class="register-upload", [
+              strong(t(model.locale, zh="学生身份证明", en="Student proof")),
+              p(t(model.locale, zh="正式上线前需要明确隐私和存储策略。", en="Privacy and storage policies are required before launch.")),
+            ]),
+          ]),
+          div(class="register-system-note", [
+            strong(t(model.locale, zh="敏感信息处理建议", en="Sensitive data handling")),
+            p(t(model.locale, zh="身份证、银行卡等信息建议只在奖励发放阶段单独收集，不放在公开进度页里展示。", en="ID and bank information should be collected separately during reward payout and never shown on the public progress page.")),
+          ]),
+          div(class="progress-page-actions", [
+            span(class="button primary register-disabled", t(model.locale, zh="提交报名（原型）", en="Submit registration (prototype)")),
+            a(class="button secondary", href=registration_href(), t(model.locale, zh="当前仍使用飞书正式报名", en="Use current Feishu form")),
+          ]),
         ]),
       ]),
     ]),
@@ -1015,7 +1142,7 @@ fn view_qq_float(model : Model) -> Html {
       div(class="qq-qr-box", [
         img(
           class="qq-qr-img",
-          src="site-assets/registration-qr.png?v=20260428-showcase-page",
+          src="site-assets/registration-qr.png?v=20260428-progress-system",
           alt=t(model.locale, zh="赛事报名二维码", en="Event registration QR code"),
           nothing,
         ),
@@ -1029,7 +1156,7 @@ fn view_qq_float(model : Model) -> Html {
       div(class="qq-qr-box", [
         img(
           class="qq-qr-img",
-          src="site-assets/qq-group-qr.png?v=20260428-showcase-page",
+          src="site-assets/qq-group-qr.png?v=20260428-progress-system",
           alt=t(model.locale, zh="赛事 QQ 群二维码", en="Event QQ group QR code"),
           nothing,
         ),
@@ -1067,6 +1194,10 @@ fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
       main_(class="page-main", [
         view_showcase_wall(model),
       ])
+    } else if is_register_page() {
+      main_(class="page-main", [
+        view_register_page(model),
+      ])
     } else {
       main_(class="page-main", [
         view_hero(model),
@@ -1080,7 +1211,7 @@ fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
       ])
     },
     view_footer(model),
-    if is_progress_page() { nothing } else { view_qq_float(model) },
+    if is_standalone_page() { nothing } else { view_qq_float(model) },
   ])
 }
 
