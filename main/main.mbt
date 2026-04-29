@@ -235,6 +235,11 @@ fn acceptance_href() -> String {
 }
 
 ///|
+fn github_oauth_href() -> String {
+  "https://mgpic2026.onrender.com/api/auth/github/start?return_to=%2Fprogress.html"
+}
+
+///|
 fn charter_href() -> String {
   "https://bxup9uklfcb.feishu.cn/wiki/Cv5owfd9xiT9Z5k6d8scJlV0n1a"
 }
@@ -718,47 +723,72 @@ fn view_faq_item(item : FaqItem) -> Html {
   ])
 }
 
-fn view_feishu_only_page(model : Model, eyebrow : String, title : String, desc : String) -> Html {
-  section(id="feishu-only", class="section section--progress progress-page-section", [
+fn view_progress_page(model : Model) -> Html {
+  section(id="progress", class="section section--progress progress-page-section", [
     div(class="container", [
       div(class="progress-portal progress-page-portal", [
         div(class="progress-copy", [
-          p(class="eyebrow", eyebrow),
-          h2(title),
-          p(desc),
+          p(class="eyebrow", t(model.locale, zh="比赛进度", en="Contest progress")),
+          h2(t(model.locale, zh="查看比赛进度与仓库状态", en="Track contest progress and repository status")),
+          p(
+            t(
+              model.locale,
+              zh="这里会把报名状态、GitHub 仓库检查、验收材料、通知记录和作品墙状态串起来。当前不放在首页公开入口，但保留为内部预览和后续上线准备。",
+              en="This page connects registration status, GitHub repository checks, acceptance materials, notifications, and showcase status. It is not linked from the homepage yet, but remains available for internal preview and later launch.",
+            ),
+          ),
           div(class="progress-page-actions", [
-            a(class="button primary", href=registration_href(), t(model.locale, zh="打开飞书报名表", en="Open Feishu form")),
+            a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录查看进度", en="Sign in with GitHub and view progress")),
+            a(class="button secondary", href="register.html", t(model.locale, zh="自建报名系统", en="Registration system")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
         ]),
-        article(class="path-card progress-plan-card", [
-          span(class="tag", t(model.locale, zh="功能暂停", en="Paused")),
-          h3(t(model.locale, zh="请通过飞书官方表单报名", en="Please use the Feishu form")),
-          p(t(model.locale, zh="比赛进度、GitHub 单点登录和官网自建报名系统暂不对外开放。当前只保留飞书报名这一条正式路径，避免选手误用未完善功能。", en="Contest progress, GitHub SSO, and the self-hosted registration system are temporarily hidden. The Feishu form is the only official registration path for now.")),
-          a(class="button primary", href=registration_href(), t(model.locale, zh="立即前往飞书报名", en="Register on Feishu")),
+        article(id="progress-login", class="github-login-card progress-login-card", [
+          div(class="github-mark", "GH"),
+          h3(t(model.locale, zh="使用 GitHub 一键登录", en="One-click GitHub sign-in")),
+          p(t(model.locale, zh="点击后通过 Render 后端跳转到 GitHub 官方授权页；权限只申请公开资料和邮箱，不申请私有仓库权限。", en="Click to start GitHub OAuth through the Render backend. Only public profile and email scopes are requested, not private repository access.")),
+          a(class="button primary github-login-button", href=github_oauth_href(), t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
         ]),
+      ]),
+      div(id="progress-plans", class="progress-plan-grid", [
+        article(class="path-card progress-plan-card", [
+          span(class="tag", t(model.locale, zh="预览中", en="Preview")),
+          h3(t(model.locale, zh="飞书报名数据同步", en="Feishu registration sync")),
+          p(t(model.locale, zh="后续可导入飞书表 CSV / JSON，匹配报名邮箱、GitHub 仓库和审核状态。", en="Feishu CSV / JSON imports can later match email, GitHub repository, and review status.")),
+        ]),
+        article(class="path-card progress-plan-card", [
+          span(class="tag", t(model.locale, zh="预览中", en="Preview")),
+          h3(t(model.locale, zh="官网自建报名系统", en="Self-hosted registration")),
+          p(t(model.locale, zh="报名页可写入后台数据库，并与审核、通知、作品墙状态进入同一套后台管理。", en="The registration page can write to the backend database and share the same admin flow for review, notifications, and showcase status.")),
+        ]),
+      ]),
+      article(class="progress-dashboard progress-dashboard--preview", [
+        div(class="progress-alert", t(model.locale, zh="正在加载比赛进度看板预览...", en="Loading progress dashboard preview...")),
       ]),
     ]),
   ])
 }
 
-///|
-fn view_progress_page(model : Model) -> Html {
-  view_feishu_only_page(
-    model,
-    t(model.locale, zh="比赛进度暂未开放", en="Progress temporarily hidden"),
-    t(model.locale, zh="请先通过飞书报名，进度查询后续再开放", en="Please register through Feishu first"),
-    t(model.locale, zh="为了避免未完善的 GitHub 登录、仓库检查和后台同步影响参赛体验，比赛进度页面暂时隐藏。报名请以飞书官方表单为准。", en="To avoid exposing unfinished GitHub sign-in, repository checks, and backend sync, the progress page is temporarily hidden. Please use the official Feishu form for registration."),
-  )
-}
-
 fn view_register_page(model : Model) -> Html {
-  view_feishu_only_page(
-    model,
-    t(model.locale, zh="官网报名暂未开放", en="Website registration hidden"),
-    t(model.locale, zh="当前只开放飞书官方报名表", en="Only the Feishu form is open for now"),
-    t(model.locale, zh="官网自建报名系统、GitHub OAuth 填充资料和后台进度同步仍在完善中。为避免选手误提交，请统一通过飞书官方表单完成项目申报。", en="The self-hosted form, GitHub OAuth autofill, and backend sync are still being refined. To avoid incorrect submissions, please use the official Feishu form."),
-  )
+  section(id="register-system", class="section section--progress progress-page-section", [
+    div(class="container", [
+      div(class="register-shell", [
+        div(class="register-copy", [
+          p(class="eyebrow", t(model.locale, zh="比赛介绍", en="Contest intro")),
+          h2(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="MoonBit open-source contest")),
+          p(t(model.locale, zh="这是官网自建报名系统的内部预览页，当前不放在首页公开入口。后续完善 GitHub OAuth、后台数据库和审核流程后再正式展示。", en="This is an internal preview of the self-hosted registration system. It is not linked from the homepage yet, and will be published after GitHub OAuth, backend storage, and review flows are ready.")),
+          div(class="progress-page-actions", [
+            a(class="button primary", href="#register-form", t(model.locale, zh="填写报名表单", en="Fill registration form")),
+            a(class="button secondary", href="progress.html", t(model.locale, zh="返回比赛进度", en="Back to progress")),
+            a(class="button secondary", href=registration_href(), t(model.locale, zh="飞书正式报名", en="Official Feishu form")),
+          ]),
+        ]),
+        article(id="register-form", class="register-form-card", [
+          div(class="progress-alert", t(model.locale, zh="正在加载官网报名系统预览...", en="Loading registration system preview...")),
+        ]),
+      ]),
+    ]),
+  ])
 }
 
 ///|
