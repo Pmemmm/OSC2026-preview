@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>后台管理｜2026 MoonBit 国产开源生态大赛</title>
+    <meta
+      name="description"
+      content="2026 MoonBit 国产开源生态大赛报名与比赛进度后台管理页。"
+    />
+    <meta name="theme-color" content="#6f46ff" />
+    <link rel="stylesheet" href="site-assets/styles.css?v=20260429-admin" />
+    <script src="site-assets/admin.js?v=20260429-admin" type="module"></script>
+  </head>
+  <body>
+    <main class="site-shell admin-shell">
+      <section class="section admin-section">
+        <div class="container">
+          <div class="admin-hero">
+            <div>
+              <p class="eyebrow">后台管理</p>
+              <h1>报名、审核和进度统一管理</h1>
+              <p>
+                本页面连接同源 SQLite 后台。GitHub Pages 只能预览界面；运行
+                <code>python3 server.py</code> 后可保存和维护真实数据。
+              </p>
+            </div>
+            <div class="admin-hero-actions">
+              <a class="button secondary" href="index.html">返回首页</a>
+              <a class="button secondary" href="progress.html">比赛进度</a>
+              <a class="button primary" href="register.html">新建报名</a>
+            </div>
+          </div>
+
+          <div id="admin-app" class="admin-app">
+            <div class="progress-alert">正在连接后台数据库...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

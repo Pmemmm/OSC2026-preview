@@ -623,7 +623,7 @@ fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
         a(
           class="nav-action nav-action--progress",
           href="progress.html",
-          t(model.locale, zh="比赛进度（开发中）", en="Contest progress (in development)"),
+          t(model.locale, zh="比赛进度", en="Contest progress"),
         ),
         button(class="toolbar-btn", on_click=dispatch(ToggleTheme), theme_toggle_label(model)),
       ]),
@@ -789,7 +789,7 @@ fn view_progress_page(model : Model) -> Html {
           ),
           div(class="progress-page-actions", [
             a(class="button primary", href="#progress-login", t(model.locale, zh="连接 GitHub 查看进度", en="Connect GitHub and view progress")),
-            a(class="button secondary", href="register.html", t(model.locale, zh="自建报名系统原型", en="Registration prototype")),
+            a(class="button secondary", href="register.html", t(model.locale, zh="自建报名系统", en="Registration system")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
         ]),
@@ -879,17 +879,17 @@ fn view_register_page(model : Model) -> Html {
     div(class="container", [
       div(class="register-shell", [
         div(class="register-copy", [
-          p(class="eyebrow", t(model.locale, zh="自建报名系统原型", en="Registration system prototype")),
+          p(class="eyebrow", t(model.locale, zh="自建报名系统", en="Registration system")),
           h2(t(model.locale, zh="把报名、审核和比赛进度放进同一个系统", en="Unify registration, review, and progress tracking")),
           p(
             t(
               model.locale,
-              zh="这是第二套方案的前台原型：不依赖飞书表单，选手填写项目信息后先保存到本地浏览器，并可同步到比赛进度页；当前支持本地导出，后续可接数据库、后台审核和 GitHub OAuth。",
-              en="This is the frontend prototype for option B. It does not rely on Feishu forms; participants can save project information locally and sync it to the progress page. It supports local export now; database, admin review, and GitHub OAuth can be connected later.",
+              zh="这是第二套方案的前台页面：不依赖飞书表单，选手填写项目信息后可保存到后台数据库，并同步到比赛进度页；公网静态预览会自动降级为浏览器本地保存。",
+              en="This is the frontend page for option B. It does not rely on Feishu forms; participants can save project information to the backend database and sync it to the progress page. The public static preview falls back to browser-local storage.",
             ),
           ),
           div(class="progress-page-actions", [
-            a(class="button primary", href="#register-form", t(model.locale, zh="查看报名表单原型", en="View form prototype")),
+            a(class="button primary", href="#register-form", t(model.locale, zh="填写报名表单", en="Fill registration form")),
             a(class="button secondary", href="progress.html", t(model.locale, zh="返回比赛进度", en="Back to progress")),
           ]),
         ]),

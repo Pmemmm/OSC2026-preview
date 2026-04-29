@@ -55,6 +55,7 @@ python3 server.py
 - 首页：`http://127.0.0.1:4174/`
 - 比赛进度：`http://127.0.0.1:4174/progress.html`
 - 自建报名：`http://127.0.0.1:4174/register.html`
+- 后台管理：`http://127.0.0.1:4174/admin.html`
 - 健康检查：`http://127.0.0.1:4174/api/health`
 
 后台会自动创建 SQLite 数据库：
@@ -70,15 +71,24 @@ data/mgpic2026.sqlite3
 - `GET /api/registrations/:id`：读取报名、审核状态和仓库检查
 - `PATCH /api/registrations/:id/status`：更新申报、验收、奖励和作品墙状态
 - `POST /api/registrations/:id/repo-check`：保存 GitHub 仓库检查结果
+- `GET /api/registrations/:id/files/:kind`：下载申报书或学生证明
+- `DELETE /api/registrations/:id`：删除报名记录
 - `POST /api/import/feishu`：保存飞书导入记录
 
 公网 GitHub Pages 预览页会自动降级为浏览器本地保存；部署到支持 Python 的服务器后，同源 `/api` 可直接写入 SQLite。
+
+如需部署到服务器，可设置：
+
+```bash
+HOST=0.0.0.0 PORT=4174 MGPIC_DB=/data/mgpic2026.sqlite3 python3 server.py
+```
 
 ## 维护方式
 
 - 内容结构主要在 [main/main.mbt](/Users/zongen/Documents/New%20project/MGPIC2026/main/main.mbt)
 - 样式在 [styles.css](/Users/zongen/Documents/New%20project/MGPIC2026/styles.css)
 - 报名和进度页交互在 [site-assets/progress.js](/Users/zongen/Documents/New%20project/MGPIC2026/site-assets/progress.js)
+- 后台管理页交互在 [site-assets/admin.js](/Users/zongen/Documents/New%20project/MGPIC2026/site-assets/admin.js)
 - 数据库后台在 [server.py](/Users/zongen/Documents/New%20project/MGPIC2026/server.py)
 - 改完源码后，重新运行 `./scripts/build-site.sh`
 

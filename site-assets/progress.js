@@ -336,6 +336,8 @@ function backendPayload(value) {
     summary: value.summary || "",
     proposalFileName: value.proposalFileName || "",
     studentFileName: value.studentFileName || "",
+    proposalFile: value.proposalFile || null,
+    studentFile: value.studentFile || null,
   };
 }
 
@@ -374,20 +376,26 @@ async function syncRegistrationFromBackend() {
   backendSyncStarted = true;
   try {
     const result = await apiRequest(`/api/registrations/${encodeURIComponent(current.serverId)}`);
-    saveJson(STORE_KEY, {
-      ...current,
-      ...result.registration,
-      serverId: result.registration.id,
-      backendMode: "sqlite",
-      backendSavedAt: result.registration.updatedAt,
-    });
-    if (result.status) saveJson(FEISHU_KEY, { ...getFeishuState(), ...result.status, source: "backend" });
-    if (result.repoCheck) saveJson(CHECK_KEY, result.repoCheck);
+    saveBackendBundle(result, current);
     renderProgressDashboard();
     renderPlanPanels(true);
   } catch {
     // The public GitHub Pages preview has no backend; keep the local copy usable.
   }
+}
+
+function saveBackendBundle(result, previous = getRegistration()) {
+  if (!result?.registration) return;
+  saveJson(STORE_KEY, {
+    ...previous,
+    ...result.registration,
+    serverId: result.registration.id,
+    backendMode: "sqlite",
+    backendSavedAt: result.registration.updatedAt,
+    files: result.files || previous.files || [],
+  });
+  if (result.status) saveJson(FEISHU_KEY, { ...getFeishuState(), ...result.status, source: "backend" });
+  if (result.repoCheck) saveJson(CHECK_KEY, result.repoCheck);
 }
 
 async function saveRepoCheckToBackend(result) {
@@ -659,6 +667,7 @@ function renderPlanPanels(force = false) {
         <div class="progress-compact-actions">
           <button class="button primary" type="submit">保存演示状态</button>
           <a class="button secondary" href="register.html">打开自建报名</a>
+          <a class="button secondary" href="admin.html">后台管理</a>
           <button class="button secondary" type="button" data-action="clear-registration">清除本地报名</button>
         </div>
       </form>
@@ -733,6 +742,10 @@ function initProgressPage() {
         <input name="githubLogin" placeholder="moonbit-builder" value="${escapeHtml(registration.githubLogin || profile?.login || "")}">
       </label>
       <label class="form-field">
+        <span>报名编号（已提交后可用来恢复数据库进度）</span>
+        <input name="serverId" inputmode="numeric" placeholder="例如 12" value="${escapeHtml(registration.serverId || "")}">
+      </label>
+      <label class="form-field">
         <span>GitHub 仓库</span>
         <input name="repo" type="url" placeholder="https://github.com/owner/project" value="${escapeHtml(repo)}">
       </label>
@@ -742,6 +755,7 @@ function initProgressPage() {
       </label>
       <div class="progress-page-actions">
         <button class="button primary" type="submit">连接并检查</button>
+        <button class="button secondary" type="button" data-action="load-server-record">读取数据库进度</button>
         <button class="button secondary" type="button" data-action="oauth-placeholder">GitHub 登录（正式版）</button>
         <button class="button secondary" type="button" data-action="clear-progress">清除本地数据</button>
       </div>
@@ -754,6 +768,9 @@ function initProgressPage() {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     await runRepoCheck(form.elements.repo.value, form.elements.email.value, form.elements.githubLogin.value);
+  });
+  form.querySelector("[data-action='load-server-record']").addEventListener("click", async () => {
+    await loadServerRegistration(form.elements.serverId.value);
   });
   form.querySelector("[data-action='oauth-placeholder']").addEventListener("click", () => {
     const message = $("#progress-message");
@@ -830,6 +847,38 @@ async function runRepoCheck(repoInput, email, githubLogin) {
   }
 }
 
+async function loadServerRegistration(serverId) {
+  const message = $("#progress-message");
+  if (message) {
+    message.hidden = false;
+    message.className = "progress-alert";
+    message.textContent = "正在读取后台数据库记录...";
+  }
+  const id = String(serverId || "").trim();
+  if (!id) {
+    if (message) {
+      message.className = "progress-alert progress-alert--error";
+      message.textContent = "请输入报名编号。";
+    }
+    return;
+  }
+  try {
+    const result = await apiRequest(`/api/registrations/${encodeURIComponent(id)}`, { method: "GET" });
+    saveBackendBundle(result);
+    if (message) {
+      message.className = "progress-alert progress-alert--ok";
+      message.textContent = `已读取数据库记录 #${id}，比赛进度已更新。`;
+    }
+    renderPlanPanels(true);
+    renderProgressDashboard();
+  } catch (error) {
+    if (message) {
+      message.className = "progress-alert progress-alert--error";
+      message.textContent = error.status === 404 ? "没有找到这个报名编号。" : "当前未连接后台数据库，公网预览页只能读取浏览器本地数据。";
+    }
+  }
+}
+
 function exportRegistration() {
   const payload = {
     registration: getRegistration(),
@@ -845,6 +894,33 @@ function exportRegistration() {
   link.download = `mgpic2026-registration-${Date.now()}.json`;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+function fileToPayload(file) {
+  if (!file) return Promise.resolve(null);
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || "");
+      resolve({
+        name: file.name,
+        type: file.type || "application/octet-stream",
+        size: file.size,
+        data: dataUrl.includes(",") ? dataUrl.split(",").pop() : dataUrl,
+      });
+    };
+    reader.onerror = () => reject(new Error("文件读取失败"));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function collectRegistrationFiles(form) {
+  const proposalFile = form.elements.proposalFile?.files?.[0] || null;
+  const studentFile = form.elements.studentFile?.files?.[0] || null;
+  return {
+    proposalFile: await fileToPayload(proposalFile),
+    studentFile: await fileToPayload(studentFile),
+  };
 }
 
 function initRegisterPage() {
@@ -904,14 +980,19 @@ async function handleRegistrationSubmit(form) {
   msg.hidden = false;
   msg.className = "progress-alert";
   msg.textContent = "正在保存报名信息...";
-  const result = await saveRegistrationToBackend(value);
-  if (result.mode === "backend") {
-    msg.className = "progress-alert progress-alert--ok";
-    msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库，记录编号 #${escapeHtml(result.registration.serverId)}。现在可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
-  } else {
-    const msg = $("#registration-message");
-    msg.className = "progress-alert progress-alert--ok";
-    msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到浏览器本地。当前页面未连接后台数据库，可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
+  try {
+    const files = await collectRegistrationFiles(form);
+    const result = await saveRegistrationToBackend({ ...value, ...files });
+    if (result.mode === "backend") {
+      msg.className = "progress-alert progress-alert--ok";
+      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库，记录编号 #${escapeHtml(result.registration.serverId)}。现在可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
+    } else {
+      msg.className = "progress-alert progress-alert--ok";
+      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到浏览器本地。当前页面未连接后台数据库，可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
+    }
+  } catch (error) {
+    msg.className = "progress-alert progress-alert--error";
+    msg.textContent = error.message || "保存失败，请稍后重试。";
   }
 }
 
