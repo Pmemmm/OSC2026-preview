@@ -1819,6 +1819,60 @@ a {
   color: var(--text-soft);
 }
 
+.register-github-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 12%, transparent), transparent 34%),
+    color-mix(in srgb, var(--primary) 7%, var(--panel));
+}
+
+.register-github-identity {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.register-github-identity img {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: var(--shadow);
+}
+
+.register-github-identity strong {
+  display: block;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.register-github-identity p {
+  margin: 4px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.register-github-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.register-github-card .progress-alert {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
 .register-field-grid,
 .register-upload-grid {
   display: grid;
@@ -3401,6 +3455,7 @@ a {
 
   .register-field-grid,
   .register-upload-grid,
+  .register-github-card,
   .admin-stats,
   .admin-detail-grid,
   .admin-status-form,
@@ -3415,6 +3470,14 @@ a {
   .admin-operator-note {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .register-github-actions {
+    justify-content: stretch;
+  }
+
+  .register-github-actions .button {
+    width: 100%;
   }
 
   .progress-dashboard-actions .button {

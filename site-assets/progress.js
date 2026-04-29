@@ -149,6 +149,7 @@ function applyGitHubSessionToForms(user) {
     if (!registerForm.elements.githubLogin.value) registerForm.elements.githubLogin.value = user.login;
     if (user.email && !registerForm.elements.email.value) registerForm.elements.email.value = user.email;
   }
+  renderRegisterGitHubStatus(user);
 }
 
 async function syncGitHubOAuthSession(force = false) {
@@ -190,6 +191,7 @@ async function startGitHubOAuth(message) {
         message.className = "progress-alert progress-alert--ok";
         message.textContent = `已通过 GitHub 登录：@${session.user.login}`;
       }
+      renderRegisterGitHubStatus(session.user);
       renderProgressDashboard();
       const loginCard = $("#progress-login");
       if (loginCard) {
@@ -225,6 +227,50 @@ async function logoutGitHubOAuth(message) {
     message.textContent = "已退出 GitHub 登录。";
   }
   renderProgressDashboard();
+}
+
+function githubAuthMessage() {
+  const authStatus = new URLSearchParams(window.location.search).get("github_auth");
+  return {
+    ok: "GitHub 登录成功，已同步账号信息。",
+    not_configured: "Render 后端已连接，但还没有配置 GitHub OAuth App 的 Client ID / Secret。",
+    denied: "你取消了 GitHub 授权。",
+    state_error: "GitHub 授权状态已失效，请重新登录。",
+    failed: "GitHub 授权失败，请稍后重试。",
+  }[authStatus || ""];
+}
+
+function githubUserForDisplay(user = getGitHubProfile()) {
+  return user?.login ? user : null;
+}
+
+function renderRegisterGitHubStatus(user = getGitHubProfile()) {
+  const target = $("#register-github-status");
+  if (!target) return;
+  const profile = githubUserForDisplay(user);
+  const authMessage = githubAuthMessage();
+  target.innerHTML = `
+    <div class="register-github-identity">
+      ${profile?.avatarUrl ? `<img src="${escapeHtml(profile.avatarUrl)}" alt="@${escapeHtml(profile.login)}">` : `<span class="github-mark">GH</span>`}
+      <div>
+        <strong>${profile ? `已登录 GitHub：@${escapeHtml(profile.login)}` : "建议先使用 GitHub 一键登录"}</strong>
+        <p>${profile ? "报名表会自动带入 GitHub 用户名和邮箱；后续比赛进度也会按该账号匹配。" : "只申请读取公开资料和邮箱，不会申请私有仓库权限。登录后可减少手填并方便后续查看比赛进度。"}</p>
+      </div>
+    </div>
+    <div class="register-github-actions">
+      <button class="button primary" type="button" data-action="github-oauth">${profile ? "刷新 GitHub 信息" : "使用 GitHub 一键登录"}</button>
+      ${profile ? `<button class="button secondary" type="button" data-action="github-logout">退出 GitHub 登录</button>` : ""}
+    </div>
+    <div class="progress-alert ${authMessage?.includes("成功") ? "progress-alert--ok" : authMessage ? "progress-alert--error" : ""}" id="register-github-message" ${authMessage ? "" : "hidden"}>${escapeHtml(authMessage || "")}</div>
+  `;
+  target.querySelectorAll("[data-action='github-oauth']").forEach((button) => {
+    button.addEventListener("click", () => startGitHubOAuth($("#register-github-message") || $("#registration-message")));
+  });
+  target.querySelector("[data-action='github-logout']")?.addEventListener("click", () => {
+    logoutGitHubOAuth($("#register-github-message") || $("#registration-message"));
+    target.dataset.refreshed = "false";
+    renderRegisterGitHubStatus(null);
+  });
 }
 
 function safeHttpUrl(value) {
@@ -1148,6 +1194,7 @@ function initRegisterPage() {
           <p>提交后进入赛方审核，并同步到比赛进度页；未连接服务器时只会本地保存非敏感信息。</p>
         </div>
       </div>
+      <div class="register-github-card" id="register-github-status"></div>
       <div class="register-system-note register-prep-note">
         <strong>报名前请准备好这些材料</strong>
         <p>GitHub 公开仓库、一页 PDF 项目申报书、学生身份证明、身份证正反面水印版、银行卡号和开户支行。身份证水印建议写“仅用于 MoonBit 国产基础软件生态开源大赛奖金发放”。</p>
@@ -1181,7 +1228,7 @@ function initRegisterPage() {
       </div>
       <div class="progress-page-actions">
         <button class="button primary" type="submit">提交报名信息</button>
-        <button class="button secondary" type="button" data-action="github-oauth">使用 GitHub OAuth 填充资料</button>
+        <button class="button secondary" type="button" data-action="github-oauth">使用 GitHub 一键登录</button>
         <a class="button secondary" href="${hostedPage("progress.html")}">查看比赛进度</a>
         <a class="button secondary" href="${PROPOSAL_FORM_URL}">飞书正式报名</a>
         <button class="button secondary" type="button" data-action="export-registration">导出备份 JSON</button>
@@ -1194,8 +1241,11 @@ function initRegisterPage() {
     event.preventDefault();
     handleRegistrationSubmit(event.currentTarget);
   });
-  shell.querySelector("[data-action='github-oauth']")?.addEventListener("click", () => {
-    startGitHubOAuth($("#registration-message"));
+  renderRegisterGitHubStatus(getGitHubProfile());
+  shell.querySelectorAll(".progress-page-actions [data-action='github-oauth']").forEach((button) => {
+    button.addEventListener("click", () => {
+      startGitHubOAuth($("#register-github-message") || $("#registration-message"));
+    });
   });
   shell.querySelector("[data-action='export-registration']")?.addEventListener("click", exportRegistration);
   syncGitHubOAuthSession();
