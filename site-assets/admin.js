@@ -50,19 +50,23 @@ function normalizeApiBase(value) {
 function readApiBase() {
   const params = new URLSearchParams(window.location.search);
   const queryBase = params.get("apiBase");
-  const defaultBase = isStaticPreviewHost() ? DEFAULT_RENDER_API_BASE : "";
-  const configured = normalizeApiBase(queryBase || window.MGPIC_API_BASE || localStorage.getItem(API_BASE_KEY) || defaultBase);
+  const configured = normalizeApiBase(queryBase || window.MGPIC_API_BASE || localStorage.getItem(API_BASE_KEY) || defaultApiBase());
   if (queryBase && configured) localStorage.setItem(API_BASE_KEY, configured);
   return configured;
 }
 
 function setApiBase(value) {
-  apiBase = normalizeApiBase(value);
-  if (apiBase) {
-    localStorage.setItem(API_BASE_KEY, apiBase);
+  const configured = normalizeApiBase(value);
+  apiBase = configured || defaultApiBase();
+  if (configured) {
+    localStorage.setItem(API_BASE_KEY, configured);
   } else {
     localStorage.removeItem(API_BASE_KEY);
   }
+}
+
+function defaultApiBase() {
+  return isStaticPreviewHost() ? DEFAULT_RENDER_API_BASE : "";
 }
 
 function apiUrl(path) {
@@ -141,15 +145,16 @@ function statusBadge(value) {
 function renderDisconnected(error) {
   const app = $("#admin-app");
   const staticHint = isStaticPreviewHost()
-    ? "当前访问的是 GitHub Pages 静态预览页。这里不能运行 SQLite、GitHub OAuth、AI 审核或邮件通知。"
+    ? "当前 GitHub Pages 页面已直接连接 Render 后端；Render 服务可用后，报名数据会在这里直接展示。"
     : "当前页面没有连接到可用的后台接口。请确认 Python 后端已经启动，或填写部署后的后端服务地址。";
   app.innerHTML = `
     <div class="admin-disconnected">
       <div class="progress-alert progress-alert--error">
-        <strong>这里还不是可用的数据后台</strong>
+        <strong>正在连接 Render 数据后台</strong>
         <p>${escapeHtml(staticHint)}</p>
         <p>当前连接地址：<code>${escapeHtml(currentEndpointLabel())}</code></p>
         <p>接口错误：${escapeHtml(error?.message || "无法连接 /api/health")}</p>
+        <p>如果这里持续报错，通常是 Render 服务还没有创建、未启动，或实际服务域名不是 <code>${escapeHtml(DEFAULT_RENDER_API_BASE)}</code>。</p>
       </div>
       <form class="admin-api-form" id="admin-api-form">
         <label class="form-field admin-detail-wide">
@@ -166,8 +171,9 @@ function renderDisconnected(error) {
           <code>https://你的后端域名/admin.html</code>，不要用 GitHub Pages 管真实数据。
         </p>
         <div class="admin-form-actions">
-          <button class="button primary" type="submit">保存后端地址并重试</button>
-          <button class="button secondary" type="button" data-action="clear-api-base">清除地址</button>
+          <button class="button primary" type="submit">连接并在这里显示数据</button>
+          <a class="button secondary" href="${escapeHtml(apiUrl("/admin.html"))}" target="_blank" rel="noreferrer">打开 Render 后台</a>
+          <button class="button secondary" type="button" data-action="clear-api-base">恢复默认 Render 地址</button>
           <a class="button secondary" href="https://github.com/zongen01/MGPIC2026/blob/main/DEPLOYMENT.md" target="_blank" rel="noreferrer">查看部署说明</a>
         </div>
       </form>
