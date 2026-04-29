@@ -334,7 +334,7 @@ fn about_cards(locale : Locale) -> Array[InfoCard] {
     {
       badge: t(locale, zh="可验收", en="Acceptable"),
       title: t(locale, zh="真实可用、可测试、可维护", en="Usable, tested, maintainable"),
-      desc: t(locale, zh="官网只保留关键规则：边界清晰、文档完整、测试可运行、后续可维护，细则以后续正式章程为准。", en="The site keeps the key rules: clear scope, complete docs, runnable tests, and maintainability. Details follow the official rules."),
+      desc: t(locale, zh="官网突出关键规则：边界清晰、文档完整、测试可运行、长期可维护，细则以赛事公告和最终章程为准。", en="The site highlights key rules: clear scope, complete docs, runnable tests, and long-term maintainability. Details follow official announcements and final rules."),
     },
   ]
 }
@@ -371,23 +371,23 @@ fn progress_steps(locale : Locale) -> Array[ProgressStep] {
     {
       class_name: "progress-step progress-step--active",
       index: "01",
-      title: t(locale, zh="GitHub 点击登录", en="GitHub sign-in"),
-      desc: t(locale, zh="用于识别参赛者、关联项目仓库和同步公开提交记录；正式接入后只读取公开资料与公开仓库。", en="Used to identify participants, link project repositories, and sync public commits. The final integration only reads public profile and public repository data."),
-      status: t(locale, zh="开发中", en="In development"),
+      title: t(locale, zh="GitHub 公开信息", en="Public GitHub info"),
+      desc: t(locale, zh="用于辅助识别参赛者、关联项目仓库和检查公开提交记录；不读取私有仓库。", en="Used to identify participants, link project repositories, and check public commit history. Private repositories are not read."),
+      status: t(locale, zh="可查询", en="Available"),
     },
     {
       class_name: "progress-step",
       index: "02",
       title: t(locale, zh="项目申报", en="Proposal"),
       desc: t(locale, zh="方案一从飞书报名数据同步，方案二由官网自建报名系统直接写入。", en="Option A syncs from Feishu registration data, while option B writes directly through the self-hosted registration system."),
-      status: t(locale, zh="待接入", en="Pending"),
+      status: t(locale, zh="可同步", en="Syncable"),
     },
     {
       class_name: "progress-step",
       index: "03",
       title: t(locale, zh="仓库进度", en="Repository progress"),
       desc: t(locale, zh="展示 GitHub 仓库、有效 commits、README、CI、测试、许可证和 Mooncakes 发布状态。", en="Shows GitHub repository, valid commits, README, CI, tests, license, and Mooncakes release status."),
-      status: t(locale, zh="规则已规划", en="Planned"),
+      status: t(locale, zh="可检查", en="Checkable"),
     },
     {
       class_name: "progress-step",
@@ -431,7 +431,7 @@ fn direction_cards(locale : Locale) -> Array[ListCard] {
     },
     {
       title: t(locale, zh="绑定与应用", en="Bindings and applications"),
-      desc: t(locale, zh="适合做可演示、可复用的生态项目。", en="Good for demonstrable and reusable ecosystem projects."),
+      desc: t(locale, zh="适合做可展示、可复用的生态项目。", en="Good for presentable and reusable ecosystem projects."),
       items: [
         t(locale, zh="小型 2D 游戏工具库或流行游戏引擎绑定", en="Small 2D game toolkits or popular game-engine bindings"),
         t(locale, zh="流行数据库的 MoonBit 绑定", en="MoonBit bindings for popular databases"),
@@ -450,15 +450,15 @@ fn showcase_signals(locale : Locale) -> Array[ShowcaseSignal] {
     },
     {
       value: t(locale, zh="公开仓库", en="Public repo"),
-      label: t(locale, zh="卡片会直接展示 GitHub、Mooncakes 和 Demo 入口。", en="Cards will expose GitHub, Mooncakes, and demo links."),
+      label: t(locale, zh="卡片会直接展示 GitHub、Mooncakes 和相关链接。", en="Cards will expose GitHub, Mooncakes, and related links."),
     },
     {
       value: t(locale, zh="持续更新", en="Updated"),
-      label: t(locale, zh="项目介绍、亮点、文档和演示可随开发进展补充。", en="Profiles, highlights, docs, and demos can be added as projects evolve."),
+      label: t(locale, zh="项目介绍、亮点、文档和相关链接可随开发进展补充。", en="Profiles, highlights, docs, and related links can be added as projects evolve."),
     },
     {
       value: t(locale, zh="展示推荐", en="Promotion"),
-      label: t(locale, zh="优秀项目可获得官网、社区和后续生态维护推荐。", en="Standout projects may receive site, community, and ecosystem-maintenance promotion."),
+      label: t(locale, zh="优秀项目可获得官网、社区和持续生态维护推荐。", en="Standout projects may receive site, community, and ecosystem-maintenance promotion."),
     },
   ]
 }
@@ -470,12 +470,12 @@ fn showcase_projects(locale : Locale) -> Array[ShowcaseProject] {
       status: t(locale, zh="待上墙", en="Pending"),
       category: t(locale, zh="生态库", en="Library"),
       title: t(locale, zh="项目名称待公布", en="Project name TBD"),
-      subtitle: t(locale, zh="通过验收后展示公开仓库、Mooncakes 包和 Demo", en="Public repo, Mooncakes package, and demo after acceptance"),
+      subtitle: t(locale, zh="通过验收后展示公开仓库、Mooncakes 包和相关链接", en="Public repo, Mooncakes package, and related links after acceptance"),
       desc: t(locale, zh="用于展示真实可用的 MoonBit 开源库：项目目标、核心 API、使用示例、测试和文档都会在卡片中清楚呈现。", en="For usable MoonBit open-source libraries. Goals, core APIs, examples, tests, and documentation will be shown clearly in the card."),
       highlights: [
         t(locale, zh="公开 README、源码、提交记录和许可证", en="Public README, source, commits, and license"),
         t(locale, zh="突出核心功能、适用场景和生态价值", en="Highlight core features, use cases, and ecosystem value"),
-        t(locale, zh="保留 GitHub / Mooncakes / Demo 入口", en="Reserve GitHub / Mooncakes / Demo entry points"),
+        t(locale, zh="保留 GitHub / Mooncakes / 项目链接入口", en="Reserve GitHub / Mooncakes / project entry points"),
       ],
       tags: ["MoonBit", "GitHub", "Mooncakes"],
       links: [
@@ -491,7 +491,7 @@ fn showcase_projects(locale : Locale) -> Array[ShowcaseProject] {
       highlights: [
         t(locale, zh="展示安装、运行和最小使用样例", en="Show installation, running, and minimal examples"),
         t(locale, zh="展示 CI、测试和文档完成度", en="Show CI, tests, and documentation completeness"),
-        t(locale, zh="可补充技术文章或演示视频链接", en="Can include technical articles or demo videos"),
+        t(locale, zh="可补充技术文章或使用视频链接", en="Can include technical articles or usage videos"),
       ],
       tags: ["MoonBit", t(locale, zh="工具链", en="Tooling"), t(locale, zh="示例", en="Examples")],
       links: [
@@ -503,7 +503,7 @@ fn showcase_projects(locale : Locale) -> Array[ShowcaseProject] {
       category: t(locale, zh="高校实践", en="Campus"),
       title: t(locale, zh="高校项目待公布", en="Campus project TBD"),
       subtitle: t(locale, zh="适合展示课程、社团、训练营或实验室产出的代表项目", en="For representative projects from courses, clubs, bootcamps, or labs"),
-      desc: t(locale, zh="高校实践项目会突出共建场景、学习材料、可复用成果和后续维护计划，便于更多学生继续参与 MoonBit 生态。", en="Campus projects will highlight collaboration context, learning material, reusable output, and maintenance plans so more students can join the MoonBit ecosystem."),
+      desc: t(locale, zh="高校实践项目会突出共建场景、学习材料、可复用成果和持续维护计划，便于更多学生继续参与 MoonBit 生态。", en="Campus projects will highlight collaboration context, learning material, reusable output, and maintenance plans so more students can join the MoonBit ecosystem."),
       highlights: [
         t(locale, zh="展示作者、学校 / 社团和项目方向", en="Show author, campus/community, and project direction"),
         t(locale, zh="展示课程实践或开源训练成果", en="Show course practice or open-source training output"),
@@ -783,8 +783,8 @@ fn view_progress_page(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="这里会把报名状态、GitHub 仓库检查、验收材料和作品墙状态串起来。当前已支持本地报名记录、飞书 CSV/JSON 导入匹配、自建状态演示和公开 GitHub 仓库检查。",
-              en="This page connects registration status, GitHub repository checks, acceptance materials, and showcase status. It now supports local registration records, Feishu CSV/JSON import matching, local status simulation, and public GitHub repository checks.",
+              zh="这里会把报名状态、GitHub 仓库检查、验收材料、通知记录和作品墙状态串起来。支持飞书导入、自建报名、后台审核和公开 GitHub 仓库检查。",
+              en="This page connects registration status, GitHub repository checks, acceptance materials, notifications, and showcase status. It supports Feishu imports, self-hosted registration, admin review, and public GitHub repository checks.",
             ),
           ),
           div(class="progress-page-actions", [
@@ -795,26 +795,26 @@ fn view_progress_page(model : Model) -> Html {
         ]),
         article(id="progress-login", class="github-login-card progress-login-card", [
           div(class="github-mark", "GH"),
-          h3(t(model.locale, zh="点击 GitHub 登录", en="Sign in with GitHub")),
+          h3(t(model.locale, zh="连接 GitHub 公开信息", en="Connect public GitHub info")),
           p(
             t(
               model.locale,
-              zh="当前静态版使用 GitHub 公开资料和公开仓库地址进行连接和检查；正式 OAuth 接入后可用 GitHub 账号自动匹配报名数据。",
-              en="The current static version connects through public GitHub profile data and public repository URLs. After OAuth integration, the GitHub account can automatically match registration data.",
+              zh="输入 GitHub 用户名、公开仓库或报名编号后，可以查看仓库检查结果和后台同步的比赛进度。",
+              en="Enter a GitHub username, public repository, or registration ID to view repository checks and backend-synced progress.",
             ),
           ),
-          a(class="button primary github-login-button", href="#progress-plans", t(model.locale, zh="使用 GitHub 登录（开发中）", en="Sign in with GitHub (WIP)")),
-          p(class="github-login-note", t(model.locale, zh="后续接入 GitHub OAuth，权限只申请读取公开资料和公开仓库。", en="GitHub OAuth will request only public profile and public repository access.")),
+          a(class="button primary github-login-button", href="#progress-plans", t(model.locale, zh="查看数据来源", en="View data sources")),
+          p(class="github-login-note", t(model.locale, zh="当前只读取公开资料和公开仓库，不读取私有仓库。", en="This only reads public profiles and public repositories, not private repositories.")),
         ]),
       ]),
       div(id="progress-plans", class="progress-plan-grid", [
         article(class="path-card progress-plan-card", [
           span(class="tag", t(model.locale, zh="方案一", en="Option A")),
           h3(t(model.locale, zh="飞书报名数据同步", en="Sync Feishu registration data")),
-          p(t(model.locale, zh="继续使用飞书表单收集报名信息，进度页通过 GitHub 登录识别选手，再按邮箱、GitHub 仓库或唯一报名 ID 匹配飞书表里的状态。", en="Continue collecting registrations through Feishu forms. The progress page identifies participants via GitHub login, then matches Feishu records by email, GitHub repository, or a unique registration ID.")),
+          p(t(model.locale, zh="继续使用飞书表单收集报名信息，后台导入飞书 CSV / JSON 后，按邮箱、GitHub 仓库、GitHub 账号或项目名匹配选手进度。", en="Continue collecting registrations through Feishu forms. After importing Feishu CSV / JSON, the backend matches progress by email, GitHub repository, GitHub username, or project name.")),
           ul(class="path-points", [
             li(t(model.locale, zh="需要飞书表字段：姓名、邮箱、GitHub 仓库、项目名、申报审核状态、验收状态、奖励状态。", en="Needs Feishu fields: name, email, GitHub repository, project name, proposal review status, acceptance status, and reward status.")),
-            li(t(model.locale, zh="GitHub 登录只负责身份识别和公开仓库检查，不替代报名表。", en="GitHub login handles identity and public repository checks, not registration submission.")),
+            li(t(model.locale, zh="GitHub 公开信息只用于身份辅助匹配和公开仓库检查，不替代报名表。", en="Public GitHub info helps identity matching and public repository checks; it does not replace the registration form.")),
             li(t(model.locale, zh="适合快速上线，继续沿用现有飞书报名流程。", en="Best for quick launch while keeping the existing Feishu registration flow.")),
           ]),
           a(class="button secondary", href=registration_href(), t(model.locale, zh="查看飞书报名入口", en="Open Feishu form")),
@@ -822,23 +822,23 @@ fn view_progress_page(model : Model) -> Html {
         article(class="path-card progress-plan-card", [
           span(class="tag", t(model.locale, zh="方案二", en="Option B")),
           h3(t(model.locale, zh="自建报名系统", en="Self-hosted registration system")),
-          p(t(model.locale, zh="把报名、审核、仓库检查、验收和奖励状态都放到官网系统里。当前先做前台原型，后续再接数据库、后台审核和 GitHub OAuth。", en="Move registration, review, repository checks, acceptance, and reward status into the official site. This is the frontend prototype before database, admin review, and GitHub OAuth integration.")),
+          p(t(model.locale, zh="作为飞书之外的第二条路径，官网报名页可直接写入后台数据库，和飞书导入的数据进入同一套审核、通知和进度系统。", en="As a second path alongside Feishu, the site registration form writes directly to the backend database and shares the same review, notification, and progress system as Feishu imports.")),
           ul(class="path-points", [
-            li(t(model.locale, zh="选手用 GitHub 登录后提交报名材料。", en="Participants sign in with GitHub before submitting registration materials.")),
-            li(t(model.locale, zh="后台可维护申报审核、验收审核、奖励发放和作品墙状态。", en="Admins can maintain proposal review, acceptance review, reward, and showcase states.")),
-            li(t(model.locale, zh="正式上线前需要补齐隐私、安全、文件上传和敏感信息处理。", en="Before launch, privacy, security, file upload, and sensitive data handling must be completed.")),
+            li(t(model.locale, zh="选手填写项目信息、GitHub 仓库、申报书和学生证明。", en="Participants submit project info, GitHub repository, proposal, and student proof.")),
+            li(t(model.locale, zh="后台可维护申报审核、验收审核、奖励发放、邮件通知和作品墙状态。", en="Admins can maintain proposal review, acceptance review, rewards, email notifications, and showcase states.")),
+            li(t(model.locale, zh="敏感信息不在公开进度页展示，只在后台管理和奖励发放环节使用。", en="Sensitive information is not shown on public progress pages and is used only for admin review and reward payout.")),
           ]),
-          a(class="button secondary", href="register.html", t(model.locale, zh="打开自建报名原型", en="Open registration prototype")),
+          a(class="button secondary", href="register.html", t(model.locale, zh="打开自建报名", en="Open registration")),
         ]),
       ]),
       article(class="progress-dashboard progress-dashboard--preview", [
         div(class="progress-user-row", [
           div(class="progress-avatar", "GH"),
           div([
-            strong(t(model.locale, zh="登录后进度看板", en="Post-login dashboard")),
-            p(t(model.locale, zh="这里展示匹配到报名数据后的比赛进度结构。", en="This area shows the contest progress structure after a registration record is matched.")),
+            strong(t(model.locale, zh="比赛进度看板", en="Contest progress dashboard")),
+            p(t(model.locale, zh="输入报名编号、GitHub 仓库或导入飞书数据后，这里会显示真实进度。", en="After entering a registration ID, GitHub repository, or importing Feishu data, real progress appears here.")),
           ]),
-          span(class="toolbar-btn progress-logout", t(model.locale, zh="展示结构", en="Preview")),
+          span(class="toolbar-btn progress-logout", t(model.locale, zh="待查询", en="Waiting")),
         ]),
         div(class="progress-meter", [
           div(class="progress-meter-fill", nothing),
@@ -884,8 +884,8 @@ fn view_register_page(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="这是第二套方案的前台页面：不依赖飞书表单，选手填写项目信息后可保存到后台数据库，并同步到比赛进度页；公网静态预览会自动降级为浏览器本地保存。",
-              en="This is the frontend page for option B. It does not rely on Feishu forms; participants can save project information to the backend database and sync it to the progress page. The public static preview falls back to browser-local storage.",
+              zh="这是飞书之外的第二条报名路径。选手填写项目信息后可保存到后台数据库，并同步到比赛进度页；公网静态预览会自动降级为浏览器本地保存。",
+              en="This is the second registration path alongside Feishu. Participants can save project information to the backend database and sync it to the progress page. The public static preview falls back to browser-local storage.",
             ),
           ),
           div(class="progress-page-actions", [
@@ -898,7 +898,7 @@ fn view_register_page(model : Model) -> Html {
             div(class="github-mark", "GH"),
             div([
               h3(t(model.locale, zh="MoonBit 开源大赛报名", en="MoonBit contest registration")),
-              p(t(model.locale, zh="GitHub 登录后自动带入账号和公开仓库信息。", en="GitHub sign-in will prefill account and public repository data.")),
+              p(t(model.locale, zh="填写后可进入后台审核和比赛进度同步。", en="Submitted records can enter admin review and progress sync.")),
             ]),
           ]),
           div(class="register-field-grid", [
@@ -916,7 +916,7 @@ fn view_register_page(model : Model) -> Html {
           div(class="register-upload-grid", [
             div(class="register-upload", [
               strong(t(model.locale, zh="项目申报书 PDF", en="Proposal PDF")),
-              p(t(model.locale, zh="建议一页，正式系统接文件上传。", en="One page recommended; file upload is added in the real system.")),
+              p(t(model.locale, zh="建议一页，后台可保存文件并供管理员审核。", en="One page recommended; the backend can store the file for admin review.")),
             ]),
             div(class="register-upload", [
               strong(t(model.locale, zh="学生身份证明", en="Student proof")),
@@ -928,8 +928,8 @@ fn view_register_page(model : Model) -> Html {
             p(t(model.locale, zh="身份证、银行卡等信息建议只在奖励发放阶段单独收集，不放在公开进度页里展示。", en="ID and bank information should be collected separately during reward payout and never shown on the public progress page.")),
           ]),
           div(class="progress-page-actions", [
-            span(class="button primary register-disabled", t(model.locale, zh="提交报名（原型）", en="Submit registration (prototype)")),
-            a(class="button secondary", href=registration_href(), t(model.locale, zh="当前仍使用飞书正式报名", en="Use current Feishu form")),
+            span(class="button primary register-disabled", t(model.locale, zh="报名表加载中", en="Loading form")),
+            a(class="button secondary", href=registration_href(), t(model.locale, zh="也可使用飞书报名", en="Use Feishu form")),
           ]),
         ]),
       ]),
@@ -999,7 +999,7 @@ fn view_showcase_wall(model : Model) -> Html {
           section_intro(
             t(model.locale, zh="优秀作品展示墙", en="Showcase Wall"),
             t(model.locale, zh="项目通过申报、公开开发和验收后，会按作品卡片集中展示", en="Projects are featured as cards after proposal review, public development, and acceptance"),
-            t(model.locale, zh="参考 MoonBit 展示墙的信息结构：公开仓库、项目简介、核心亮点、标签和后续演示入口都放在同一张卡片里。", en="Following the MoonBit showcase pattern, each card groups the public repository, project summary, highlights, tags, and demo links together."),
+            t(model.locale, zh="参考 MoonBit 展示墙的信息结构：公开仓库、项目简介、核心亮点、标签和相关链接都放在同一张卡片里。", en="Following the MoonBit showcase pattern, each card groups the public repository, project summary, highlights, tags, and related links together."),
           ),
           a(class="button secondary", href=registration_href(), t(model.locale, zh="报名争取上墙", en="Register to be featured")),
         ]),
@@ -1009,7 +1009,7 @@ fn view_showcase_wall(model : Model) -> Html {
       ]),
       div(class="showcase-wall-list-head", [
         p(t(model.locale, zh="展示位预留", en="Reserved slots")),
-        h3(t(model.locale, zh="后续收录的优秀项目会按下面格式更新", en="Accepted projects will be updated in this format")),
+        h3(t(model.locale, zh="通过验收的优秀项目会按下面格式更新", en="Accepted projects will be updated in this format")),
       ]),
       div(class="showcase-wall-grid", showcase_projects(model.locale).map(fn(card) {
         view_showcase_project(card)

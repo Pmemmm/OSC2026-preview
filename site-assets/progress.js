@@ -591,7 +591,7 @@ function renderProgressDashboard() {
       <div class="progress-source-card"><span>GitHub 账号</span><strong>${profile ? `@${escapeHtml(profile.login)}` : "未连接"}</strong><p>${profile ? "已读取公开资料，不涉及私有仓库权限。" : "输入 GitHub 用户名后可连接公开资料。"}</p></div>
       <div class="progress-source-card"><span>后台数据库</span><strong>${backendLabel}</strong><p>${backendDetail}</p></div>
       <div class="progress-source-card"><span>飞书报名数据</span><strong>${hasFeishuMatch ? "已匹配" : escapeHtml(feishu.proposal)}</strong><p>${hasFeishuMatch ? `通过${escapeHtml(feishu.matchField)}匹配，状态来自导入数据。` : "可导入飞书表 CSV/JSON 后自动匹配。"}</p></div>
-      <div class="progress-source-card"><span>自建报名系统</span><strong>${hasRegistration ? "本地已保存" : "未填写"}</strong><p>${escapeHtml(registration.email || "当前原型保存到浏览器 localStorage。")}</p></div>
+      <div class="progress-source-card"><span>自建报名系统</span><strong>${hasRegistration ? "已保存" : "未填写"}</strong><p>${escapeHtml(registration.email || "未连接后台时会先保存到浏览器本地。")}</p></div>
       <div class="progress-source-card"><span>作品墙状态</span><strong>${escapeHtml(feishu.showcase)}</strong><p>通过验收或表现突出的项目可进入展示墙。</p></div>
       <div class="progress-source-card"><span>通知状态</span><strong>${lastNotification ? escapeHtml(lastNotification.status) : "暂无通知"}</strong><p>${lastNotification ? escapeHtml(lastNotification.subject || lastNotification.error || "已生成通知记录。") : "管理员推进流程后会邮件通知。"}</p></div>
     </div>
@@ -666,7 +666,7 @@ function renderPlanPanels(force = false) {
     <article class="path-card progress-plan-card progress-status-panel">
       <span class="tag">方案二</span>
       <h3>自建报名系统与后台状态</h3>
-      <p>自建报名页已经能保存报名信息，并同步到进度页。这里提供本地后台状态演示，正式版可替换为数据库、后台审核和 GitHub OAuth。</p>
+      <p>自建报名页可保存报名信息，并同步到进度页。后台可统一维护申报审核、验收、奖励、通知和作品墙状态。</p>
       <div class="progress-mini-list">
         <div><span>报名信息</span><strong>${registration.projectName ? escapeHtml(registration.projectName) : "未填写"}</strong></div>
         <div><span>联系邮箱</span><strong>${registration.email ? escapeHtml(registration.email) : "未填写"}</strong></div>
@@ -678,7 +678,7 @@ function renderPlanPanels(force = false) {
         <label class="form-field"><span>奖励状态</span><select name="reward">${statusOptions(feishu.reward, ["未开始", "启动支持待发放", "启动支持已发放", "完成支持已发放"])}</select></label>
         <label class="form-field"><span>作品墙</span><select name="showcase">${statusOptions(feishu.showcase, ["待上墙", "候选项目", "已上墙", "暂不展示"])}</select></label>
         <div class="progress-compact-actions">
-          <button class="button primary" type="submit">保存演示状态</button>
+          <button class="button primary" type="submit">保存当前状态</button>
           <a class="button secondary" href="register.html">打开自建报名</a>
           <a class="button secondary" href="admin.html">后台管理</a>
           <button class="button secondary" type="button" data-action="clear-registration">清除本地报名</button>
@@ -772,10 +772,9 @@ function initProgressPage() {
       <div class="progress-page-actions">
         <button class="button primary" type="submit">连接并检查</button>
         <button class="button secondary" type="button" data-action="load-server-record">读取数据库进度</button>
-        <button class="button secondary" type="button" data-action="oauth-placeholder">GitHub 登录（正式版）</button>
         <button class="button secondary" type="button" data-action="clear-progress">清除本地数据</button>
       </div>
-      <p class="github-login-note">正式 GitHub OAuth 需要后端保存 Client Secret；这里先完成公开资料读取、飞书匹配和仓库检查闭环。</p>
+      <p class="github-login-note">当前通过公开 GitHub 资料、公开仓库、报名编号和导入数据进行匹配；不读取私有仓库。</p>
       <div class="progress-alert" id="progress-message" hidden></div>
     </form>
   `;
@@ -787,12 +786,6 @@ function initProgressPage() {
   });
   form.querySelector("[data-action='load-server-record']").addEventListener("click", async () => {
     await loadServerRegistration(form.elements.serverId.value);
-  });
-  form.querySelector("[data-action='oauth-placeholder']").addEventListener("click", () => {
-    const message = $("#progress-message");
-    message.hidden = false;
-    message.className = "progress-alert";
-    message.textContent = "正式 OAuth 需要后端接口。当前预览版已先用公开 GitHub API 模拟登录后的进度查询能力。";
   });
   form.querySelector("[data-action='clear-progress']").addEventListener("click", () => {
     localStorage.removeItem(STORE_KEY);
@@ -952,7 +945,7 @@ function initRegisterPage() {
         <div class="github-mark">GH</div>
         <div>
           <h3>MoonBit 开源大赛报名</h3>
-          <p>当前原型会保存到本地浏览器，并同步到比赛进度页。</p>
+          <p>有后台时写入 SQLite；未连接后台时会先保存到浏览器本地，并同步到比赛进度页。</p>
         </div>
       </div>
       <div class="register-field-grid">
@@ -968,8 +961,8 @@ function initRegisterPage() {
       </div>
       <label class="form-field form-field--full"><span>项目简介</span><textarea name="summary" rows="5" placeholder="说明项目做什么、为什么值得做、计划如何实现、最终交付什么。">${escapeHtml(data.summary || "")}</textarea></label>
       <div class="register-upload-grid">
-        <label class="register-upload"><strong>项目申报书 PDF</strong><input name="proposalFile" type="file" accept=".pdf"><p>${data.proposalFileName ? `已选择：${escapeHtml(data.proposalFileName)}` : "建议一页，正式系统接文件上传。"}</p></label>
-        <label class="register-upload"><strong>学生身份证明</strong><input name="studentFile" type="file" accept=".pdf,.jpg,.jpeg,.png"><p>${data.studentFileName ? `已选择：${escapeHtml(data.studentFileName)}` : "正式上线前需要明确隐私和存储策略。"}</p></label>
+        <label class="register-upload"><strong>项目申报书 PDF</strong><input name="proposalFile" type="file" accept=".pdf"><p>${data.proposalFileName ? `已选择：${escapeHtml(data.proposalFileName)}` : "建议一页，后台用于申报审核。"}</p></label>
+        <label class="register-upload"><strong>学生身份证明</strong><input name="studentFile" type="file" accept=".pdf,.jpg,.jpeg,.png"><p>${data.studentFileName ? `已选择：${escapeHtml(data.studentFileName)}` : "仅用于学生身份确认，不在公开页面展示。"}</p></label>
       </div>
       <div class="register-system-note">
         <strong>敏感信息处理建议</strong>
