@@ -9,7 +9,8 @@ const START_DATE_ISO = "2026-04-28T16:00:00Z";
 const MAX_UPLOAD_SIZE = 10 * 1024 * 1024;
 const PROPOSAL_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf";
 const ACCEPTANCE_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg";
-const API_BASE = window.MGPIC_API_BASE || "";
+const DEFAULT_RENDER_API_BASE = "https://mgpic2026.onrender.com";
+const API_BASE = resolveApiBase();
 let progressActionsBound = false;
 let backendSyncStarted = false;
 let githubSessionSyncStarted = false;
@@ -22,6 +23,25 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => 
   "\"": "&quot;",
   "'": "&#039;",
 }[char]));
+
+function normalizeApiBase(value) {
+  const text = String(value || "").trim().replace(/\/+$/, "");
+  if (!text) return "";
+  try {
+    const url = new URL(text);
+    if (!["http:", "https:"].includes(url.protocol)) return "";
+    return url.href.replace(/\/+$/, "");
+  } catch {
+    return "";
+  }
+}
+
+function resolveApiBase() {
+  const explicit = normalizeApiBase(window.MGPIC_API_BASE);
+  if (explicit) return explicit;
+  if (/github\.io$/i.test(window.location.hostname)) return DEFAULT_RENDER_API_BASE;
+  return "";
+}
 
 const fieldAliases = {
   name: ["姓名", "参赛者", "项目负责人", "负责人", "name"],

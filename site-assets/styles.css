@@ -2202,6 +2202,74 @@ a {
     color-mix(in srgb, var(--panel-strong) 82%, transparent);
 }
 
+.admin-disconnected {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-disconnected .progress-alert strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.admin-disconnected .progress-alert p {
+  margin: 8px 0 0;
+}
+
+.admin-api-form,
+.admin-connect-steps div {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
+}
+
+.admin-api-form {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+}
+
+.admin-api-form p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
+.admin-connect-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-connect-steps div {
+  padding: 14px;
+}
+
+.admin-connect-steps span {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #fff;
+  font-weight: 900;
+}
+
+.admin-connect-steps strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--text);
+}
+
+.admin-connect-steps p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
 .admin-toolbar {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -2877,6 +2945,7 @@ a {
   .admin-hero,
   .admin-toolbar,
   .admin-layout,
+  .admin-connect-steps,
   .card-grid,
   .learn-step-grid,
   .showcase-grid,

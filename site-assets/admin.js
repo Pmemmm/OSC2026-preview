@@ -1,8 +1,10 @@
-const API_BASE = window.MGPIC_API_BASE || "";
 const $ = (selector, root = document) => root.querySelector(selector);
+const API_BASE_KEY = "mgpic2026.apiBase";
+const DEFAULT_RENDER_API_BASE = "https://mgpic2026.onrender.com";
 
 let registrations = [];
 let selectedId = null;
+let apiBase = readApiBase();
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
   "&": "&amp;",
@@ -13,7 +15,7 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => 
 }[char]));
 
 async function api(path, options = {}) {
-  const response = await fetch(`${API_BASE}${path}`, {
+  const response = await fetch(apiUrl(path), {
     ...options,
     headers: {
       "Content-Type": "application/json",
@@ -31,6 +33,50 @@ async function api(path, options = {}) {
     throw new Error(message);
   }
   return response.json();
+}
+
+function normalizeApiBase(value) {
+  const text = String(value || "").trim().replace(/\/+$/, "");
+  if (!text) return "";
+  try {
+    const url = new URL(text);
+    if (!["http:", "https:"].includes(url.protocol)) return "";
+    return url.href.replace(/\/+$/, "");
+  } catch {
+    return "";
+  }
+}
+
+function readApiBase() {
+  const params = new URLSearchParams(window.location.search);
+  const queryBase = params.get("apiBase");
+  const defaultBase = isStaticPreviewHost() ? DEFAULT_RENDER_API_BASE : "";
+  const configured = normalizeApiBase(queryBase || window.MGPIC_API_BASE || localStorage.getItem(API_BASE_KEY) || defaultBase);
+  if (queryBase && configured) localStorage.setItem(API_BASE_KEY, configured);
+  return configured;
+}
+
+function setApiBase(value) {
+  apiBase = normalizeApiBase(value);
+  if (apiBase) {
+    localStorage.setItem(API_BASE_KEY, apiBase);
+  } else {
+    localStorage.removeItem(API_BASE_KEY);
+  }
+}
+
+function apiUrl(path) {
+  if (!path) return apiBase || "";
+  if (/^https?:\/\//i.test(path)) return path;
+  return `${apiBase}${path}`;
+}
+
+function currentEndpointLabel() {
+  return apiBase || window.location.origin;
+}
+
+function isStaticPreviewHost() {
+  return /github\.io$/i.test(window.location.hostname);
 }
 
 function formatTime(value) {
@@ -92,11 +138,76 @@ function statusBadge(value) {
   return `<span class="${klass}">${escapeHtml(text)}</span>`;
 }
 
+function renderDisconnected(error) {
+  const app = $("#admin-app");
+  const staticHint = isStaticPreviewHost()
+    ? "当前访问的是 GitHub Pages 静态预览页。这里不能运行 SQLite、GitHub OAuth、AI 审核或邮件通知。"
+    : "当前页面没有连接到可用的后台接口。请确认 Python 后端已经启动，或填写部署后的后端服务地址。";
+  app.innerHTML = `
+    <div class="admin-disconnected">
+      <div class="progress-alert progress-alert--error">
+        <strong>这里还不是可用的数据后台</strong>
+        <p>${escapeHtml(staticHint)}</p>
+        <p>当前连接地址：<code>${escapeHtml(currentEndpointLabel())}</code></p>
+        <p>接口错误：${escapeHtml(error?.message || "无法连接 /api/health")}</p>
+      </div>
+      <form class="admin-api-form" id="admin-api-form">
+        <label class="form-field admin-detail-wide">
+          <span>后端服务地址</span>
+          <input
+            name="apiBase"
+            value="${escapeHtml(apiBase)}"
+            placeholder="例如：https://mgpic2026.onrender.com"
+            autocomplete="url"
+          >
+        </label>
+        <p>
+          后端部署完成后，把 Render / Railway / 服务器生成的域名填在这里并保存。正式运营建议直接访问
+          <code>https://你的后端域名/admin.html</code>，不要用 GitHub Pages 管真实数据。
+        </p>
+        <div class="admin-form-actions">
+          <button class="button primary" type="submit">保存后端地址并重试</button>
+          <button class="button secondary" type="button" data-action="clear-api-base">清除地址</button>
+          <a class="button secondary" href="https://github.com/zongen01/MGPIC2026/blob/main/DEPLOYMENT.md" target="_blank" rel="noreferrer">查看部署说明</a>
+        </div>
+      </form>
+      <div class="admin-connect-steps">
+        <div>
+          <span>1</span>
+          <strong>部署后端</strong>
+          <p>用仓库里的 <code>render.yaml</code> 或 <code>Dockerfile</code> 部署 <code>server.py</code>。</p>
+        </div>
+        <div>
+          <span>2</span>
+          <strong>配置 OAuth 和邮件</strong>
+          <p>在服务环境变量里填入 GitHub OAuth、OpenAI、SMTP 等密钥。</p>
+        </div>
+        <div>
+          <span>3</span>
+          <strong>使用后端域名</strong>
+          <p>后台、报名、比赛进度都从后端域名访问，数据才会写入 SQLite。</p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  $("#admin-api-form").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    setApiBase(new FormData(form).get("apiBase"));
+    loadRegistrations();
+  });
+  app.querySelector("[data-action='clear-api-base']").addEventListener("click", () => {
+    setApiBase("");
+    loadRegistrations();
+  });
+}
+
 function renderShell() {
   const app = $("#admin-app");
   app.innerHTML = `
     <div class="progress-alert admin-operator-note">
-      后台用于赛事工作人员管理报名、审核、奖励、通知和作品墙状态。正式使用时请部署在受控环境，并通过服务端访问同源 API。
+      后台用于赛事工作人员管理报名、审核、奖励、通知和作品墙状态。当前连接地址：<code>${escapeHtml(currentEndpointLabel())}</code>。正式使用时请部署在受控环境，并优先通过后端域名访问。
     </div>
     <div class="admin-toolbar">
       <div class="admin-search-wrap">
@@ -145,7 +256,7 @@ function renderShell() {
   app.querySelector("[data-action='refresh']").addEventListener("click", loadRegistrations);
   app.querySelector("[data-action='export-csv']").addEventListener("click", exportCsv);
   app.querySelector("[data-action='open-register']").addEventListener("click", () => {
-    window.location.href = "register.html";
+    window.location.href = apiBase ? `${apiBase}/register.html` : "register.html";
   });
 }
 
@@ -218,7 +329,7 @@ function fileLinks(files = []) {
     id_back: "身份证反面",
   };
   return files.map((file) => `
-    <a class="admin-file-link" href="${escapeHtml(file.downloadUrl)}" target="_blank" rel="noreferrer">
+    <a class="admin-file-link" href="${escapeHtml(apiUrl(file.downloadUrl))}" target="_blank" rel="noreferrer">
       ${escapeHtml(labels[file.kind] || file.kind)}：${escapeHtml(file.filename || "未命名文件")}
     </a>
   `).join("");
@@ -470,11 +581,7 @@ async function loadRegistrations(showLoading = true) {
       $("#admin-detail").innerHTML = `<div class="progress-alert">数据库已连接：${escapeHtml(health.database)}。暂无报名记录，可以从“新建报名”或飞书导入开始。</div>`;
     }
   } catch (error) {
-    $("#admin-app").innerHTML = `
-      <div class="progress-alert progress-alert--error">
-        未连接后台数据库。GitHub Pages 只能预览后台界面；请在本地或服务器运行 <code>python3 server.py</code> 后访问同源后台页面。
-      </div>
-    `;
+    renderDisconnected(error);
   }
 }
 
