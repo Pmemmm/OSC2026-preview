@@ -1,2 +1,4 @@
 .mooncakes/
 _build/
+data/*.sqlite3
+data/*.sqlite3-*

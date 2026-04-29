@@ -6,7 +6,9 @@ const GITHUB_PROFILE_KEY = "mgpic2026.githubProfile.v1";
 const START_DATE_ISO = "2026-04-28T16:00:00Z";
 const PROPOSAL_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf";
 const ACCEPTANCE_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg";
+const API_BASE = window.MGPIC_API_BASE || "";
 let progressActionsBound = false;
+let backendSyncStarted = false;
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
@@ -40,6 +42,37 @@ function loadJson(key, fallback = null) {
 
 function saveJson(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
+}
+
+async function apiRequest(path, options = {}) {
+  const response = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers || {}),
+    },
+  });
+  if (!response.ok) {
+    const error = new Error(`后台接口 ${response.status}`);
+    error.status = response.status;
+    try {
+      error.payload = await response.json();
+      if (error.payload?.error) error.message = error.payload.error;
+    } catch {
+      // Ignore non-JSON error pages, for example GitHub Pages 404.
+    }
+    throw error;
+  }
+  if (response.status === 204) return null;
+  return response.json();
+}
+
+async function backendHealth() {
+  try {
+    return await apiRequest("/api/health", { method: "GET" });
+  } catch {
+    return null;
+  }
 }
 
 function safeHttpUrl(value) {
@@ -291,6 +324,98 @@ function saveRegistrationFromForm(form) {
   return value;
 }
 
+function backendPayload(value) {
+  return {
+    name: value.name || "",
+    email: value.email || "",
+    school: value.school || "",
+    githubLogin: value.githubLogin || "",
+    githubRepo: value.githubRepo || "",
+    projectName: value.projectName || "",
+    projectType: value.projectType || "",
+    summary: value.summary || "",
+    proposalFileName: value.proposalFileName || "",
+    studentFileName: value.studentFileName || "",
+  };
+}
+
+async function saveRegistrationToBackend(value) {
+  const previous = getRegistration();
+  const serverId = value.serverId || previous.serverId;
+  const path = serverId ? `/api/registrations/${encodeURIComponent(serverId)}` : "/api/registrations";
+  const method = serverId ? "PUT" : "POST";
+  try {
+    const result = await apiRequest(path, {
+      method,
+      body: JSON.stringify(backendPayload(value)),
+    });
+    const saved = {
+      ...value,
+      serverId: result.registration.id,
+      backendMode: "sqlite",
+      backendSavedAt: result.registration.updatedAt || result.registration.createdAt || new Date().toISOString(),
+    };
+    saveJson(STORE_KEY, saved);
+    return { mode: "backend", registration: saved };
+  } catch (error) {
+    const saved = {
+      ...value,
+      backendMode: "local",
+      backendError: error.message,
+    };
+    saveJson(STORE_KEY, saved);
+    return { mode: "local", registration: saved, error };
+  }
+}
+
+async function syncRegistrationFromBackend() {
+  const current = getRegistration();
+  if (!current.serverId || backendSyncStarted) return;
+  backendSyncStarted = true;
+  try {
+    const result = await apiRequest(`/api/registrations/${encodeURIComponent(current.serverId)}`);
+    saveJson(STORE_KEY, {
+      ...current,
+      ...result.registration,
+      serverId: result.registration.id,
+      backendMode: "sqlite",
+      backendSavedAt: result.registration.updatedAt,
+    });
+    if (result.status) saveJson(FEISHU_KEY, { ...getFeishuState(), ...result.status, source: "backend" });
+    if (result.repoCheck) saveJson(CHECK_KEY, result.repoCheck);
+    renderProgressDashboard();
+    renderPlanPanels(true);
+  } catch {
+    // The public GitHub Pages preview has no backend; keep the local copy usable.
+  }
+}
+
+async function saveRepoCheckToBackend(result) {
+  const registration = getRegistration();
+  if (!registration.serverId) return;
+  try {
+    await apiRequest(`/api/registrations/${encodeURIComponent(registration.serverId)}/repo-check`, {
+      method: "POST",
+      body: JSON.stringify(result),
+    });
+  } catch {
+    // Keep GitHub Pages preview functional without a backend.
+  }
+}
+
+async function saveStatusToBackend(state) {
+  const registration = getRegistration();
+  if (!registration.serverId) return null;
+  try {
+    return await apiRequest(`/api/registrations/${encodeURIComponent(registration.serverId)}/status`, {
+      method: "PATCH",
+      body: JSON.stringify(state),
+    });
+  } catch {
+    return null;
+  }
+}
+
 function matchFeishuRecord(rows) {
   const registration = getRegistration();
   const check = getCheck();
@@ -424,6 +549,10 @@ function renderProgressDashboard() {
   const repoLine = repoUrl
     ? `<a href="${escapeHtml(repoUrl)}" target="_blank" rel="noreferrer">${escapeHtml(repoUrl)}</a>`
     : "填写 GitHub 仓库后可检查公开开发进度。";
+  const backendLabel = registration.backendMode === "sqlite" ? "SQLite 已保存" : "本地预览";
+  const backendDetail = registration.backendMode === "sqlite"
+    ? `数据库记录 #${escapeHtml(registration.serverId)}，可用于后台审核。`
+    : "当前公网 GitHub Pages 无后端，会先保存到浏览器。";
 
   dashboard.innerHTML = `
     <div class="progress-user-row">
@@ -442,6 +571,7 @@ function renderProgressDashboard() {
     </div>
     <div class="progress-data-source-grid">
       <div class="progress-source-card"><span>GitHub 账号</span><strong>${profile ? `@${escapeHtml(profile.login)}` : "未连接"}</strong><p>${profile ? "已读取公开资料，不涉及私有仓库权限。" : "输入 GitHub 用户名后可连接公开资料。"}</p></div>
+      <div class="progress-source-card"><span>后台数据库</span><strong>${backendLabel}</strong><p>${backendDetail}</p></div>
       <div class="progress-source-card"><span>飞书报名数据</span><strong>${hasFeishuMatch ? "已匹配" : escapeHtml(feishu.proposal)}</strong><p>${hasFeishuMatch ? `通过${escapeHtml(feishu.matchField)}匹配，状态来自导入数据。` : "可导入飞书表 CSV/JSON 后自动匹配。"}</p></div>
       <div class="progress-source-card"><span>自建报名系统</span><strong>${hasRegistration ? "本地已保存" : "未填写"}</strong><p>${escapeHtml(registration.email || "当前原型保存到浏览器 localStorage。")}</p></div>
       <div class="progress-source-card"><span>作品墙状态</span><strong>${escapeHtml(feishu.showcase)}</strong><p>通过验收或表现突出的项目可进入展示墙。</p></div>
@@ -548,6 +678,10 @@ function renderPlanPanels(force = false) {
     try {
       const rows = parseDataset($("#feishu-import-text").value);
       saveJson(FEISHU_ROWS_KEY, rows);
+      apiRequest("/api/import/feishu", {
+        method: "POST",
+        body: JSON.stringify({ source: "feishu", rows }),
+      }).catch(() => {});
       const state = applyFeishuMatch(rows);
       message.className = "progress-alert progress-alert--ok";
       message.textContent = state ? `已导入 ${rows.length} 条记录，并通过${state.matchField}匹配到当前项目。` : `已导入 ${rows.length} 条记录，但还没有匹配到当前项目。`;
@@ -557,11 +691,11 @@ function renderPlanPanels(force = false) {
       message.textContent = `导入失败：${error.message}`;
     }
   });
-  $("#progress-status-editor")?.addEventListener("submit", (event) => {
+  $("#progress-status-editor")?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const previous = getFeishuState();
-    saveJson(FEISHU_KEY, {
+    const nextState = {
       ...previous,
       proposal: String(formData.get("proposal") || "待同步"),
       acceptance: String(formData.get("acceptance") || "未提交"),
@@ -569,7 +703,9 @@ function renderPlanPanels(force = false) {
       showcase: String(formData.get("showcase") || "待上墙"),
       source: "local-admin",
       updatedAt: new Date().toISOString(),
-    });
+    };
+    saveJson(FEISHU_KEY, nextState);
+    await saveStatusToBackend(nextState);
     renderProgressDashboard();
   });
   plans.querySelector("[data-action='clear-registration']")?.addEventListener("click", () => {
@@ -676,10 +812,13 @@ async function runRepoCheck(repoInput, email, githubLogin) {
       updatedAt: new Date().toISOString(),
     });
     saveJson(CHECK_KEY, result);
+    await saveRegistrationToBackend(getRegistration());
+    await saveRepoCheckToBackend(result);
     applyFeishuMatch(getFeishuRows());
     if (message) {
       message.className = "progress-alert progress-alert--ok";
-      message.textContent = "连接完成，GitHub 仓库检查和比赛进度看板已更新。";
+      const saved = getRegistration().backendMode === "sqlite" ? "，并已写入后台数据库" : "，当前保存到浏览器本地";
+      message.textContent = `连接完成，GitHub 仓库检查和比赛进度看板已更新${saved}。`;
     }
     renderPlanPanels(true);
     renderProgressDashboard();
@@ -754,23 +893,48 @@ function initRegisterPage() {
 
   $("#registration-form").addEventListener("submit", (event) => {
     event.preventDefault();
-    const value = saveRegistrationFromForm(event.currentTarget);
-    const msg = $("#registration-message");
-    msg.hidden = false;
-    msg.className = "progress-alert progress-alert--ok";
-    msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")}。现在可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
+    handleRegistrationSubmit(event.currentTarget);
   });
   shell.querySelector("[data-action='export-registration']")?.addEventListener("click", exportRegistration);
+}
+
+async function handleRegistrationSubmit(form) {
+  const value = saveRegistrationFromForm(form);
+  const msg = $("#registration-message");
+  msg.hidden = false;
+  msg.className = "progress-alert";
+  msg.textContent = "正在保存报名信息...";
+  const result = await saveRegistrationToBackend(value);
+  if (result.mode === "backend") {
+    msg.className = "progress-alert progress-alert--ok";
+    msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库，记录编号 #${escapeHtml(result.registration.serverId)}。现在可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
+  } else {
+    const msg = $("#registration-message");
+    msg.className = "progress-alert progress-alert--ok";
+    msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到浏览器本地。当前页面未连接后台数据库，可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
+  }
 }
 
 function boot() {
   initProgressPage();
   renderPlanPanels();
   initRegisterPage();
+  syncRegistrationFromBackend();
 }
 
 window.addEventListener("DOMContentLoaded", boot);
+window.addEventListener("load", boot);
+window.addEventListener("pageshow", boot);
 requestAnimationFrame(boot);
+
+let bootAttempts = 0;
+const bootInterval = window.setInterval(() => {
+  bootAttempts += 1;
+  boot();
+  const registerReady = !$("#register-form") || $("#register-form")?.dataset.enhanced === "true";
+  const progressReady = !$("#progress-login") || $("#progress-login")?.dataset.enhanced === "true";
+  if ((registerReady && progressReady) || bootAttempts > 40) window.clearInterval(bootInterval);
+}, 250);
 
 const root = document.getElementById("mgpic-app");
 if (root) {
