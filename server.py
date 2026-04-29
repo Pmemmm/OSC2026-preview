@@ -459,6 +459,25 @@ def notification_from_row(row):
     }
 
 
+def showcase_project_from_row(row):
+    repo = row["github_repo"] or ""
+    author = row["github_login"] or row["name"] or "MoonBit 参赛者"
+    tags = [item for item in [row["project_type"], row["showcase"], row["acceptance"]] if item]
+    return {
+        "id": row["id"],
+        "projectName": row["project_name"] or "未命名项目",
+        "projectType": row["project_type"] or "MoonBit 生态项目",
+        "summary": row["summary"] or "项目说明待补充。",
+        "githubRepo": repo,
+        "author": author,
+        "school": row["school"] or "",
+        "showcaseStatus": row["showcase"] or "已上墙",
+        "acceptanceStatus": row["acceptance"] or "",
+        "tags": list(dict.fromkeys(tags)),
+        "updatedAt": row["status_updated_at"] or row["updated_at"],
+    }
+
+
 def clean_text(payload, key):
     value = payload.get(key, "")
     if value is None:
@@ -852,6 +871,10 @@ class Handler(SimpleHTTPRequestHandler):
                 self.github_logout()
                 return
 
+            if path == "/api/showcase" and method == "GET":
+                self.list_showcase_projects()
+                return
+
             if path == "/api/registrations" and method == "GET":
                 self.list_registrations()
                 return
@@ -1140,6 +1163,40 @@ class Handler(SimpleHTTPRequestHandler):
             }
             registrations.append(item)
         self.write_json({"registrations": registrations})
+
+    def list_showcase_projects(self):
+        with db() as connection:
+            rows = connection.execute(
+                """
+                select
+                  r.id,
+                  r.updated_at,
+                  r.name,
+                  r.school,
+                  r.github_login,
+                  r.github_repo,
+                  r.project_name,
+                  r.project_type,
+                  r.summary,
+                  s.acceptance,
+                  s.showcase,
+                  s.updated_at as status_updated_at
+                from registrations r
+                join registration_statuses s on s.registration_id = r.id
+                where (
+                  s.showcase like '%已上墙%'
+                  or s.showcase like '%公开展示%'
+                  or s.showcase like '%展示中%'
+                )
+                and s.showcase not like '%暂不展示%'
+                order by s.updated_at desc, r.id desc
+                limit 100
+                """
+            ).fetchall()
+        self.write_json({
+            "projects": [showcase_project_from_row(row) for row in rows],
+            "updatedAt": now_iso(),
+        })
 
     def get_registration_bundle(self, connection, registration_id, include_sensitive=False):
         registration = connection.execute(

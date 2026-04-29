@@ -820,6 +820,66 @@ function renderCheckArea(checks, hasRepo) {
   `;
 }
 
+function progressFlowItems(registration, check, feishu, profile) {
+  const passed = check?.checks?.filter((item) => item.passed).length || 0;
+  const total = check?.checks?.length || 8;
+  const hasRegistration = Boolean(registration.projectName || registration.githubRepo);
+  const hasRepoCheck = Boolean(check?.checks?.length);
+  return [
+    {
+      title: "GitHub 登录",
+      body: profile?.oauth ? `已连接 @${profile.login}` : "建议先登录，后续用账号匹配进度。",
+      done: Boolean(profile?.oauth),
+      current: !profile?.oauth,
+    },
+    {
+      title: "项目申报",
+      body: hasRegistration ? "已填写项目或仓库信息，等待赛方审核。" : "提交报名信息、GitHub 仓库和 PDF 申报书。",
+      done: hasRegistration || statusDone(feishu.proposal),
+      current: Boolean(profile?.oauth && !hasRegistration),
+    },
+    {
+      title: "仓库检查",
+      body: hasRepoCheck ? `已通过 ${passed} / ${total} 项。` : "检查 commits、README、CI、测试、许可证和包配置。",
+      done: hasRepoCheck && passed >= Math.max(6, total - 1),
+      current: hasRegistration && !hasRepoCheck,
+    },
+    {
+      title: "申报审核",
+      body: feishu.proposal || "等待赛方审核结果。",
+      done: statusDone(feishu.proposal),
+      current: hasRegistration && !statusDone(feishu.proposal),
+      warn: /拒绝|不通过|需调整|驳回/i.test(String(feishu.proposal || "")),
+    },
+    {
+      title: "项目验收",
+      body: feishu.acceptance || "完成后提交验收申请。",
+      done: statusDone(feishu.acceptance),
+      current: statusDone(feishu.proposal) && !statusDone(feishu.acceptance),
+    },
+    {
+      title: "作品展示",
+      body: feishu.showcase || "优秀项目有机会进入作品墙。",
+      done: statusDone(feishu.showcase),
+      current: statusDone(feishu.acceptance) && !statusDone(feishu.showcase),
+    },
+  ];
+}
+
+function renderProgressFlow(registration, check, feishu, profile) {
+  return `
+    <div class="progress-flow-strip">
+      ${progressFlowItems(registration, check, feishu, profile).map((item, index) => `
+        <div class="${item.done ? "is-done" : item.warn ? "is-warn" : item.current ? "is-current" : ""}">
+          <span>${index + 1}</span>
+          <strong>${escapeHtml(item.title)}</strong>
+          <p>${escapeHtml(item.body)}</p>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderProgressDashboard() {
   const dashboard = $(".progress-dashboard--preview");
   if (!dashboard) return;
@@ -916,6 +976,7 @@ function renderProgressDashboard() {
       <div class="progress-summary-item"><span>仓库检查</span><strong>${passed} / ${total}</strong></div>
       <div class="progress-summary-item"><span>下一步</span><strong>${escapeHtml(next)}</strong></div>
     </div>
+    ${renderProgressFlow(registration, check, feishu, profile)}
     <div class="progress-data-source-grid">
       ${sourceCards.join("")}
     </div>
