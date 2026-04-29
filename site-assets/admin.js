@@ -190,7 +190,7 @@ async function selectRegistration(id) {
   const detail = $("#admin-detail");
   detail.innerHTML = `<div class="progress-alert">正在读取 #${escapeHtml(id)}...</div>`;
   try {
-    const data = await api(`/api/registrations/${encodeURIComponent(id)}`);
+    const data = await api(`/api/registrations/${encodeURIComponent(id)}?admin=1`);
     renderDetail(data);
   } catch (error) {
     detail.innerHTML = `<div class="progress-alert progress-alert--error">${escapeHtml(error.message)}</div>`;
@@ -208,9 +208,15 @@ function selectOptions(values, current) {
 
 function fileLinks(files = []) {
   if (!files.length) return "<p>暂无上传文件。</p>";
+  const labels = {
+    proposal: "申报书",
+    student: "学生证明",
+    id_front: "身份证正面",
+    id_back: "身份证反面",
+  };
   return files.map((file) => `
     <a class="admin-file-link" href="${escapeHtml(file.downloadUrl)}" target="_blank" rel="noreferrer">
-      ${file.kind === "proposal" ? "申报书" : "学生证明"}：${escapeHtml(file.filename || "未命名文件")}
+      ${escapeHtml(labels[file.kind] || file.kind)}：${escapeHtml(file.filename || "未命名文件")}
     </a>
   `).join("");
 }
@@ -255,8 +261,14 @@ function renderDetail(data) {
       <div><span>邮箱</span><strong>${escapeHtml(item.email || "-")}</strong></div>
       <div><span>学校 / 组织</span><strong>${escapeHtml(item.school || "-")}</strong></div>
       <div><span>GitHub 用户名</span><strong>${escapeHtml(item.githubLogin || "-")}</strong></div>
+      <div><span>身份证号</span><strong>${escapeHtml(item.idNumber || item.idNumberMasked || "-")}</strong></div>
+      <div><span>银行卡号</span><strong>${escapeHtml(item.bankAccount || item.bankAccountMasked || "-")}</strong></div>
+      <div class="admin-detail-wide"><span>开户支行</span><strong>${escapeHtml(item.bankBranch || "-")}</strong></div>
       <div class="admin-detail-wide"><span>GitHub 仓库</span><strong>${escapeHtml(item.githubRepo || "-")}</strong></div>
       <div class="admin-detail-wide"><span>项目简介</span><p>${escapeHtml(item.summary || "未填写")}</p></div>
+    </div>
+    <div class="progress-alert">
+      敏感信息仅用于奖金发放和必要身份核验。对外导出或转交前请确认最小必要范围，不要放到公开进度页或作品墙。
     </div>
     <div class="admin-files">
       <h3>材料文件</h3>

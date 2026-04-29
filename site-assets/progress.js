@@ -308,6 +308,39 @@ function getFeishuState() {
   });
 }
 
+function maskSensitive(value, keepStart = 3, keepEnd = 4) {
+  const text = String(value || "").trim();
+  if (!text) return "";
+  if (text.length <= keepStart + keepEnd) return "*".repeat(text.length);
+  return `${text.slice(0, keepStart)}${"*".repeat(text.length - keepStart - keepEnd)}${text.slice(-keepEnd)}`;
+}
+
+function publicRegistrationValue(value) {
+  const {
+    proposalFile,
+    studentFile,
+    idFrontFile,
+    idBackFile,
+    idNumber,
+    bankAccount,
+    bankBranch,
+    ...safeValue
+  } = value || {};
+  return {
+    ...safeValue,
+    idNumberMasked: safeValue.idNumberMasked || maskSensitive(idNumber),
+    bankAccountMasked: safeValue.bankAccountMasked || maskSensitive(bankAccount),
+    sensitiveSubmitted: Boolean(
+      safeValue.sensitiveSubmitted ||
+      idNumber ||
+      bankAccount ||
+      bankBranch ||
+      safeValue.idFrontFileName ||
+      safeValue.idBackFileName
+    ),
+  };
+}
+
 function saveRegistrationFromForm(form) {
   const formData = new FormData(form);
   const previous = getRegistration();
@@ -316,16 +349,21 @@ function saveRegistrationFromForm(form) {
     name: String(formData.get("name") || "").trim(),
     email: String(formData.get("email") || "").trim(),
     school: String(formData.get("school") || "").trim(),
+    idNumber: String(formData.get("idNumber") || "").trim(),
     githubLogin: String(formData.get("githubLogin") || "").trim(),
     githubRepo: String(formData.get("githubRepo") || "").trim(),
     projectName: String(formData.get("projectName") || "").trim(),
     projectType: String(formData.get("projectType") || "").trim(),
     summary: String(formData.get("summary") || "").trim(),
+    bankAccount: String(formData.get("bankAccount") || "").trim(),
+    bankBranch: String(formData.get("bankBranch") || "").trim(),
     proposalFileName: form.elements.proposalFile?.files?.[0]?.name || previous.proposalFileName || "",
     studentFileName: form.elements.studentFile?.files?.[0]?.name || previous.studentFileName || "",
+    idFrontFileName: form.elements.idFrontFile?.files?.[0]?.name || previous.idFrontFileName || "",
+    idBackFileName: form.elements.idBackFile?.files?.[0]?.name || previous.idBackFileName || "",
     updatedAt: new Date().toISOString(),
   };
-  saveJson(STORE_KEY, value);
+  saveJson(STORE_KEY, publicRegistrationValue(value));
   applyFeishuMatch(getFeishuRows());
   return value;
 }
@@ -335,15 +373,22 @@ function backendPayload(value) {
     name: value.name || "",
     email: value.email || "",
     school: value.school || "",
+    idNumber: value.idNumber || "",
     githubLogin: value.githubLogin || "",
     githubRepo: value.githubRepo || "",
     projectName: value.projectName || "",
     projectType: value.projectType || "",
     summary: value.summary || "",
+    bankAccount: value.bankAccount || "",
+    bankBranch: value.bankBranch || "",
     proposalFileName: value.proposalFileName || "",
     studentFileName: value.studentFileName || "",
+    idFrontFileName: value.idFrontFileName || "",
+    idBackFileName: value.idBackFileName || "",
     proposalFile: value.proposalFile || null,
     studentFile: value.studentFile || null,
+    idFrontFile: value.idFrontFile || null,
+    idBackFile: value.idBackFile || null,
   };
 }
 
@@ -357,20 +402,21 @@ async function saveRegistrationToBackend(value) {
       method,
       body: JSON.stringify(backendPayload(value)),
     });
-    const saved = {
+    const saved = publicRegistrationValue({
       ...value,
+      ...result.registration,
       serverId: result.registration.id,
       backendMode: "sqlite",
       backendSavedAt: result.registration.updatedAt || result.registration.createdAt || new Date().toISOString(),
-    };
+    });
     saveJson(STORE_KEY, saved);
     return { mode: "backend", registration: saved };
   } catch (error) {
-    const saved = {
+    const saved = publicRegistrationValue({
       ...value,
       backendMode: "local",
       backendError: error.message,
-    };
+    });
     saveJson(STORE_KEY, saved);
     return { mode: "local", registration: saved, error };
   }
@@ -928,9 +974,13 @@ function fileToPayload(file) {
 async function collectRegistrationFiles(form) {
   const proposalFile = form.elements.proposalFile?.files?.[0] || null;
   const studentFile = form.elements.studentFile?.files?.[0] || null;
+  const idFrontFile = form.elements.idFrontFile?.files?.[0] || null;
+  const idBackFile = form.elements.idBackFile?.files?.[0] || null;
   return {
     proposalFile: await fileToPayload(proposalFile),
     studentFile: await fileToPayload(studentFile),
+    idFrontFile: await fileToPayload(idFrontFile),
+    idBackFile: await fileToPayload(idBackFile),
   };
 }
 
@@ -939,6 +989,10 @@ function initRegisterPage() {
   if (!shell || shell.dataset.enhanced === "true") return;
   shell.dataset.enhanced = "true";
   const data = getRegistration();
+  const requireProposal = data.proposalFileName ? "" : "required";
+  const requireStudent = data.studentFileName ? "" : "required";
+  const requireIdFront = data.idFrontFileName ? "" : "required";
+  const requireIdBack = data.idBackFileName ? "" : "required";
   shell.innerHTML = `
     <form class="registration-form" id="registration-form">
       <div class="register-form-head">
@@ -952,24 +1006,31 @@ function initRegisterPage() {
         <label class="form-field"><span>姓名</span><input name="name" required value="${escapeHtml(data.name || "")}" placeholder="请输入真实姓名"></label>
         <label class="form-field"><span>联系邮箱</span><input name="email" required type="email" value="${escapeHtml(data.email || "")}" placeholder="name@example.com"></label>
         <label class="form-field"><span>学校 / 组织</span><input name="school" value="${escapeHtml(data.school || "")}" placeholder="用于确认学生身份"></label>
+        <label class="form-field"><span>身份证号</span><input name="idNumber" required autocomplete="off" inputmode="text" placeholder="仅用于奖金发放核验"></label>
         <label class="form-field"><span>GitHub 用户名</span><input name="githubLogin" value="${escapeHtml(data.githubLogin || "")}" placeholder="moonbit-builder"></label>
         <label class="form-field"><span>GitHub 仓库</span><input name="githubRepo" required type="url" value="${escapeHtml(data.githubRepo || "")}" placeholder="https://github.com/owner/project"></label>
         <label class="form-field"><span>项目名称</span><input name="projectName" required value="${escapeHtml(data.projectName || "")}" placeholder="MoonBit 生态库名称"></label>
         <label class="form-field"><span>项目方向</span><select name="projectType">
           ${["生态库", "开发工具", "示例工程", "高校实践", "移植项目"].map((item) => `<option ${data.projectType === item ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}
         </select></label>
+        <label class="form-field"><span>银行卡号</span><input name="bankAccount" required autocomplete="off" inputmode="numeric" placeholder="仅用于奖金发放"></label>
+        <label class="form-field"><span>开户支行</span><input name="bankBranch" required autocomplete="off" placeholder="例如：中国银行深圳 xx 支行"></label>
       </div>
       <label class="form-field form-field--full"><span>项目简介</span><textarea name="summary" rows="5" placeholder="说明项目做什么、为什么值得做、计划如何实现、最终交付什么。">${escapeHtml(data.summary || "")}</textarea></label>
       <div class="register-upload-grid">
-        <label class="register-upload"><strong>项目申报书 PDF</strong><input name="proposalFile" type="file" accept=".pdf"><p>${data.proposalFileName ? `已选择：${escapeHtml(data.proposalFileName)}` : "建议一页，后台用于申报审核。"}</p></label>
-        <label class="register-upload"><strong>学生身份证明</strong><input name="studentFile" type="file" accept=".pdf,.jpg,.jpeg,.png"><p>${data.studentFileName ? `已选择：${escapeHtml(data.studentFileName)}` : "仅用于学生身份确认，不在公开页面展示。"}</p></label>
+        <label class="register-upload"><strong>项目申报书 PDF</strong><input name="proposalFile" type="file" accept=".pdf" ${requireProposal}><p>${data.proposalFileName ? `已选择：${escapeHtml(data.proposalFileName)}` : "建议一页，后台用于申报审核。"}</p></label>
+        <label class="register-upload"><strong>学生身份证明</strong><input name="studentFile" type="file" accept=".pdf,.jpg,.jpeg,.png" ${requireStudent}><p>${data.studentFileName ? `已选择：${escapeHtml(data.studentFileName)}` : "仅用于学生身份确认，不在公开页面展示。"}</p></label>
+        <label class="register-upload"><strong>身份证正面（水印版）</strong><input name="idFrontFile" type="file" accept=".pdf,.jpg,.jpeg,.png" ${requireIdFront}><p>${data.idFrontFileName ? `已选择：${escapeHtml(data.idFrontFileName)}` : "请先加水印：仅用于 MoonBit 开源大赛奖金发放。"}</p></label>
+        <label class="register-upload"><strong>身份证反面（水印版）</strong><input name="idBackFile" type="file" accept=".pdf,.jpg,.jpeg,.png" ${requireIdBack}><p>${data.idBackFileName ? `已选择：${escapeHtml(data.idBackFileName)}` : "水印不要遮挡姓名、证件号、有效期等关键信息。"}</p></label>
       </div>
       <div class="register-system-note">
-        <strong>敏感信息处理建议</strong>
-        <p>身份证、银行卡等信息建议只在奖励发放阶段单独收集，不放在公开进度页里展示。</p>
+        <strong>敏感信息使用说明</strong>
+        <p>身份证、银行卡和开户支行仅用于赛事启动支持、完成支持及优秀作品奖金发放，不会展示在公开比赛进度页或作品墙。</p>
+        <p>上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 开源大赛奖金发放”。水印要清晰，但不要遮挡姓名、证件号、学校、有效期等核验信息。</p>
+        <p>如果当前页面未连接后台数据库，只会在浏览器本地保存非敏感报名信息；敏感信息和证件文件需要在后台可用时重新提交。</p>
       </div>
       <div class="progress-page-actions">
-        <button class="button primary" type="submit">保存报名信息</button>
+        <button class="button primary" type="submit">提交报名信息</button>
         <a class="button secondary" href="progress.html">查看比赛进度</a>
         <button class="button secondary" type="button" data-action="export-registration">导出本地报名 JSON</button>
         <a class="button secondary" href="${PROPOSAL_FORM_URL}">飞书正式报名</a>
@@ -990,7 +1051,7 @@ async function handleRegistrationSubmit(form) {
   const msg = $("#registration-message");
   msg.hidden = false;
   msg.className = "progress-alert";
-  msg.textContent = "正在保存报名信息...";
+  msg.textContent = "正在提交报名信息...";
   try {
     const files = await collectRegistrationFiles(form);
     const result = await saveRegistrationToBackend({ ...value, ...files });
@@ -999,7 +1060,7 @@ async function handleRegistrationSubmit(form) {
       msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库，记录编号 #${escapeHtml(result.registration.serverId)}。现在可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
     } else {
       msg.className = "progress-alert progress-alert--ok";
-      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到浏览器本地。当前页面未连接后台数据库，可以进入 <a href="progress.html">比赛进度页</a> 检查 GitHub 仓库。`;
+      msg.innerHTML = `当前页面未连接后台数据库，只保存了 ${escapeHtml(value.projectName || "项目")} 的非敏感报名信息到浏览器本地。身份证和银行卡信息不会本地保存，请在后台可用时重新提交。`;
     }
   } catch (error) {
     msg.className = "progress-alert progress-alert--error";

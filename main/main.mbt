@@ -884,8 +884,8 @@ fn view_register_page(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="这是飞书之外的第二条报名路径。选手填写项目信息后可保存到后台数据库，并同步到比赛进度页；公网静态预览会自动降级为浏览器本地保存。",
-              en="This is the second registration path alongside Feishu. Participants can save project information to the backend database and sync it to the progress page. The public static preview falls back to browser-local storage.",
+              zh="这是飞书之外的第二条报名路径。选手填写项目信息、身份证明和奖金发放信息后可保存到后台数据库，并同步到比赛进度页。",
+              en="This is the second registration path alongside Feishu. Participants can save project info, identity proof, and reward payout info to the backend database and sync it to the progress page.",
             ),
           ),
           div(class="progress-page-actions", [
@@ -905,9 +905,12 @@ fn view_register_page(model : Model) -> Html {
             view_register_field(t(model.locale, zh="姓名", en="Name"), t(model.locale, zh="请输入真实姓名", en="Enter real name")),
             view_register_field(t(model.locale, zh="联系邮箱", en="Email"), "name@example.com"),
             view_register_field(t(model.locale, zh="学校 / 组织", en="School / organization"), t(model.locale, zh="用于确认学生身份", en="Used for student verification")),
+            view_register_field(t(model.locale, zh="身份证号", en="ID number"), t(model.locale, zh="仅用于奖金发放核验", en="For reward payout verification only")),
             view_register_field(t(model.locale, zh="GitHub 仓库", en="GitHub repository"), "https://github.com/owner/project"),
             view_register_field(t(model.locale, zh="项目名称", en="Project name"), t(model.locale, zh="MoonBit 生态库名称", en="MoonBit package name")),
             view_register_field(t(model.locale, zh="项目方向", en="Project direction"), t(model.locale, zh="生态库 / 工具 / 示例 / 高校实践", en="Library / tool / example / campus")),
+            view_register_field(t(model.locale, zh="银行卡号", en="Bank card number"), t(model.locale, zh="仅用于奖金发放", en="For reward payout only")),
+            view_register_field(t(model.locale, zh="开户支行", en="Bank branch"), t(model.locale, zh="例如：中国银行深圳 xx 支行", en="Example: bank branch for payout")),
           ]),
           div(class="register-textarea", [
             span(t(model.locale, zh="项目简介", en="Project summary")),
@@ -920,15 +923,24 @@ fn view_register_page(model : Model) -> Html {
             ]),
             div(class="register-upload", [
               strong(t(model.locale, zh="学生身份证明", en="Student proof")),
-              p(t(model.locale, zh="正式上线前需要明确隐私和存储策略。", en="Privacy and storage policies are required before launch.")),
+              p(t(model.locale, zh="仅用于学生身份确认，不在公开页面展示。", en="Used only for student verification and not shown publicly.")),
+            ]),
+            div(class="register-upload", [
+              strong(t(model.locale, zh="身份证正面（水印版）", en="ID front with watermark")),
+              p(t(model.locale, zh="请先加水印：仅用于 MoonBit 开源大赛奖金发放。", en="Add a watermark first: for MoonBit contest reward payout only.")),
+            ]),
+            div(class="register-upload", [
+              strong(t(model.locale, zh="身份证反面（水印版）", en="ID back with watermark")),
+              p(t(model.locale, zh="水印不要遮挡姓名、证件号、有效期等核验信息。", en="Do not cover name, ID number, expiry date, or verification details.")),
             ]),
           ]),
           div(class="register-system-note", [
-            strong(t(model.locale, zh="敏感信息处理建议", en="Sensitive data handling")),
-            p(t(model.locale, zh="身份证、银行卡等信息建议只在奖励发放阶段单独收集，不放在公开进度页里展示。", en="ID and bank information should be collected separately during reward payout and never shown on the public progress page.")),
+            strong(t(model.locale, zh="敏感信息使用说明", en="Sensitive data usage")),
+            p(t(model.locale, zh="身份证、银行卡和开户支行仅用于赛事启动支持、完成支持及优秀作品奖金发放，不会展示在公开比赛进度页或作品墙。", en="ID, bank card, and bank branch are used only for kickoff support, completion support, and award payout. They are not shown on public progress pages or the showcase wall.")),
+            p(t(model.locale, zh="上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 开源大赛奖金发放”。", en="Before uploading ID images, use AI or an image tool to add a watermark such as: for MoonBit contest reward payout only.")),
           ]),
           div(class="progress-page-actions", [
-            span(class="button primary register-disabled", t(model.locale, zh="报名表加载中", en="Loading form")),
+            span(class="button primary", t(model.locale, zh="提交报名信息", en="Submit registration")),
             a(class="button secondary", href=registration_href(), t(model.locale, zh="也可使用飞书报名", en="Use Feishu form")),
           ]),
         ]),

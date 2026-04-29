@@ -10,7 +10,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib import error as urllib_error
 from urllib import request as urllib_request
-from urllib.parse import quote, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlparse
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("MGPIC_DB", ROOT / "data" / "mgpic2026.sqlite3"))
@@ -19,15 +19,26 @@ FIELD_ALIASES = {
     "name": ["姓名", "参赛者", "项目负责人", "负责人", "name"],
     "email": ["邮箱", "联系邮箱", "联系方式", "email", "Email"],
     "school": ["学校", "学校 / 组织", "组织", "高校", "school"],
+    "idNumber": ["身份证号", "身份证号码", "身份证", "证件号", "证件号码", "idNumber"],
     "githubLogin": ["GitHub 账号", "Github 账号", "GitHub用户名", "GitHub 用户名", "github", "githubLogin"],
     "githubRepo": ["GitHub 仓库", "Github 仓库", "项目 GitHub 链接", "GitHub仓库链接", "仓库链接", "githubRepo", "repo"],
     "projectName": ["项目名称", "项目名", "参赛项目", "projectName", "project"],
     "projectType": ["项目方向", "方向", "项目类型", "projectType"],
     "summary": ["项目简介", "简介", "项目说明", "summary"],
+    "bankAccount": ["银行卡号", "银行账号", "收款账号", "银行卡", "bankAccount"],
+    "bankBranch": ["开户支行", "开户银行", "开户行", "支行", "bankBranch"],
     "proposal": ["申报审核状态", "项目申报状态", "立项状态", "申报状态", "proposal", "proposalStatus"],
     "acceptance": ["验收状态", "项目验收状态", "验收审核状态", "acceptance", "acceptanceStatus"],
     "reward": ["奖励状态", "激励状态", "奖金状态", "reward", "rewardStatus"],
     "showcase": ["作品墙状态", "展示状态", "上墙状态", "showcase", "showcaseStatus"],
+}
+
+REGISTRATION_EXTRA_COLUMNS = {
+    "id_number": "text not null default ''",
+    "bank_account": "text not null default ''",
+    "bank_branch": "text not null default ''",
+    "id_front_file_name": "text not null default ''",
+    "id_back_file_name": "text not null default ''",
 }
 
 
@@ -138,12 +149,41 @@ def init_db():
             );
             """
         )
+        ensure_registration_columns(connection)
 
 
-def registration_from_row(row):
+def ensure_registration_columns(connection):
+    existing = {
+        row["name"]
+        for row in connection.execute("pragma table_info(registrations)").fetchall()
+    }
+    for column, definition in REGISTRATION_EXTRA_COLUMNS.items():
+        if column not in existing:
+            connection.execute(f"alter table registrations add column {column} {definition}")
+
+
+def mask_middle(value, keep_start=3, keep_end=4):
+    value = str(value or "").strip()
+    if not value:
+        return ""
+    if len(value) <= keep_start + keep_end:
+        return "*" * len(value)
+    return f"{value[:keep_start]}{'*' * (len(value) - keep_start - keep_end)}{value[-keep_end:]}"
+
+
+def registration_from_row(row, include_sensitive=False):
     if row is None:
         return None
-    return {
+    sensitive_submitted = any(
+        [
+            row["id_number"],
+            row["bank_account"],
+            row["bank_branch"],
+            row["id_front_file_name"],
+            row["id_back_file_name"],
+        ]
+    )
+    result = {
         "id": row["id"],
         "serverId": row["id"],
         "createdAt": row["created_at"],
@@ -158,9 +198,23 @@ def registration_from_row(row):
         "summary": row["summary"],
         "proposalFileName": row["proposal_file_name"],
         "studentFileName": row["student_file_name"],
+        "idFrontFileName": row["id_front_file_name"],
+        "idBackFileName": row["id_back_file_name"],
+        "idNumberMasked": mask_middle(row["id_number"]),
+        "bankAccountMasked": mask_middle(row["bank_account"]),
+        "sensitiveSubmitted": sensitive_submitted,
         "source": row["source"],
         "backendMode": "sqlite",
     }
+    if include_sensitive:
+        result.update(
+            {
+                "idNumber": row["id_number"],
+                "bankAccount": row["bank_account"],
+                "bankBranch": row["bank_branch"],
+            }
+        )
+    return result
 
 
 def status_from_row(row):
@@ -619,7 +673,7 @@ class Handler(SimpleHTTPRequestHandler):
             registrations.append(item)
         self.write_json({"registrations": registrations})
 
-    def get_registration_bundle(self, connection, registration_id):
+    def get_registration_bundle(self, connection, registration_id, include_sensitive=False):
         registration = connection.execute(
             "select * from registrations where id = ?", (registration_id,)
         ).fetchone()
@@ -645,7 +699,7 @@ class Handler(SimpleHTTPRequestHandler):
             (registration_id,),
         ).fetchall()
         return {
-            "registration": registration_from_row(registration),
+            "registration": registration_from_row(registration, include_sensitive=include_sensitive),
             "status": status_from_row(status),
             "repoCheck": repo_check_from_row(repo_check),
             "files": [file_from_row(row) for row in files],
@@ -654,8 +708,14 @@ class Handler(SimpleHTTPRequestHandler):
         }
 
     def get_registration(self, registration_id):
+        query = parse_qs(urlparse(self.path).query)
+        include_sensitive = query.get("admin", ["0"])[0] == "1"
         with db() as connection:
-            bundle = self.get_registration_bundle(connection, registration_id)
+            bundle = self.get_registration_bundle(
+                connection,
+                registration_id,
+                include_sensitive=include_sensitive,
+            )
         if bundle is None:
             self.write_error("报名记录不存在", 404)
             return
@@ -671,8 +731,9 @@ class Handler(SimpleHTTPRequestHandler):
                 insert into registrations (
                   created_at, updated_at, name, email, school, github_login,
                   github_repo, project_name, project_type, summary,
-                  proposal_file_name, student_file_name, source
-                ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                  proposal_file_name, student_file_name, id_number, bank_account,
+                  bank_branch, id_front_file_name, id_back_file_name, source
+                ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (timestamp, timestamp, *values, "website"),
             )
@@ -705,7 +766,9 @@ class Handler(SimpleHTTPRequestHandler):
                 update registrations set
                   updated_at = ?, name = ?, email = ?, school = ?, github_login = ?,
                   github_repo = ?, project_name = ?, project_type = ?, summary = ?,
-                  proposal_file_name = ?, student_file_name = ?
+                  proposal_file_name = ?, student_file_name = ?, id_number = ?,
+                  bank_account = ?, bank_branch = ?, id_front_file_name = ?,
+                  id_back_file_name = ?
                 where id = ?
                 """,
                 (timestamp, *values, registration_id),
@@ -726,12 +789,19 @@ class Handler(SimpleHTTPRequestHandler):
             clean_text(payload, "summary"),
             clean_text(payload, "proposalFileName"),
             clean_text(payload, "studentFileName"),
+            clean_text(payload, "idNumber"),
+            clean_text(payload, "bankAccount"),
+            clean_text(payload, "bankBranch"),
+            clean_text(payload, "idFrontFileName"),
+            clean_text(payload, "idBackFileName"),
         )
 
     def upsert_files(self, connection, registration_id, payload, timestamp):
         for kind, key, filename_key in (
             ("proposal", "proposalFile", "proposalFileName"),
             ("student", "studentFile", "studentFileName"),
+            ("id_front", "idFrontFile", "idFrontFileName"),
+            ("id_back", "idBackFile", "idBackFileName"),
         ):
             file_payload = payload.get(key)
             if not isinstance(file_payload, dict) or not file_payload.get("data"):
@@ -1059,11 +1129,14 @@ class Handler(SimpleHTTPRequestHandler):
                 "name": import_field(row, "name"),
                 "email": import_field(row, "email"),
                 "school": import_field(row, "school"),
+                "idNumber": import_field(row, "idNumber"),
                 "githubLogin": import_field(row, "githubLogin"),
                 "githubRepo": import_field(row, "githubRepo"),
                 "projectName": import_field(row, "projectName"),
                 "projectType": import_field(row, "projectType"),
                 "summary": import_field(row, "summary"),
+                "bankAccount": import_field(row, "bankAccount"),
+                "bankBranch": import_field(row, "bankBranch"),
                 "proposal": import_field(row, "proposal"),
                 "acceptance": import_field(row, "acceptance"),
                 "reward": import_field(row, "reward"),
@@ -1092,11 +1165,14 @@ class Handler(SimpleHTTPRequestHandler):
                       name = coalesce(nullif(?, ''), name),
                       email = coalesce(nullif(?, ''), email),
                       school = coalesce(nullif(?, ''), school),
+                      id_number = coalesce(nullif(?, ''), id_number),
                       github_login = coalesce(nullif(?, ''), github_login),
                       github_repo = coalesce(nullif(?, ''), github_repo),
                       project_name = coalesce(nullif(?, ''), project_name),
                       project_type = coalesce(nullif(?, ''), project_type),
                       summary = coalesce(nullif(?, ''), summary),
+                      bank_account = coalesce(nullif(?, ''), bank_account),
+                      bank_branch = coalesce(nullif(?, ''), bank_branch),
                       source = 'feishu'
                     where id = ?
                     """,
@@ -1105,11 +1181,14 @@ class Handler(SimpleHTTPRequestHandler):
                         data["name"],
                         data["email"],
                         data["school"],
+                        data["idNumber"],
                         data["githubLogin"],
                         data["githubRepo"],
                         data["projectName"],
                         data["projectType"],
                         data["summary"],
+                        data["bankAccount"],
+                        data["bankBranch"],
                         registration_id,
                     ),
                 )
@@ -1119,8 +1198,9 @@ class Handler(SimpleHTTPRequestHandler):
                     insert into registrations (
                       created_at, updated_at, name, email, school, github_login,
                       github_repo, project_name, project_type, summary,
-                      proposal_file_name, student_file_name, source
-                    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', 'feishu')
+                      proposal_file_name, student_file_name, id_number, bank_account,
+                      bank_branch, id_front_file_name, id_back_file_name, source
+                    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, '', '', 'feishu')
                     """,
                     (
                         timestamp,
@@ -1133,6 +1213,9 @@ class Handler(SimpleHTTPRequestHandler):
                         data["projectName"],
                         data["projectType"],
                         data["summary"],
+                        data["idNumber"],
+                        data["bankAccount"],
+                        data["bankBranch"],
                     ),
                 )
                 registration_id = cursor.lastrowid
