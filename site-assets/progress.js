@@ -11,6 +11,7 @@ const PROPOSAL_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2d
 const ACCEPTANCE_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg";
 const DEFAULT_RENDER_API_BASE = "https://mgpic2026.onrender.com";
 const API_BASE = resolveApiBase();
+const PUBLIC_SELF_SERVICE_ENABLED = false;
 let progressActionsBound = false;
 let backendSyncStarted = false;
 let githubSessionSyncStarted = false;
@@ -1357,6 +1358,7 @@ async function handleRegistrationSubmit(form) {
 }
 
 function boot() {
+  if (!PUBLIC_SELF_SERVICE_ENABLED) return;
   initProgressPage();
   renderPlanPanels();
   initRegisterPage();
