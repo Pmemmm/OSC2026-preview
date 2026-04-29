@@ -2130,10 +2130,20 @@ a {
 
 .admin-shell {
   min-height: 100vh;
+  color: var(--text);
 }
 
 .admin-section {
   padding-top: 28px;
+}
+
+.admin-page::before {
+  z-index: 0;
+}
+
+.admin-page .admin-shell {
+  position: relative;
+  z-index: 1;
 }
 
 .admin-hero {
@@ -2184,6 +2194,12 @@ a {
 .admin-app {
   display: grid;
   gap: 16px;
+}
+
+.admin-operator-note {
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 8%, transparent), transparent 30%),
+    color-mix(in srgb, var(--panel-strong) 82%, transparent);
 }
 
 .admin-toolbar {

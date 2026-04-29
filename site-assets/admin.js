@@ -95,6 +95,9 @@ function statusBadge(value) {
 function renderShell() {
   const app = $("#admin-app");
   app.innerHTML = `
+    <div class="progress-alert admin-operator-note">
+      后台用于赛事工作人员管理报名、审核、奖励、通知和作品墙状态。正式使用时请部署在受控环境，并通过服务端访问同源 API。
+    </div>
     <div class="admin-toolbar">
       <div class="admin-search-wrap">
         <label class="form-field">
@@ -464,12 +467,12 @@ async function loadRegistrations(showLoading = true) {
     renderStats();
     renderList();
     if (!registrations.length) {
-      $("#admin-detail").innerHTML = `<div class="progress-alert">数据库已连接：${escapeHtml(health.database)}。暂无报名记录。</div>`;
+      $("#admin-detail").innerHTML = `<div class="progress-alert">数据库已连接：${escapeHtml(health.database)}。暂无报名记录，可以从“新建报名”或飞书导入开始。</div>`;
     }
   } catch (error) {
     $("#admin-app").innerHTML = `
       <div class="progress-alert progress-alert--error">
-        未连接后台数据库。请在本地或服务器运行 <code>python3 server.py</code> 后访问同源后台页面。
+        未连接后台数据库。GitHub Pages 只能预览后台界面；请在本地或服务器运行 <code>python3 server.py</code> 后访问同源后台页面。
       </div>
     `;
   }
