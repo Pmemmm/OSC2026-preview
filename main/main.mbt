@@ -879,13 +879,13 @@ fn view_register_page(model : Model) -> Html {
     div(class="container", [
       div(class="register-shell", [
         div(class="register-copy", [
-          p(class="eyebrow", t(model.locale, zh="自建报名系统", en="Registration system")),
-          h2(t(model.locale, zh="把报名、审核和比赛进度放进同一个系统", en="Unify registration, review, and progress tracking")),
+          p(class="eyebrow", t(model.locale, zh="比赛介绍", en="Contest intro")),
+          h2(t(model.locale, zh="2026 MoonBit 国产开源生态大赛", en="2026 MoonBit Open Source Ecosystem Contest")),
           p(
             t(
               model.locale,
-              zh="这是飞书之外的第二条报名路径。选手填写项目信息、身份证明和奖金发放信息后可保存到后台数据库，并同步到比赛进度页。",
-              en="This is the second registration path alongside Feishu. Participants can save project info, identity proof, and reward payout info to the backend database and sync it to the progress page.",
+              zh="本赛事面向在校生，鼓励参赛者围绕 MoonBit 开源生态库、开发工具和示例工程完成设计、移植、实现与完善。项目应真实可用、文档完整、测试可运行，并通过公开仓库持续维护。",
+              en="This contest is open to students and focuses on MoonBit ecosystem libraries, developer tools, and example projects. Projects should be usable, documented, tested, and maintained in public repositories.",
             ),
           ),
           div(class="progress-page-actions", [
@@ -895,7 +895,12 @@ fn view_register_page(model : Model) -> Html {
         ]),
         article(id="register-form", class="register-form-card", [
           div(class="register-form-head", [
-            div(class="github-mark", "GH"),
+            img(
+              class="register-head-logo",
+              src="site-assets/moonbit-logo.png?v=20260428-progress-system",
+              alt=t(model.locale, zh="MoonBit Logo", en="MoonBit logo"),
+              nothing,
+            ),
             div([
               h3(t(model.locale, zh="MoonBit 开源大赛报名", en="MoonBit contest registration")),
               p(t(model.locale, zh="填写后可进入后台审核和比赛进度同步。", en="Submitted records can enter admin review and progress sync.")),

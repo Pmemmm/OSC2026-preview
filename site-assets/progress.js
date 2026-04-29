@@ -1139,7 +1139,7 @@ function initRegisterPage() {
   shell.innerHTML = `
     <form class="registration-form" id="registration-form">
       <div class="register-form-head">
-        <div class="github-mark">GH</div>
+        <img class="register-head-logo" src="site-assets/moonbit-logo.png?v=20260428-progress-system" alt="MoonBit Logo">
         <div>
           <h3>MoonBit 开源大赛报名</h3>
           <p>有后台时写入 SQLite；未连接后台时会先保存到浏览器本地，并同步到比赛进度页。</p>
