@@ -235,6 +235,11 @@ fn acceptance_href() -> String {
 }
 
 ///|
+fn charter_href() -> String {
+  "https://bxup9uklfcb.feishu.cn/wiki/Cv5owfd9xiT9Z5k6d8scJlV0n1a"
+}
+
+///|
 fn is_standalone_page() -> Bool {
   if is_progress_page() {
     true
@@ -607,6 +612,7 @@ fn view_hero(model : Model) -> Html {
           a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
           a(class="button secondary hero-cta-button", href="#process", t(model.locale, zh="查看流程", en="View process")),
           a(class="button secondary hero-cta-button", href="#requirements", t(model.locale, zh="注意事项", en="Notes")),
+          a(class="button secondary hero-cta-button", href=charter_href(), target=Blank, rel="noreferrer", t(model.locale, zh="完整章程", en="Full rules")),
           a(class="button secondary hero-cta-button", href="showcase.html", t(model.locale, zh="作品墙", en="Showcase")),
         ]),
       ]),
