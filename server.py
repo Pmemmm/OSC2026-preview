@@ -2,6 +2,7 @@
 import json
 import os
 import base64
+import io
 import secrets
 import smtplib
 import sqlite3
@@ -48,6 +49,22 @@ REGISTRATION_EXTRA_COLUMNS = {
     "id_front_file_name": "text not null default ''",
     "id_back_file_name": "text not null default ''",
 }
+
+CONTEST_REVIEW_RULES = [
+    "赛事名称：MoonBit 国产基础软件生态开源大赛。",
+    "面向在校生，个人参赛，每位参赛者提交一个参赛项目。",
+    "4 月 29 日前已经存在的项目可以继续维护，但有效工作量只统计 4 月 29 日起新增提交。",
+    "申报阶段需提交参赛信息、GitHub 仓库、一页左右 PDF 申报书；仓库建议已有 10-20 个有效 commits，不能用空提交或无意义拆分凑数。",
+    "项目应围绕 MoonBit 开源生态库、生态包、开发工具或示例工程，具备明确功能、真实使用场景和可复用价值。",
+    "项目可以原创，也可以移植或重写成熟语言生态中的开源库；移植项目必须说明原项目名称、链接、许可证和参考范围。",
+    "不得直接重复 MoonBit 生态中已经存在且功能高度重合的成熟项目；如基于已有项目扩展，应说明新增价值和独立贡献。",
+    "项目规模参考范围为 4-10k 有效 MoonBit 代码行数，重点看真实可用、边界清晰、文档完整、测试可运行和后续可维护。",
+    "验收阶段要求 MoonBit 为主要实现语言，公开 GitHub 仓库，README 说明目标、安装、使用方式、示例和可复现方式。",
+    "验收阶段要求 CI 覆盖检查、构建和测试流程，提供核心功能测试，至少一个可运行示例，并发布到 mooncakes.io。",
+    "项目须采用 OSI 认可开源许可证，并遵守第三方依赖及参考项目许可证要求。",
+    "优秀项目评选综合完成度、MoonBit 生态贡献、工程质量、文档体验、展示表现和长期维护潜力；入选项目可能参加决赛答辩，地点和流程后续公布。",
+    "AI 工具可以用于代码生成、接口设计、测试补全、文档撰写和移植分析，但最终质量、许可证和技术边界由参赛者负责。",
+]
 
 
 def now_iso():
@@ -336,6 +353,57 @@ def file_from_row(row):
     }
 
 
+def extract_review_text_from_file(row, max_chars=12000):
+    filename = row["filename"] or f"{row['kind']}.bin"
+    content_type = (row["content_type"] or "").lower()
+    try:
+        data = base64.b64decode(row["data_base64"])
+    except Exception as exc:
+        return {
+            "kind": row["kind"],
+            "filename": filename,
+            "contentType": content_type,
+            "size": row["size"],
+            "text": "",
+            "extraction": f"base64 解析失败：{exc}",
+        }
+    suffix = Path(filename).suffix.lower()
+    text = ""
+    extraction = "unsupported"
+    if suffix == ".pdf" or "pdf" in content_type:
+        try:
+            from pypdf import PdfReader
+
+            reader = PdfReader(io.BytesIO(data))
+            chunks = []
+            for page in reader.pages[:8]:
+                chunks.append(page.extract_text() or "")
+            text = "\n".join(chunks).strip()
+            extraction = "pypdf"
+        except Exception as exc:
+            extraction = f"pdf 解析失败：{exc}"
+    elif suffix in {".txt", ".md", ".markdown", ".json", ".csv"} or content_type.startswith("text/"):
+        for encoding in ("utf-8", "utf-8-sig", "gb18030"):
+            try:
+                text = data.decode(encoding).strip()
+                extraction = f"text/{encoding}"
+                break
+            except UnicodeDecodeError:
+                continue
+        if not text and extraction == "unsupported":
+            extraction = "文本解码失败"
+    if len(text) > max_chars:
+        text = f"{text[:max_chars]}\n\n[已截断，原文件过长]"
+    return {
+        "kind": row["kind"],
+        "filename": filename,
+        "contentType": content_type,
+        "size": row["size"],
+        "text": text,
+        "extraction": extraction,
+    }
+
+
 def json_list(value):
     try:
         parsed = json.loads(value or "[]")
@@ -451,6 +519,16 @@ def local_review(bundle, mode):
         reasons.append("已填写项目名称。")
     else:
         missing.append("项目名称")
+    if registration.get("name") and registration.get("email") and registration.get("school"):
+        score += 8
+        reasons.append("参赛者基础信息相对完整。")
+    else:
+        missing.append("姓名、邮箱、学校等参赛者基础信息")
+    if registration.get("projectType"):
+        score += 5
+        reasons.append("已填写项目方向。")
+    else:
+        missing.append("项目方向")
     if registration.get("githubRepo"):
         score += 10
         reasons.append("已填写 GitHub 仓库。")
@@ -466,11 +544,32 @@ def local_review(bundle, mode):
         reasons.append("已提交项目申报书。")
     else:
         missing.append("项目申报书 PDF")
+    if any(file.get("kind") == "student" for file in files):
+        score += 5
+        reasons.append("已提交学生身份证明。")
+    else:
+        missing.append("学生身份证明")
     if checks:
         score += min(30, len(passed_checks) * 4)
         reasons.append(f"仓库检查通过 {len(passed_checks)} / {len(checks)} 项。")
+        if repo_check.get("commitCount", 0) < 10:
+            missing.append("4 月 29 日后 10 个以上有效 commits")
+        if not any(item.get("key") == "readme" and item.get("passed") for item in checks):
+            missing.append("README")
+        if not any(item.get("key") == "moonbit" and item.get("passed") for item in checks):
+            missing.append("MoonBit 源码")
+        if not any(item.get("key") == "license" and item.get("passed") for item in checks):
+            missing.append("OSI 认可许可证")
+    else:
+        missing.append("仓库检查记录")
     if mode == "acceptance" and not any(item.get("key") == "package" and item.get("passed") for item in checks):
         missing.append("发布到 mooncakes.io 或提供 MoonBit 包配置")
+    if mode == "acceptance" and not any(item.get("key") == "ci" and item.get("passed") for item in checks):
+        missing.append("CI 检查、构建、测试流程")
+    if mode == "acceptance" and not any(item.get("key") == "tests" and item.get("passed") for item in checks):
+        missing.append("核心功能测试")
+    if mode == "showcase" and "验收通过" not in (status.get("acceptance") or ""):
+        missing.append("验收通过状态")
     if score >= 80:
         decision = "pass"
         next_stage = "进入下一流程"
@@ -488,7 +587,7 @@ def local_review(bundle, mode):
         f"同学你好，你的项目「{registration.get('projectName') or '未命名项目'}」当前审核建议为：{summary}\n\n"
         f"下一步：{next_stage}\n"
         f"需要关注：{'、'.join(dict.fromkeys([item for item in missing if item])) or '暂无'}\n\n"
-        "请登录比赛进度页查看最新状态。"
+        "请登录比赛进度页查看最新状态。该建议仅供赛事工作人员复核使用，最终结果以官方邮件通知为准。"
     )
     return {
         "engine": "local-rules",
@@ -519,18 +618,16 @@ def openai_review(bundle, mode):
             {key: value for key, value in file.items() if key != "downloadUrl"}
             for file in bundle.get("files", [])
         ],
-        "rules": [
-            "项目须以 MoonBit 为主要实现语言。",
-            "公开 GitHub 仓库应有清晰提交记录。",
-            "README 应说明目标、安装、使用方法和示例。",
-            "CI 应覆盖检查、构建和测试流程。",
-            "应提供测试、许可证和可运行示例。",
-            "验收阶段应发布到 mooncakes.io 或提供明确包配置。",
-        ],
+        "fileTexts": bundle.get("fileTexts", []),
+        "rules": CONTEST_REVIEW_RULES,
     }
     prompt = (
-        "你是 MoonBit 国产基础软件生态开源大赛的材料初审助手。请只根据给定 JSON 做审核建议，"
-        "不要编造不存在的材料。你不能最终决定比赛结果，只能给管理员提供建议。"
+        "你是 MoonBit 国产基础软件生态开源大赛的官方后台材料初审助手。"
+        "请严格按 rules 与给定 JSON 做审核建议，不要编造不存在的材料、文件或仓库状态。"
+        "mode=proposal 时重点检查参赛资格、项目方向、申报书、仓库链接、4月29日后有效提交、移植来源与许可证说明。"
+        "mode=acceptance 时重点检查 MoonBit 主语言、README、示例、测试、CI、开源许可证、mooncakes.io/包配置、核心功能可复现。"
+        "mode=showcase 时重点检查工程质量、生态价值、文档体验、展示表现和长期维护潜力。"
+        "你不能最终决定比赛结果，只能给 MoonBit 官方管理员提供辅助建议。"
         "请返回严格 JSON，字段包括：decision(pass/needs_revision/reject), score(0-100), "
         "nextStage, summary, reasons(array), missingItems(array), emailSubject, emailBody。"
     )
@@ -1078,6 +1175,17 @@ class Handler(SimpleHTTPRequestHandler):
             "notifications": [notification_from_row(row) for row in notifications],
         }
 
+    def review_file_texts(self, connection, registration_id):
+        rows = connection.execute(
+            """
+            select * from registration_files
+            where registration_id = ? and kind in ('proposal')
+            order by kind
+            """,
+            (registration_id,),
+        ).fetchall()
+        return [extract_review_text_from_file(row) for row in rows]
+
     def get_registration(self, registration_id):
         with db() as connection:
             registration, session_row, allowed = self.can_access_registration(connection, registration_id)
@@ -1316,6 +1424,7 @@ class Handler(SimpleHTTPRequestHandler):
             if bundle is None:
                 self.write_error("报名记录不存在", 404)
                 return
+            bundle["fileTexts"] = self.review_file_texts(connection, registration_id)
             review = openai_review(bundle, mode)
             review_id = self.insert_ai_review(connection, registration_id, mode, review)
             row = connection.execute("select * from ai_reviews where id = ?", (review_id,)).fetchone()

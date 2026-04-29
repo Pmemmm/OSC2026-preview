@@ -2245,9 +2245,30 @@ a {
 }
 
 .admin-operator-note {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   background:
     radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 8%, transparent), transparent 30%),
     color-mix(in srgb, var(--panel-strong) 82%, transparent);
+}
+
+.admin-operator-note strong {
+  color: var(--text);
+}
+
+.admin-operator-note p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.admin-note-actions {
+  flex: 0 0 auto;
 }
 
 .admin-disconnected {
@@ -2329,9 +2350,27 @@ a {
   background: var(--panel-strong);
 }
 
+.admin-search-wrap {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(180px, 240px);
+  gap: 12px;
+}
+
+.admin-search-wrap select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+}
+
 .admin-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(7, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -2339,7 +2378,9 @@ a {
 .admin-card,
 .admin-detail-grid div,
 .admin-files,
-.admin-ai-panel {
+.admin-ai-panel,
+.admin-rule-panel div,
+.admin-workflow-board div {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--panel-strong) 86%, transparent);
@@ -2361,13 +2402,13 @@ a {
   display: block;
   margin-top: 6px;
   color: var(--text);
-  font-size: 2rem;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
   letter-spacing: -0.04em;
 }
 
 .admin-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(360px, 0.85fr);
+  grid-template-columns: minmax(0, 0.95fr) minmax(460px, 1.05fr);
   gap: 16px;
   align-items: start;
 }
@@ -2452,12 +2493,86 @@ a {
   color: color-mix(in srgb, #f97316 84%, var(--text));
 }
 
+.admin-badge--wait {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: color-mix(in srgb, var(--accent) 72%, var(--text));
+}
+
+.admin-workflow-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-workflow-board div {
+  padding: 14px;
+}
+
+.admin-workflow-board span,
+.admin-flow-strip span {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #fff;
+  font-weight: 900;
+}
+
+.admin-workflow-board strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--text);
+}
+
+.admin-workflow-board p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
 .admin-detail-grid,
 .admin-status-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   padding: 16px;
+}
+
+.admin-flow-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 14px 16px 0;
+}
+
+.admin-flow-strip div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 48px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+  color: var(--text-soft);
+}
+
+.admin-flow-strip .is-current {
+  border-color: color-mix(in srgb, var(--primary) 34%, var(--border));
+  background: color-mix(in srgb, var(--primary) 9%, transparent);
+  color: var(--text);
+}
+
+.admin-flow-strip .is-done {
+  border-color: color-mix(in srgb, #16a34a 28%, var(--border));
+  background: color-mix(in srgb, #16a34a 9%, transparent);
+  color: var(--text);
+}
+
+.admin-flow-strip .is-done span {
+  background: #16a34a;
 }
 
 .admin-detail-grid div,
@@ -2474,6 +2589,11 @@ a {
   word-break: break-word;
 }
 
+.admin-detail-grid a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
 .admin-detail-wide,
 .admin-status-form .admin-detail-wide {
   grid-column: 1 / -1;
@@ -2486,6 +2606,64 @@ a {
 .admin-files h3,
 .admin-ai-panel h3 {
   margin: 0 0 10px;
+}
+
+.admin-section-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.admin-section-title h3 {
+  margin: 0;
+}
+
+.admin-section-title span {
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.admin-rule-panel,
+.admin-check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px;
+}
+
+.admin-rule-panel div,
+.admin-check-grid div {
+  padding: 12px;
+}
+
+.admin-rule-panel strong,
+.admin-check-grid strong {
+  color: var(--text);
+}
+
+.admin-rule-panel p,
+.admin-check-grid p,
+.admin-ai-panel p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.admin-check-grid div {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+}
+
+.admin-check-grid .is-pass {
+  border-color: color-mix(in srgb, #16a34a 26%, var(--border));
+}
+
+.admin-check-grid .is-fail {
+  border-color: color-mix(in srgb, #f97316 28%, var(--border));
 }
 
 .admin-file-link {
@@ -2563,6 +2741,26 @@ a {
 .admin-notification-item p {
   margin: 0;
   color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.admin-review-item details {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.admin-review-item summary {
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.admin-review-item pre {
+  overflow: auto;
+  white-space: pre-wrap;
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  font: inherit;
   line-height: 1.55;
 }
 
@@ -3005,6 +3203,8 @@ a {
   .admin-hero,
   .admin-toolbar,
   .admin-layout,
+  .admin-search-wrap,
+  .admin-workflow-board,
   .admin-connect-steps,
   .card-grid,
   .learn-step-grid,
@@ -3204,9 +3404,17 @@ a {
   .admin-stats,
   .admin-detail-grid,
   .admin-status-form,
+  .admin-rule-panel,
+  .admin-check-grid,
+  .admin-flow-strip,
   .progress-check-grid,
   .progress-status-editor {
     grid-template-columns: 1fr;
+  }
+
+  .admin-operator-note {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .progress-dashboard-actions .button {

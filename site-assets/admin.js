@@ -8,6 +8,30 @@ let selectedId = null;
 let apiBase = readApiBase();
 let adminToken = readAdminToken();
 
+const STAGE_FILTERS = [
+  ["all", "全部记录"],
+  ["proposal", "申报审核中"],
+  ["development", "项目开发中"],
+  ["acceptance", "验收审核中"],
+  ["accepted", "验收通过"],
+  ["showcase", "作品墙"],
+  ["needs_action", "需要处理"],
+];
+
+const REVIEW_MODE_LABELS = {
+  proposal: "申报审核",
+  acceptance: "验收审核",
+  showcase: "优秀作品评选",
+};
+
+const FLOW_STEPS = [
+  ["proposal", "申报审核"],
+  ["development", "项目开发"],
+  ["acceptance", "项目验收"],
+  ["showcase", "优秀评选"],
+  ["display", "作品展示"],
+];
+
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
   "&": "&amp;",
   "<": "&lt;",
@@ -146,48 +170,91 @@ function downloadText(filename, text, type = "text/plain;charset=utf-8") {
 
 function filteredRegistrations() {
   const query = normalize($("#admin-search")?.value || "");
-  if (!query) return registrations;
-  return registrations.filter((item) => [
-    item.id,
-    item.name,
-    item.email,
-    item.school,
-    item.githubLogin,
-    item.githubRepo,
-    item.projectName,
-    item.projectType,
-    item.status?.proposal,
-    item.status?.acceptance,
-    item.status?.reward,
-    item.status?.showcase,
-  ].some((value) => normalize(value).includes(query)));
+  const stage = $("#admin-stage-filter")?.value || "all";
+  return registrations.filter((item) => {
+    const matchesStage = stage === "all" || registrationStage(item) === stage || (stage === "needs_action" && needsAction(item));
+    if (!matchesStage) return false;
+    if (!query) return true;
+    return [
+      item.id,
+      item.name,
+      item.email,
+      item.school,
+      item.githubLogin,
+      item.githubRepo,
+      item.projectName,
+      item.projectType,
+      item.status?.proposal,
+      item.status?.acceptance,
+      item.status?.reward,
+      item.status?.showcase,
+      stageLabel(item),
+    ].some((value) => normalize(value).includes(query));
+  });
 }
 
 function normalize(value) {
   return String(value ?? "").trim().toLowerCase();
 }
 
+function needsAction(item) {
+  const status = item.status || {};
+  return /调整|拒绝|不通过|驳回|待发放/.test([
+    status.proposal,
+    status.acceptance,
+    status.reward,
+    status.showcase,
+  ].join(" "));
+}
+
+function registrationStage(item) {
+  const status = item.status || {};
+  if (/已上墙|展示/.test(status.showcase || "")) return "showcase";
+  if (/验收通过/.test(status.acceptance || "")) return "accepted";
+  if (/验收审核/.test(status.acceptance || "")) return "acceptance";
+  if (/申报通过/.test(status.proposal || "")) return "development";
+  return "proposal";
+}
+
+function stageLabel(item) {
+  const labels = {
+    proposal: "申报审核中",
+    development: "项目开发中",
+    acceptance: "验收审核中",
+    accepted: "验收通过",
+    showcase: "作品墙展示",
+  };
+  return labels[registrationStage(item)] || "待处理";
+}
+
+function stageFilterOptions() {
+  return STAGE_FILTERS.map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
+}
+
 function statusBadge(value) {
   const text = String(value || "未设置");
   const done = /通过|已发放|已上墙|完成/.test(text);
   const warn = /调整|拒绝|不通过|驳回/.test(text);
-  const klass = done ? "admin-badge admin-badge--ok" : warn ? "admin-badge admin-badge--warn" : "admin-badge";
+  const wait = /待发放|审核中|待上墙|未提交|未开始/.test(text);
+  const klass = done ? "admin-badge admin-badge--ok" : warn ? "admin-badge admin-badge--warn" : wait ? "admin-badge admin-badge--wait" : "admin-badge";
   return `<span class="${klass}">${escapeHtml(text)}</span>`;
 }
 
 function renderDisconnected(error) {
   const app = $("#admin-app");
+  const message = error?.message || "无法连接 /api/health";
+  const needsToken = /Token|管理员|401|403/.test(message);
   const staticHint = isStaticPreviewHost()
     ? "当前 GitHub Pages 页面已直接连接 Render 后端；Render 服务可用后，报名数据会在这里直接展示。"
     : "当前页面没有连接到可用的后台接口。请确认 Python 后端已经启动，或填写部署后的后端服务地址。";
   app.innerHTML = `
     <div class="admin-disconnected">
       <div class="progress-alert progress-alert--error">
-        <strong>正在连接 Render 数据后台</strong>
+        <strong>${needsToken ? "需要管理员授权" : "后台连接异常"}</strong>
         <p>${escapeHtml(staticHint)}</p>
         <p>当前连接地址：<code>${escapeHtml(currentEndpointLabel())}</code></p>
-        <p>接口错误：${escapeHtml(error?.message || "无法连接 /api/health")}</p>
-        <p>如果提示需要管理员 Token，请填写 Render 环境变量 <code>ADMIN_TOKEN</code> 对应的值；如果持续连接失败，通常是 Render 服务还没有启动，或实际服务域名不是 <code>${escapeHtml(DEFAULT_RENDER_API_BASE)}</code>。</p>
+        <p>接口提示：${escapeHtml(message)}</p>
+        <p>${needsToken ? "请填写赛事工作人员持有的管理员 Token。Token 只保存在当前浏览器本地，不会写入页面代码。" : `如果持续连接失败，请确认 Render 服务已启动，且实际服务域名为 <code>${escapeHtml(DEFAULT_RENDER_API_BASE)}</code>。`}</p>
       </div>
       <form class="admin-api-form" id="admin-api-form">
         <label class="form-field admin-detail-wide">
@@ -219,23 +286,6 @@ function renderDisconnected(error) {
           <a class="button secondary" href="https://github.com/moonbitlang/OSC2026/blob/main/DEPLOYMENT.md" target="_blank" rel="noreferrer">查看部署说明</a>
         </div>
       </form>
-      <div class="admin-connect-steps">
-        <div>
-          <span>1</span>
-          <strong>部署后端</strong>
-          <p>用仓库里的 <code>render.yaml</code> 或 <code>Dockerfile</code> 部署 <code>server.py</code>。</p>
-        </div>
-        <div>
-          <span>2</span>
-          <strong>配置 OAuth 和邮件</strong>
-          <p>在服务环境变量里填入 GitHub OAuth、OpenAI、SMTP 等密钥。</p>
-        </div>
-        <div>
-          <span>3</span>
-          <strong>使用后端域名</strong>
-          <p>后台、报名、比赛进度都从后端域名访问，数据才会写入 SQLite。</p>
-        </div>
-      </div>
     </div>
   `;
 
@@ -255,14 +305,24 @@ function renderDisconnected(error) {
 function renderShell() {
   const app = $("#admin-app");
   app.innerHTML = `
-    <div class="progress-alert admin-operator-note">
-      后台用于赛事工作人员管理报名、审核、奖励、通知和作品墙状态。当前连接地址：<code>${escapeHtml(currentEndpointLabel())}</code>。正式使用时请部署在受控环境，并优先通过后端域名访问。
+    <div class="admin-operator-note">
+      <div>
+        <strong>官方内部工作台</strong>
+        <p>当前连接：<code>${escapeHtml(currentEndpointLabel())}</code>。这里集中处理报名、材料审核、仓库检查、AI 初审、流程推进和通知记录。</p>
+      </div>
+      <div class="admin-note-actions">
+        ${adminToken ? statusBadge("管理员已授权") : statusBadge("缺少管理员 Token")}
+      </div>
     </div>
     <div class="admin-toolbar">
       <div class="admin-search-wrap">
         <label class="form-field">
           <span>搜索报名记录</span>
           <input id="admin-search" placeholder="姓名 / 邮箱 / GitHub / 项目名称 / 状态">
+        </label>
+        <label class="form-field">
+          <span>流程筛选</span>
+          <select id="admin-stage-filter">${stageFilterOptions()}</select>
         </label>
       </div>
       <div class="admin-toolbar-actions">
@@ -275,10 +335,11 @@ function renderShell() {
       </div>
     </div>
     <div class="admin-stats" id="admin-stats"></div>
+    <div class="admin-workflow-board" id="admin-workflow-board"></div>
     <div class="admin-layout">
       <section class="admin-card">
         <div class="admin-card-head">
-          <h2>报名列表</h2>
+          <h2>报名数据</h2>
           <span id="admin-count">0 条</span>
         </div>
         <div class="admin-table-wrap">
@@ -286,11 +347,11 @@ function renderShell() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>项目</th>
-                <th>参赛者</th>
-                <th>申报</th>
-                <th>验收</th>
-                <th>更新</th>
+                <th>项目与仓库</th>
+                <th>选手</th>
+                <th>当前阶段</th>
+                <th>奖励 / 作品墙</th>
+                <th>更新时间</th>
               </tr>
             </thead>
             <tbody id="admin-table-body"></tbody>
@@ -303,6 +364,7 @@ function renderShell() {
     </div>
   `;
   $("#admin-search").addEventListener("input", renderList);
+  $("#admin-stage-filter").addEventListener("change", renderList);
   app.querySelector("[data-action='refresh']").addEventListener("click", loadRegistrations);
   app.querySelector("[data-action='set-admin-token']").addEventListener("click", promptAdminToken);
   app.querySelector("[data-action='export-csv']").addEventListener("click", exportCsv);
@@ -313,14 +375,39 @@ function renderShell() {
 
 function renderStats() {
   const total = registrations.length;
+  const proposalPending = registrations.filter((item) => registrationStage(item) === "proposal").length;
   const proposalPassed = registrations.filter((item) => /通过/.test(item.status?.proposal || "")).length;
+  const acceptancePending = registrations.filter((item) => /验收审核/.test(item.status?.acceptance || "")).length;
   const accepted = registrations.filter((item) => /通过/.test(item.status?.acceptance || "")).length;
+  const actionRequired = registrations.filter(needsAction).length;
   const showcased = registrations.filter((item) => /上墙|展示/.test(item.status?.showcase || "")).length;
   $("#admin-stats").innerHTML = `
     <div><span>报名总数</span><strong>${total}</strong></div>
+    <div><span>申报待审</span><strong>${proposalPending}</strong></div>
     <div><span>申报通过</span><strong>${proposalPassed}</strong></div>
+    <div><span>验收待审</span><strong>${acceptancePending}</strong></div>
     <div><span>验收通过</span><strong>${accepted}</strong></div>
+    <div><span>需处理</span><strong>${actionRequired}</strong></div>
     <div><span>已上作品墙</span><strong>${showcased}</strong></div>
+  `;
+  renderWorkflowBoard();
+}
+
+function renderWorkflowBoard() {
+  const counts = {
+    proposal: registrations.filter((item) => registrationStage(item) === "proposal").length,
+    development: registrations.filter((item) => registrationStage(item) === "development").length,
+    acceptance: registrations.filter((item) => registrationStage(item) === "acceptance").length,
+    accepted: registrations.filter((item) => registrationStage(item) === "accepted").length,
+    showcase: registrations.filter((item) => registrationStage(item) === "showcase").length,
+  };
+  const board = $("#admin-workflow-board");
+  if (!board) return;
+  board.innerHTML = `
+    <div><span>1</span><strong>申报审核</strong><p>${counts.proposal} 个项目待初审，重点看学生身份、申报书、GitHub 仓库和 4 月 29 日后有效提交。</p></div>
+    <div><span>2</span><strong>开发跟进</strong><p>${counts.development} 个项目已立项，持续跟进 README、测试、CI、许可证和 MoonBit 包建设。</p></div>
+    <div><span>3</span><strong>项目验收</strong><p>${counts.acceptance} 个项目进入验收审核，验收通过后可进入优秀项目评选。</p></div>
+    <div><span>4</span><strong>评选展示</strong><p>${counts.accepted + counts.showcase} 个项目可评估生态价值、展示效果和长期维护潜力。</p></div>
   `;
 }
 
@@ -332,14 +419,21 @@ function renderList() {
       <td>#${item.id}</td>
       <td>
         <strong>${escapeHtml(item.projectName || "未命名项目")}</strong>
+        <span>${escapeHtml(item.projectType || "未填写方向")}</span>
         <span>${escapeHtml(item.githubRepo || "未填写仓库")}</span>
       </td>
       <td>
         <strong>${escapeHtml(item.name || "未填写")}</strong>
-        <span>${escapeHtml(item.email || "-")}</span>
+        <span>${escapeHtml(item.school || "学校未填")} / ${escapeHtml(item.email || "邮箱未填")}</span>
       </td>
-      <td>${statusBadge(item.status?.proposal)}</td>
-      <td>${statusBadge(item.status?.acceptance)}</td>
+      <td>
+        ${statusBadge(stageLabel(item))}
+        <span>${escapeHtml(item.status?.proposal || "申报审核中")} / ${escapeHtml(item.status?.acceptance || "未提交")}</span>
+      </td>
+      <td>
+        ${statusBadge(item.status?.reward)}
+        <span>${escapeHtml(item.status?.showcase || "待上墙")}</span>
+      </td>
       <td>${formatTime(item.updatedAt)}</td>
     </tr>
   `).join("") || `<tr><td colspan="6">暂无报名记录。</td></tr>`;
@@ -392,12 +486,19 @@ function reviewList(reviews = []) {
     <div class="admin-review-item">
       <div>
         <strong>${escapeHtml(review.summary || "审核建议")}</strong>
-        <span>${escapeHtml(review.engine || "review")} / ${escapeHtml(review.model || "-")} / ${formatTime(review.createdAt)}</span>
+        <span>${escapeHtml(REVIEW_MODE_LABELS[review.mode] || review.mode || "审核")} / ${escapeHtml(review.engine || "review")} / ${escapeHtml(review.model || "-")} / ${formatTime(review.createdAt)}</span>
       </div>
       <div>${statusBadge(`${review.decision || "needs_revision"} · ${review.score || 0}分`)}</div>
       <p>下一步：${escapeHtml(review.nextStage || "-")}</p>
       <p>理由：${escapeHtml((review.reasons || []).join("；") || "-")}</p>
       <p>缺失项：${escapeHtml((review.missingItems || []).join("；") || "暂无")}</p>
+      ${review.emailSubject || review.emailBody ? `
+        <details>
+          <summary>查看 AI 建议通知文案</summary>
+          <p><strong>${escapeHtml(review.emailSubject || "邮件标题待生成")}</strong></p>
+          <pre>${escapeHtml(review.emailBody || "")}</pre>
+        </details>
+      ` : ""}
     </div>
   `).join("");
 }
@@ -413,6 +514,81 @@ function notificationList(notifications = []) {
   `).join("");
 }
 
+function flowStepClass(status, step) {
+  if (step === "proposal") return /通过/.test(status.proposal || "") ? "is-done" : "is-current";
+  if (step === "development") return /通过/.test(status.proposal || "") && !/验收/.test(status.acceptance || "") ? "is-current" : /验收|通过/.test(status.acceptance || "") ? "is-done" : "";
+  if (step === "acceptance") return /验收通过/.test(status.acceptance || "") ? "is-done" : /验收审核/.test(status.acceptance || "") ? "is-current" : "";
+  if (step === "showcase") return /已上墙|候选/.test(status.showcase || "") ? "is-current" : "";
+  if (step === "display") return /已上墙/.test(status.showcase || "") ? "is-done" : "";
+  return "";
+}
+
+function workflowStrip(status = {}) {
+  return `
+    <div class="admin-flow-strip">
+      ${FLOW_STEPS.map(([key, label], index) => `
+        <div class="${flowStepClass(status, key)}">
+          <span>${index + 1}</span>
+          <strong>${escapeHtml(label)}</strong>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function repoCheckPanel(repoCheck) {
+  if (!repoCheck) {
+    return `
+      <div class="admin-files">
+        <h3>仓库检查</h3>
+        <p>还没有仓库检查记录。选手在比赛进度页填写 GitHub 仓库并检查后，这里会显示公开仓库、有效 commits、README、CI、测试、许可证、MoonBit 代码和包配置。</p>
+      </div>
+    `;
+  }
+  const checks = repoCheck.checks || [];
+  const passed = checks.filter((item) => item.passed).length;
+  return `
+    <div class="admin-files">
+      <div class="admin-section-title">
+        <h3>仓库检查</h3>
+        <span>${passed} / ${checks.length || 8} 通过 · ${formatTime(repoCheck.checkedAt)}</span>
+      </div>
+      <p>仓库：${escapeHtml(repoCheck.repoUrl || "-")}；4 月 29 日后 commits：${escapeHtml(repoCheck.commitCount ?? "-")}</p>
+      <div class="admin-check-grid">
+        ${checks.map((item) => `
+          <div class="${item.passed ? "is-pass" : "is-fail"}">
+            <strong>${escapeHtml(item.label || item.key || "检查项")}</strong>
+            <p>${escapeHtml(item.detail || (item.passed ? "已通过" : "待补充"))}</p>
+          </div>
+        `).join("") || "<p>暂无具体检查项。</p>"}
+      </div>
+    </div>
+  `;
+}
+
+function ruleChecklist() {
+  const items = [
+    ["申报初审", "学生身份、联系方式、GitHub 仓库、1 页左右 PDF 申报书、10-20 个有效 commits、移植来源和许可证说明。"],
+    ["开发跟进", "公开连续提交，围绕 MoonBit 生态库、工具、示例工程建设；项目边界清晰，避免重复成熟项目。"],
+    ["项目验收", "MoonBit 为主要语言，README、示例、测试、CI、OSI 许可证、mooncakes.io 发布或包配置齐全。"],
+    ["优秀评选", "综合工程质量、生态价值、文档体验、MoonBit 特性使用、展示表现和长期维护潜力。"],
+  ];
+  return `
+    <div class="admin-rule-panel">
+      ${items.map(([title, body]) => `
+        <div>
+          <strong>${escapeHtml(title)}</strong>
+          <p>${escapeHtml(body)}</p>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
+function reviewModeOptions() {
+  return Object.entries(REVIEW_MODE_LABELS).map(([value, label]) => `<option value="${value}">${label}</option>`).join("");
+}
+
 function renderDetail(data) {
   const item = data.registration;
   const status = data.status || {};
@@ -421,33 +597,37 @@ function renderDetail(data) {
       <h2>#${item.id} ${escapeHtml(item.projectName || "未命名项目")}</h2>
       <button class="button secondary" type="button" data-action="delete">删除</button>
     </div>
+    ${workflowStrip(status)}
     <div class="admin-detail-grid">
       <div><span>姓名</span><strong>${escapeHtml(item.name || "-")}</strong></div>
       <div><span>邮箱</span><strong>${escapeHtml(item.email || "-")}</strong></div>
       <div><span>学校 / 组织</span><strong>${escapeHtml(item.school || "-")}</strong></div>
       <div><span>GitHub 用户名</span><strong>${escapeHtml(item.githubLogin || "-")}</strong></div>
+      <div><span>项目方向</span><strong>${escapeHtml(item.projectType || "-")}</strong></div>
+      <div><span>报名来源</span><strong>${escapeHtml(item.source || "-")}</strong></div>
       <div><span>身份证号</span><strong>${escapeHtml(item.idNumber || item.idNumberMasked || "-")}</strong></div>
       <div><span>银行卡号</span><strong>${escapeHtml(item.bankAccount || item.bankAccountMasked || "-")}</strong></div>
       <div class="admin-detail-wide"><span>开户支行</span><strong>${escapeHtml(item.bankBranch || "-")}</strong></div>
-      <div class="admin-detail-wide"><span>GitHub 仓库</span><strong>${escapeHtml(item.githubRepo || "-")}</strong></div>
+      <div class="admin-detail-wide"><span>GitHub 仓库</span><strong>${item.githubRepo ? `<a href="${escapeHtml(item.githubRepo)}" target="_blank" rel="noreferrer">${escapeHtml(item.githubRepo)}</a>` : "-"}</strong></div>
       <div class="admin-detail-wide"><span>项目简介</span><p>${escapeHtml(item.summary || "未填写")}</p></div>
     </div>
     <div class="progress-alert">
       敏感信息仅用于奖金发放和必要身份核验。对外导出或转交前请确认最小必要范围，不要放到公开进度页或作品墙。
     </div>
+    ${ruleChecklist()}
+    ${repoCheckPanel(data.repoCheck)}
     <div class="admin-files">
       <h3>材料文件</h3>
       ${fileLinks(data.files)}
     </div>
     <div class="admin-ai-panel">
       <div class="admin-panel-head">
-        <h3>ChatGPT 审核建议</h3>
+        <div>
+          <h3>AI 辅助审核</h3>
+          <p>按本届比赛规则生成初审建议。AI 只做辅助判断，最终结果由 MoonBit 官方管理员确认。</p>
+        </div>
         <form class="admin-inline-form" id="admin-ai-form">
-          <select name="mode">
-            <option value="proposal">申报审核</option>
-            <option value="acceptance">验收审核</option>
-            <option value="showcase">作品墙评选</option>
-          </select>
+          <select name="mode">${reviewModeOptions()}</select>
           <button class="button secondary" type="submit">生成审核建议</button>
         </form>
       </div>
@@ -468,7 +648,10 @@ function renderDetail(data) {
     </form>
     <div class="admin-ai-panel">
       <div class="admin-panel-head">
-        <h3>流程推进与邮件通知</h3>
+        <div>
+          <h3>流程推进与邮件通知</h3>
+          <p>推进会同步更新选手进度页，并尝试通过邮件通知选手；SMTP 未配置时会保留待发送记录。</p>
+        </div>
       </div>
       <form class="admin-status-form" id="admin-advance-form">
         <label class="form-field"><span>推进阶段</span><select name="mode">
