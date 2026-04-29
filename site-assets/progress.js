@@ -1177,13 +1177,13 @@ function initRegisterPage() {
       <div class="register-form-head">
         <img class="register-head-logo" src="site-assets/moonbit-logo.png?v=20260428-progress-system" alt="MoonBit Logo">
         <div>
-          <h3>MoonBit 开源大赛报名</h3>
+          <h3>MoonBit 国产基础软件生态开源大赛报名</h3>
           <p>提交后进入后台审核，并同步到比赛进度页；未连接后台时只会本地保存非敏感信息。</p>
         </div>
       </div>
       <div class="register-system-note register-prep-note">
         <strong>报名前请准备好这些材料</strong>
-        <p>GitHub 公开仓库、一页 PDF 项目申报书、学生身份证明、身份证正反面水印版、银行卡号和开户支行。身份证水印建议写“仅用于 MoonBit 开源大赛奖金发放”。</p>
+        <p>GitHub 公开仓库、一页 PDF 项目申报书、学生身份证明、身份证正反面水印版、银行卡号和开户支行。身份证水印建议写“仅用于 MoonBit 国产基础软件生态开源大赛奖金发放”。</p>
       </div>
       <div class="register-field-grid">
         <label class="form-field"><span>姓名</span><input name="name" required value="${escapeHtml(data.name || "")}" placeholder="请输入真实姓名"></label>
@@ -1203,13 +1203,13 @@ function initRegisterPage() {
       <div class="register-upload-grid">
         <label class="register-upload"><strong>项目申报书 PDF</strong><input name="proposalFile" type="file" accept=".pdf" ${requireProposal}><p>${data.proposalFileName ? `已选择：${escapeHtml(data.proposalFileName)}` : "建议一页，后台用于申报审核。"}</p></label>
         <label class="register-upload"><strong>学生身份证明</strong><input name="studentFile" type="file" accept=".pdf,.jpg,.jpeg,.png" ${requireStudent}><p>${data.studentFileName ? `已选择：${escapeHtml(data.studentFileName)}` : "仅用于学生身份确认，不在公开页面展示。"}</p></label>
-        <label class="register-upload"><strong>身份证正面（水印版）</strong><input name="idFrontFile" type="file" accept=".pdf,.jpg,.jpeg,.png" ${requireIdFront}><p>${data.idFrontFileName ? `已选择：${escapeHtml(data.idFrontFileName)}` : "请先加水印：仅用于 MoonBit 开源大赛奖金发放。"}</p></label>
+        <label class="register-upload"><strong>身份证正面（水印版）</strong><input name="idFrontFile" type="file" accept=".pdf,.jpg,.jpeg,.png" ${requireIdFront}><p>${data.idFrontFileName ? `已选择：${escapeHtml(data.idFrontFileName)}` : "请先加水印：仅用于 MoonBit 国产基础软件生态开源大赛奖金发放。"}</p></label>
         <label class="register-upload"><strong>身份证反面（水印版）</strong><input name="idBackFile" type="file" accept=".pdf,.jpg,.jpeg,.png" ${requireIdBack}><p>${data.idBackFileName ? `已选择：${escapeHtml(data.idBackFileName)}` : "水印不要遮挡姓名、证件号、有效期等关键信息。"}</p></label>
       </div>
       <div class="register-system-note">
         <strong>敏感信息使用说明</strong>
         <p>身份证、银行卡和开户支行仅用于赛事启动支持、完成支持及优秀作品奖金发放，不会展示在公开比赛进度页或作品墙。</p>
-        <p>上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 开源大赛奖金发放”。水印要清晰，但不要遮挡姓名、证件号、学校、有效期等核验信息。</p>
+        <p>上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 国产基础软件生态开源大赛奖金发放”。水印要清晰，但不要遮挡姓名、证件号、学校、有效期等核验信息。</p>
         <p>如果当前页面未连接后台数据库，只会在浏览器本地保存非敏感报名信息；敏感信息和证件文件需要在后台可用时重新提交。</p>
       </div>
       <div class="progress-page-actions">

@@ -292,7 +292,7 @@ fn nav_items(locale : Locale) -> Array[NavItem] {
 fn hero_kv_alt(locale : Locale) -> String {
   t(
     locale,
-    zh="MoonBit 开源大赛主视觉",
+    zh="MoonBit 国产基础软件生态开源大赛主视觉",
     en="MoonBit Open Source Competition key visual",
   )
 }
@@ -604,10 +604,10 @@ fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
           nothing,
         ),
         div(class="brand-copy", [
-          strong(t(model.locale, zh="MoonBit 开源大赛", en="MoonBit Open Source Contest")),
+          strong(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="MoonBit Open Source Contest")),
           p(
             class="brand-subtitle",
-            t(model.locale, zh="2026 国产开源生态大赛", en="2026 Open Source Ecosystem Competition"),
+            t(model.locale, zh="2026 官方网站", en="2026 Official Website"),
           ),
         ]),
       ]),
@@ -880,7 +880,7 @@ fn view_register_page(model : Model) -> Html {
       div(class="register-shell", [
         div(class="register-copy", [
           p(class="eyebrow", t(model.locale, zh="比赛介绍", en="Contest intro")),
-          h2(t(model.locale, zh="2026 MoonBit 国产开源生态大赛", en="2026 MoonBit Open Source Ecosystem Contest")),
+          h2(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="2026 MoonBit Open Source Ecosystem Contest")),
           p(
             t(
               model.locale,
@@ -902,13 +902,13 @@ fn view_register_page(model : Model) -> Html {
               nothing,
             ),
             div([
-              h3(t(model.locale, zh="MoonBit 开源大赛报名", en="MoonBit contest registration")),
+              h3(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛报名", en="MoonBit contest registration")),
               p(t(model.locale, zh="提交后进入后台审核，并同步到比赛进度页；未连接后台时只会本地保存非敏感信息。", en="Submitted records enter admin review and sync to the progress page. Without a backend, only non-sensitive fields are kept locally.")),
             ]),
           ]),
           div(class="register-system-note register-prep-note", [
             strong(t(model.locale, zh="报名前请准备好这些材料", en="Prepare these before registering")),
-            p(t(model.locale, zh="GitHub 公开仓库、一页 PDF 项目申报书、学生身份证明、身份证正反面水印版、银行卡号和开户支行。身份证水印建议写“仅用于 MoonBit 开源大赛奖金发放”。", en="Prepare a public GitHub repository, one-page proposal PDF, student proof, watermarked ID images, bank card number, and bank branch. Recommended ID watermark: for MoonBit contest reward payout only.")),
+            p(t(model.locale, zh="GitHub 公开仓库、一页 PDF 项目申报书、学生身份证明、身份证正反面水印版、银行卡号和开户支行。身份证水印建议写“仅用于 MoonBit 国产基础软件生态开源大赛奖金发放”。", en="Prepare a public GitHub repository, one-page proposal PDF, student proof, watermarked ID images, bank card number, and bank branch. Recommended ID watermark: for MoonBit contest reward payout only.")),
           ]),
           div(class="register-field-grid", [
             view_register_field(t(model.locale, zh="姓名", en="Name"), t(model.locale, zh="请输入真实姓名", en="Enter real name")),
@@ -936,7 +936,7 @@ fn view_register_page(model : Model) -> Html {
             ]),
             div(class="register-upload", [
               strong(t(model.locale, zh="身份证正面（水印版）", en="ID front with watermark")),
-              p(t(model.locale, zh="请先加水印：仅用于 MoonBit 开源大赛奖金发放。", en="Add a watermark first: for MoonBit contest reward payout only.")),
+              p(t(model.locale, zh="请先加水印：仅用于 MoonBit 国产基础软件生态开源大赛奖金发放。", en="Add a watermark first: for MoonBit contest reward payout only.")),
             ]),
             div(class="register-upload", [
               strong(t(model.locale, zh="身份证反面（水印版）", en="ID back with watermark")),
@@ -946,7 +946,7 @@ fn view_register_page(model : Model) -> Html {
           div(class="register-system-note", [
             strong(t(model.locale, zh="敏感信息使用说明", en="Sensitive data usage")),
             p(t(model.locale, zh="身份证、银行卡和开户支行仅用于赛事启动支持、完成支持及优秀作品奖金发放，不会展示在公开比赛进度页或作品墙。", en="ID, bank card, and bank branch are used only for kickoff support, completion support, and award payout. They are not shown on public progress pages or the showcase wall.")),
-            p(t(model.locale, zh="上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 开源大赛奖金发放”。", en="Before uploading ID images, use AI or an image tool to add a watermark such as: for MoonBit contest reward payout only.")),
+            p(t(model.locale, zh="上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 国产基础软件生态开源大赛奖金发放”。", en="Before uploading ID images, use AI or an image tool to add a watermark such as: for MoonBit contest reward payout only.")),
           ]),
           div(class="progress-page-actions", [
             span(class="button primary", t(model.locale, zh="提交报名信息", en="Submit registration")),
@@ -1157,8 +1157,8 @@ fn view_footer(model : Model) -> Html {
   footer(class="site-footer", [
     div(class="container footer-inner", [
       div(class="footer-copy", [
-        strong(t(model.locale, zh="MoonBit 开源大赛", en="MoonBit Open Source Contest")),
-        p(t(model.locale, zh="2026 MoonBit 国产开源生态大赛", en="2026 MoonBit Open Source Ecosystem Competition")),
+        strong(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="MoonBit Open Source Contest")),
+        p(t(model.locale, zh="2026 官方网站", en="2026 MoonBit Open Source Ecosystem Competition")),
       ]),
       div(class="footer-links", [
         a(href="https://www.moonbitlang.cn/", target=Blank, rel="noreferrer", t(model.locale, zh="MoonBit 中文官网", en="MoonBit website")),

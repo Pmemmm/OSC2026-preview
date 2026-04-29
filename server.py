@@ -483,7 +483,7 @@ def local_review(bundle, mode):
         decision = "reject"
         next_stage = "暂不进入下一流程"
         summary = "关键信息或仓库质量不足，暂不建议进入下一流程。"
-    subject = f"MoonBit 开源大赛：{registration.get('projectName') or '项目'}审核进度通知"
+    subject = f"MoonBit 国产基础软件生态开源大赛：{registration.get('projectName') or '项目'}审核进度通知"
     body = (
         f"同学你好，你的项目「{registration.get('projectName') or '未命名项目'}」当前审核建议为：{summary}\n\n"
         f"下一步：{next_stage}\n"
@@ -529,7 +529,7 @@ def openai_review(bundle, mode):
         ],
     }
     prompt = (
-        "你是 MoonBit 开源大赛的材料初审助手。请只根据给定 JSON 做审核建议，"
+        "你是 MoonBit 国产基础软件生态开源大赛的材料初审助手。请只根据给定 JSON 做审核建议，"
         "不要编造不存在的材料。你不能最终决定比赛结果，只能给管理员提供建议。"
         "请返回严格 JSON，字段包括：decision(pass/needs_revision/reject), score(0-100), "
         "nextStage, summary, reasons(array), missingItems(array), emailSubject, emailBody。"
@@ -1354,7 +1354,7 @@ class Handler(SimpleHTTPRequestHandler):
             review_row = self.latest_ai_review(connection, registration_id, mode)
             review = ai_review_from_row(review_row) if review_row else None
             registration = bundle["registration"]
-            subject = clean_text(payload, "subject") or (review or {}).get("emailSubject") or f"MoonBit 开源大赛：{registration.get('projectName') or '项目'}进入下一流程"
+            subject = clean_text(payload, "subject") or (review or {}).get("emailSubject") or f"MoonBit 国产基础软件生态开源大赛：{registration.get('projectName') or '项目'}进入下一流程"
             body = clean_text(payload, "body") or (review or {}).get("emailBody") or (
                 f"同学你好，你的项目「{registration.get('projectName') or '未命名项目'}」已进入下一流程。\n\n"
                 "请登录比赛进度页查看最新状态，并按要求继续完善项目。"
@@ -1383,7 +1383,7 @@ class Handler(SimpleHTTPRequestHandler):
             if not recipient:
                 self.write_error("没有可通知的邮箱地址", 400)
                 return
-            subject = clean_text(payload, "subject") or f"MoonBit 开源大赛：{registration.get('projectName') or '项目'}进度通知"
+            subject = clean_text(payload, "subject") or f"MoonBit 国产基础软件生态开源大赛：{registration.get('projectName') or '项目'}进度通知"
             body = clean_text(payload, "body") or "你的比赛进度已更新，请登录比赛进度页查看。"
             notification_id = self.insert_notification(connection, registration_id, recipient, subject, body)
             notification = connection.execute(
