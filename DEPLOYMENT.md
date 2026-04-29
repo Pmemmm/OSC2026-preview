@@ -1,0 +1,27 @@
+# MoonBit 国产基础软件生态开源大赛后端部署
+
+GitHub Pages 只能托管静态页面，不能运行 `server.py`。报名数据库、GitHub OAuth、后台管理、AI 审核和邮件通知需要部署这个 Python 后端。
+
+## Render 部署
+
+1. 在 Render 新建 Blueprint，选择本仓库 `zongen01/MGPIC2026`。
+2. Render 会读取 `render.yaml` 并创建 `mgpic2026` Web Service。
+3. 如果 Render 生成的域名不是 `https://mgpic2026.onrender.com`，把环境变量 `GITHUB_OAUTH_REDIRECT_URI` 改成实际域名：
+   `https://你的域名/api/auth/github/callback`
+4. 在 GitHub Developer settings 创建 OAuth App。
+5. OAuth App 配置：
+   Homepage URL: `https://你的后端域名`
+   Authorization callback URL: `https://你的后端域名/api/auth/github/callback`
+6. 把 OAuth App 的 `Client ID` 和 `Client Secret` 填入 Render 环境变量：
+   `GITHUB_CLIENT_ID`
+   `GITHUB_CLIENT_SECRET`
+7. 可选环境变量：
+   `OPENAI_API_KEY` 用于 ChatGPT 审核建议。
+   `SMTP_HOST`、`SMTP_FROM`、`SMTP_USER`、`SMTP_PASSWORD` 用于发送邮件通知。
+
+## 重要说明
+
+- 后端服务会同时托管前端页面和 `/api/*` 接口。正式使用时请访问后端域名，而不是 GitHub Pages 静态域名。
+- SQLite 数据库路径为 `/var/lib/mgpic/mgpic2026.sqlite3`，Render 会通过 Persistent Disk 持久化。
+- 报名表会收集身份证、银行卡和证明材料，部署平台必须限制管理员访问，不要把数据库文件公开。
+- 如果继续使用 GitHub Pages 作为公开入口，需要再把页面里的 API base 指向后端域名；最简单稳定的方式是直接对外使用后端域名。
