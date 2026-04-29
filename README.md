@@ -77,6 +77,10 @@ data/mgpic2026.sqlite3
 - `GET /api/registrations/:id/files/:kind`：下载申报书或学生证明
 - `DELETE /api/registrations/:id`：删除报名记录
 - `POST /api/import/feishu`：保存飞书导入记录
+- `GET /api/auth/github/start`：发起 GitHub OAuth 登录
+- `GET /api/auth/github/callback`：GitHub OAuth 回调，换取 token 并建立登录会话
+- `GET /api/auth/github/session`：读取当前 GitHub 登录会话
+- `POST /api/auth/github/logout`：退出 GitHub 登录
 
 两条报名路径都会保留：
 
@@ -97,6 +101,16 @@ HOST=0.0.0.0 PORT=4174 MGPIC_DB=/data/mgpic2026.sqlite3 python3 server.py
 - `OPENAI_MODEL`：默认 `gpt-4o`
 - `SMTP_HOST` / `SMTP_PORT` / `SMTP_FROM`：用于邮件通知
 - `SMTP_USER` / `SMTP_PASSWORD` / `SMTP_TLS`：SMTP 登录与 TLS 配置
+- `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`：GitHub OAuth App 配置，用于一键 GitHub 登录
+- `GITHUB_OAUTH_REDIRECT_URI`：可选，GitHub OAuth 回调地址；本地默认是 `http://127.0.0.1:4174/api/auth/github/callback`
+
+GitHub OAuth App 需要在 GitHub Developer settings 里创建。Authorization callback URL 本地填：
+
+```text
+http://127.0.0.1:4174/api/auth/github/callback
+```
+
+部署到线上后，把 callback URL 改成线上后端域名的 `/api/auth/github/callback`，并设置同样的 `GITHUB_OAUTH_REDIRECT_URI`。
 
 ## 维护方式
 

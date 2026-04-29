@@ -788,23 +788,23 @@ fn view_progress_page(model : Model) -> Html {
             ),
           ),
           div(class="progress-page-actions", [
-            a(class="button primary", href="#progress-login", t(model.locale, zh="连接 GitHub 查看进度", en="Connect GitHub and view progress")),
+            a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录查看进度", en="Sign in with GitHub and view progress")),
             a(class="button secondary", href="register.html", t(model.locale, zh="自建报名系统", en="Registration system")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
         ]),
         article(id="progress-login", class="github-login-card progress-login-card", [
           div(class="github-mark", "GH"),
-          h3(t(model.locale, zh="连接 GitHub 公开信息", en="Connect public GitHub info")),
+          h3(t(model.locale, zh="使用 GitHub 一键登录", en="One-click GitHub sign-in")),
           p(
             t(
               model.locale,
-              zh="输入 GitHub 用户名、公开仓库或报名编号后，可以查看仓库检查结果和后台同步的比赛进度。",
-              en="Enter a GitHub username, public repository, or registration ID to view repository checks and backend-synced progress.",
+              zh="点击后跳转到 GitHub 官方授权页，用户确认授权后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。",
+              en="Click to open the official GitHub authorization page. After consent, users return to the progress page. Only public profile and email scopes are requested, not private repository access.",
             ),
           ),
-          a(class="button primary github-login-button", href="#progress-plans", t(model.locale, zh="查看数据来源", en="View data sources")),
-          p(class="github-login-note", t(model.locale, zh="当前只读取公开资料和公开仓库，不读取私有仓库。", en="This only reads public profiles and public repositories, not private repositories.")),
+          a(class="button primary github-login-button", href="/api/auth/github/start?return_to=%2Fprogress.html", t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
+          p(class="github-login-note", t(model.locale, zh="GitHub Pages 静态预览不会保存授权密钥；部署后端并配置 GitHub OAuth App 后即可使用。", en="The static GitHub Pages preview does not store OAuth secrets. Deploy the backend and configure a GitHub OAuth App to enable this.")),
         ]),
       ]),
       div(id="progress-plans", class="progress-plan-grid", [
@@ -940,6 +940,7 @@ fn view_register_page(model : Model) -> Html {
             p(t(model.locale, zh="上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 开源大赛奖金发放”。", en="Before uploading ID images, use AI or an image tool to add a watermark such as: for MoonBit contest reward payout only.")),
           ]),
           div(class="progress-page-actions", [
+            span(class="button secondary", t(model.locale, zh="使用 GitHub 登录填充资料", en="Fill with GitHub sign-in")),
             span(class="button primary", t(model.locale, zh="提交报名信息", en="Submit registration")),
             a(class="button secondary", href=registration_href(), t(model.locale, zh="也可使用飞书报名", en="Use Feishu form")),
           ]),

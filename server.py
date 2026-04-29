@@ -2,18 +2,26 @@
 import json
 import os
 import base64
+import secrets
 import smtplib
 import sqlite3
+import time
+from http.cookies import SimpleCookie
 from datetime import datetime, timezone
 from email.message import EmailMessage
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib import error as urllib_error
 from urllib import request as urllib_request
-from urllib.parse import parse_qs, quote, unquote, urlparse
+from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("MGPIC_DB", ROOT / "data" / "mgpic2026.sqlite3"))
+GITHUB_SESSION_COOKIE = "mgpic_github_session"
+GITHUB_SESSION_SECONDS = 60 * 60 * 24 * 14
+GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
+GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"
+GITHUB_API_URL = "https://api.github.com"
 
 FIELD_ALIASES = {
     "name": ["姓名", "参赛者", "项目负责人", "负责人", "name"],
@@ -147,6 +155,27 @@ def init_db():
               error text not null default '',
               foreign key (registration_id) references registrations(id) on delete cascade
             );
+
+            create table if not exists github_oauth_states (
+              state text primary key,
+              return_to text not null default '/progress.html',
+              redirect_uri text not null default '',
+              created_at real not null
+            );
+
+            create table if not exists github_sessions (
+              session_id text primary key,
+              created_at real not null,
+              updated_at real not null,
+              expires_at real not null,
+              github_id text not null default '',
+              github_login text not null default '',
+              name text not null default '',
+              email text not null default '',
+              avatar_url text not null default '',
+              html_url text not null default '',
+              access_token text not null default ''
+            );
             """
         )
         ensure_registration_columns(connection)
@@ -169,6 +198,54 @@ def mask_middle(value, keep_start=3, keep_end=4):
     if len(value) <= keep_start + keep_end:
         return "*" * len(value)
     return f"{value[:keep_start]}{'*' * (len(value) - keep_start - keep_end)}{value[-keep_end:]}"
+
+
+def github_oauth_configured():
+    return bool(os.environ.get("GITHUB_CLIENT_ID", "").strip() and os.environ.get("GITHUB_CLIENT_SECRET", "").strip())
+
+
+def request_host(handler):
+    return handler.headers.get("X-Forwarded-Host") or handler.headers.get("Host") or "127.0.0.1:4174"
+
+
+def is_local_host(host):
+    hostname = host.split(":", 1)[0].lower()
+    return hostname in {"127.0.0.1", "localhost", "::1"}
+
+
+def request_scheme(handler):
+    forwarded = handler.headers.get("X-Forwarded-Proto", "").split(",", 1)[0].strip()
+    if forwarded:
+        return forwarded
+    return "http" if is_local_host(request_host(handler)) else "https"
+
+
+def github_redirect_uri(handler):
+    configured = os.environ.get("GITHUB_OAUTH_REDIRECT_URI", "").strip()
+    if configured:
+        return configured
+    return f"{request_scheme(handler)}://{request_host(handler)}/api/auth/github/callback"
+
+
+def clean_return_to(value):
+    value = str(value or "/progress.html").strip() or "/progress.html"
+    parsed = urlparse(value)
+    if parsed.scheme or parsed.netloc:
+        return "/progress.html"
+    if not value.startswith("/"):
+        value = f"/{value}"
+    if "\r" in value or "\n" in value:
+        return "/progress.html"
+    return value
+
+
+def append_query(path, params):
+    parsed = urlparse(path)
+    existing = parse_qs(parsed.query)
+    for key, value in params.items():
+        existing[key] = [value]
+    query = urlencode({key: values[-1] for key, values in existing.items()})
+    return parsed._replace(query=query).geturl()
 
 
 def registration_from_row(row, include_sensitive=False):
@@ -577,10 +654,55 @@ class Handler(SimpleHTTPRequestHandler):
     def write_error(self, message, status=400):
         self.write_json({"error": message}, status)
 
+    def redirect(self, location, status=302):
+        self.send_response(status)
+        self.send_header("Location", location)
+        self.end_headers()
+
+    def set_session_cookie(self, session_id, max_age=GITHUB_SESSION_SECONDS):
+        secure = "; Secure" if request_scheme(self) == "https" else ""
+        cookie = (
+            f"{GITHUB_SESSION_COOKIE}={session_id}; Path=/; HttpOnly; "
+            f"SameSite=Lax; Max-Age={max_age}{secure}"
+        )
+        self.send_header("Set-Cookie", cookie)
+
+    def clear_session_cookie(self):
+        secure = "; Secure" if request_scheme(self) == "https" else ""
+        self.send_header(
+            "Set-Cookie",
+            f"{GITHUB_SESSION_COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0{secure}",
+        )
+
+    def cookie_value(self, name):
+        cookie = SimpleCookie(self.headers.get("Cookie", ""))
+        morsel = cookie.get(name)
+        return morsel.value if morsel else ""
+
     def handle_api(self, method, path):
         try:
             if path == "/api/health" and method == "GET":
-                self.write_json({"ok": True, "database": str(DB_PATH)})
+                self.write_json({
+                    "ok": True,
+                    "database": str(DB_PATH),
+                    "githubOAuth": github_oauth_configured(),
+                })
+                return
+
+            if path == "/api/auth/github/start" and method == "GET":
+                self.github_oauth_start()
+                return
+
+            if path == "/api/auth/github/callback" and method == "GET":
+                self.github_oauth_callback()
+                return
+
+            if path == "/api/auth/github/session" and method == "GET":
+                self.github_session()
+                return
+
+            if path == "/api/auth/github/logout" and method == "POST":
+                self.github_logout()
                 return
 
             if path == "/api/registrations" and method == "GET":
@@ -639,6 +761,203 @@ class Handler(SimpleHTTPRequestHandler):
             self.write_error("JSON 格式错误", 400)
         except Exception as exc:
             self.write_error(str(exc), 500)
+
+    def github_oauth_start(self):
+        query = parse_qs(urlparse(self.path).query)
+        return_to = clean_return_to(query.get("return_to", ["/progress.html"])[0])
+        if not github_oauth_configured():
+            self.redirect(append_query(return_to, {"github_auth": "not_configured"}))
+            return
+
+        state = secrets.token_urlsafe(32)
+        redirect_uri = github_redirect_uri(self)
+        now = time.time()
+        with db() as connection:
+            connection.execute(
+                "delete from github_oauth_states where created_at < ?",
+                (now - 600,),
+            )
+            connection.execute(
+                """
+                insert into github_oauth_states (state, return_to, redirect_uri, created_at)
+                values (?, ?, ?, ?)
+                """,
+                (state, return_to, redirect_uri, now),
+            )
+        params = {
+            "client_id": os.environ.get("GITHUB_CLIENT_ID", "").strip(),
+            "redirect_uri": redirect_uri,
+            "scope": "read:user user:email",
+            "state": state,
+            "allow_signup": "true",
+        }
+        self.redirect(f"{GITHUB_AUTH_URL}?{urlencode(params)}")
+
+    def github_oauth_callback(self):
+        query = parse_qs(urlparse(self.path).query)
+        state = query.get("state", [""])[0]
+        code = query.get("code", [""])[0]
+        error = query.get("error", [""])[0]
+        with db() as connection:
+            state_row = connection.execute(
+                "select * from github_oauth_states where state = ?",
+                (state,),
+            ).fetchone()
+            if state:
+                connection.execute("delete from github_oauth_states where state = ?", (state,))
+        return_to = clean_return_to(state_row["return_to"] if state_row else "/progress.html")
+
+        if error:
+            self.redirect(append_query(return_to, {"github_auth": "denied"}))
+            return
+        if not state_row or not code or time.time() - float(state_row["created_at"]) > 600:
+            self.redirect(append_query(return_to, {"github_auth": "state_error"}))
+            return
+
+        try:
+            access_token = self.github_exchange_code(code, state_row["redirect_uri"])
+            user = self.github_fetch_user(access_token)
+            session_id = secrets.token_urlsafe(48)
+            now = time.time()
+            with db() as connection:
+                connection.execute(
+                    """
+                    insert into github_sessions (
+                      session_id, created_at, updated_at, expires_at, github_id,
+                      github_login, name, email, avatar_url, html_url, access_token
+                    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        session_id,
+                        now,
+                        now,
+                        now + GITHUB_SESSION_SECONDS,
+                        str(user.get("id") or ""),
+                        user.get("login") or "",
+                        user.get("name") or "",
+                        user.get("email") or "",
+                        user.get("avatarUrl") or "",
+                        user.get("htmlUrl") or "",
+                        access_token,
+                    ),
+                )
+            self.send_response(302)
+            self.send_header("Location", append_query(return_to, {"github_auth": "ok"}))
+            self.set_session_cookie(session_id)
+            self.end_headers()
+        except Exception as exc:
+            self.redirect(append_query(return_to, {"github_auth": "failed", "reason": str(exc)[:80]}))
+
+    def github_exchange_code(self, code, redirect_uri):
+        payload = urlencode(
+            {
+                "client_id": os.environ.get("GITHUB_CLIENT_ID", "").strip(),
+                "client_secret": os.environ.get("GITHUB_CLIENT_SECRET", "").strip(),
+                "code": code,
+                "redirect_uri": redirect_uri,
+            }
+        ).encode("utf-8")
+        request = urllib_request.Request(
+            GITHUB_TOKEN_URL,
+            data=payload,
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "User-Agent": "MGPIC2026",
+            },
+            method="POST",
+        )
+        with urllib_request.urlopen(request, timeout=30) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        token = data.get("access_token")
+        if not token:
+            raise ValueError(data.get("error_description") or data.get("error") or "GitHub 授权失败")
+        return token
+
+    def github_api_get(self, access_token, path):
+        request = urllib_request.Request(
+            f"{GITHUB_API_URL}{path}",
+            headers={
+                "Accept": "application/vnd.github+json",
+                "Authorization": f"Bearer {access_token}",
+                "User-Agent": "MGPIC2026",
+                "X-GitHub-Api-Version": "2022-11-28",
+            },
+            method="GET",
+        )
+        with urllib_request.urlopen(request, timeout=30) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    def github_fetch_user(self, access_token):
+        profile = self.github_api_get(access_token, "/user")
+        email = profile.get("email") or ""
+        try:
+            emails = self.github_api_get(access_token, "/user/emails")
+            if isinstance(emails, list):
+                primary = next((item for item in emails if item.get("primary") and item.get("verified")), None)
+                verified = next((item for item in emails if item.get("verified")), None)
+                chosen = primary or verified or (emails[0] if emails else None)
+                email = (chosen or {}).get("email") or email
+        except Exception:
+            pass
+        return {
+            "id": profile.get("id"),
+            "login": profile.get("login") or "",
+            "name": profile.get("name") or "",
+            "email": email,
+            "avatarUrl": profile.get("avatar_url") or "",
+            "htmlUrl": profile.get("html_url") or "",
+        }
+
+    def current_github_session(self):
+        session_id = self.cookie_value(GITHUB_SESSION_COOKIE)
+        if not session_id:
+            return None
+        with db() as connection:
+            row = connection.execute(
+                "select * from github_sessions where session_id = ? and expires_at > ?",
+                (session_id, time.time()),
+            ).fetchone()
+            if row is None:
+                connection.execute("delete from github_sessions where session_id = ?", (session_id,))
+                return None
+            connection.execute(
+                "update github_sessions set updated_at = ? where session_id = ?",
+                (time.time(), session_id),
+            )
+            return row
+
+    def github_session_user(self, row):
+        if row is None:
+            return None
+        return {
+            "id": row["github_id"],
+            "login": row["github_login"],
+            "name": row["name"],
+            "email": row["email"],
+            "avatarUrl": row["avatar_url"],
+            "htmlUrl": row["html_url"],
+            "oauth": True,
+        }
+
+    def github_session(self):
+        row = self.current_github_session()
+        self.write_json(
+            {
+                "configured": github_oauth_configured(),
+                "authenticated": row is not None,
+                "user": self.github_session_user(row),
+            }
+        )
+
+    def github_logout(self):
+        session_id = self.cookie_value(GITHUB_SESSION_COOKIE)
+        if session_id:
+            with db() as connection:
+                connection.execute("delete from github_sessions where session_id = ?", (session_id,))
+        self.send_response(204)
+        self.clear_session_cookie()
+        self.end_headers()
 
     def list_registrations(self):
         with db() as connection:

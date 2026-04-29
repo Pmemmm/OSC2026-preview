@@ -11,6 +11,7 @@ const ACCEPTANCE_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn
 const API_BASE = window.MGPIC_API_BASE || "";
 let progressActionsBound = false;
 let backendSyncStarted = false;
+let githubSessionSyncStarted = false;
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
@@ -49,6 +50,7 @@ function saveJson(key, value) {
 async function apiRequest(path, options = {}) {
   const response = await fetch(`${API_BASE}${path}`, {
     ...options,
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
@@ -75,6 +77,126 @@ async function backendHealth() {
   } catch {
     return null;
   }
+}
+
+function currentReturnTo() {
+  const page = window.location.pathname.split("/").pop() || "progress.html";
+  return page === "register.html" ? "/register.html" : "/progress.html";
+}
+
+function githubOAuthStartUrl() {
+  return `${API_BASE}/api/auth/github/start?return_to=${encodeURIComponent(currentReturnTo())}`;
+}
+
+function saveGitHubSessionUser(user) {
+  if (!user?.login) return;
+  const profile = {
+    login: user.login,
+    name: user.name || "",
+    email: user.email || "",
+    avatarUrl: user.avatarUrl || "",
+    htmlUrl: user.htmlUrl || "",
+    oauth: true,
+    connectedAt: new Date().toISOString(),
+  };
+  saveJson(GITHUB_PROFILE_KEY, profile);
+  const previous = getRegistration();
+  saveJson(STORE_KEY, publicRegistrationValue({
+    ...previous,
+    githubLogin: previous.githubLogin || profile.login,
+    email: previous.email || profile.email || "",
+    updatedAt: new Date().toISOString(),
+  }));
+}
+
+function applyGitHubSessionToForms(user) {
+  if (!user?.login) return;
+  const progressForm = $("#progress-connect-form");
+  if (progressForm) {
+    if (!progressForm.elements.githubLogin.value) progressForm.elements.githubLogin.value = user.login;
+    if (user.email && !progressForm.elements.email.value) progressForm.elements.email.value = user.email;
+  }
+  const registerForm = $("#registration-form");
+  if (registerForm) {
+    if (!registerForm.elements.githubLogin.value) registerForm.elements.githubLogin.value = user.login;
+    if (user.email && !registerForm.elements.email.value) registerForm.elements.email.value = user.email;
+  }
+}
+
+async function syncGitHubOAuthSession(force = false) {
+  if (githubSessionSyncStarted && !force) return null;
+  githubSessionSyncStarted = true;
+  try {
+    const session = await apiRequest("/api/auth/github/session", { method: "GET" });
+    if (session?.authenticated && session.user) {
+      const hadOAuth = Boolean(getGitHubProfile()?.oauth);
+      saveGitHubSessionUser(session.user);
+      applyGitHubSessionToForms(session.user);
+      applyFeishuMatch(getFeishuRows());
+      renderProgressDashboard();
+      const loginCard = $("#progress-login");
+      if (loginCard?.dataset.enhanced === "true" && !hadOAuth) {
+        loginCard.dataset.enhanced = "false";
+        initProgressPage();
+      }
+      return session;
+    }
+    return session;
+  } catch {
+    return null;
+  }
+}
+
+async function startGitHubOAuth(message) {
+  if (message) {
+    message.hidden = false;
+    message.className = "progress-alert";
+    message.textContent = "正在连接 GitHub 授权服务...";
+  }
+  try {
+    const session = await apiRequest("/api/auth/github/session", { method: "GET" });
+    if (session?.authenticated && session.user) {
+      saveGitHubSessionUser(session.user);
+      applyGitHubSessionToForms(session.user);
+      if (message) {
+        message.className = "progress-alert progress-alert--ok";
+        message.textContent = `已通过 GitHub 登录：@${session.user.login}`;
+      }
+      renderProgressDashboard();
+      const loginCard = $("#progress-login");
+      if (loginCard) {
+        loginCard.dataset.enhanced = "false";
+        initProgressPage();
+      }
+      return;
+    }
+    if (session?.configured === false) {
+      throw new Error("后端未配置 GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET，暂时不能发起 GitHub 授权。");
+    }
+    window.location.href = githubOAuthStartUrl();
+  } catch (error) {
+    if (message) {
+      message.className = "progress-alert progress-alert--error";
+      message.textContent = error.status === 404
+        ? "当前 GitHub Pages 静态预览没有 OAuth 后端；部署 server.py 并配置 GitHub OAuth App 后即可一键登录。"
+        : error.message;
+    }
+  }
+}
+
+async function logoutGitHubOAuth(message) {
+  try {
+    await apiRequest("/api/auth/github/logout", { method: "POST" });
+  } catch {
+    // Static previews do not have a backend session to clear.
+  }
+  localStorage.removeItem(GITHUB_PROFILE_KEY);
+  if (message) {
+    message.hidden = false;
+    message.className = "progress-alert progress-alert--ok";
+    message.textContent = "已退出 GitHub 登录。";
+  }
+  renderProgressDashboard();
 }
 
 function safeHttpUrl(value) {
@@ -634,7 +756,7 @@ function renderProgressDashboard() {
       <div class="progress-summary-item"><span>下一步</span><strong>${escapeHtml(next)}</strong></div>
     </div>
     <div class="progress-data-source-grid">
-      <div class="progress-source-card"><span>GitHub 账号</span><strong>${profile ? `@${escapeHtml(profile.login)}` : "未连接"}</strong><p>${profile ? "已读取公开资料，不涉及私有仓库权限。" : "输入 GitHub 用户名后可连接公开资料。"}</p></div>
+      <div class="progress-source-card"><span>GitHub 账号</span><strong>${profile ? `@${escapeHtml(profile.login)}` : "未连接"}</strong><p>${profile?.oauth ? "已通过 GitHub OAuth 授权；不涉及私有仓库权限。" : (profile ? "已读取公开资料，不涉及私有仓库权限。" : "可使用 GitHub 一键登录或手动输入用户名。")}</p></div>
       <div class="progress-source-card"><span>后台数据库</span><strong>${backendLabel}</strong><p>${backendDetail}</p></div>
       <div class="progress-source-card"><span>飞书报名数据</span><strong>${hasFeishuMatch ? "已匹配" : escapeHtml(feishu.proposal)}</strong><p>${hasFeishuMatch ? `通过${escapeHtml(feishu.matchField)}匹配，状态来自导入数据。` : "可导入飞书表 CSV/JSON 后自动匹配。"}</p></div>
       <div class="progress-source-card"><span>自建报名系统</span><strong>${hasRegistration ? "已保存" : "未填写"}</strong><p>${escapeHtml(registration.email || "未连接后台时会先保存到浏览器本地。")}</p></div>
@@ -794,10 +916,22 @@ function initProgressPage() {
   const check = getCheck();
   const profile = getGitHubProfile();
   const repo = registration.githubRepo || check?.repoUrl || "";
+  const authStatus = new URLSearchParams(window.location.search).get("github_auth");
+  const authMessage = {
+    ok: "GitHub 登录成功，已同步账号信息。",
+    not_configured: "后端还没有配置 GitHub OAuth App，暂时不能一键登录。",
+    denied: "你取消了 GitHub 授权。",
+    state_error: "GitHub 授权状态已失效，请重新登录。",
+    failed: "GitHub 授权失败，请稍后重试。",
+  }[authStatus || ""];
   loginCard.innerHTML = `
     <div class="github-mark">GH</div>
-    <h3>连接 GitHub 公开资料</h3>
-    <p>静态预览版不保存密钥，也不读取私有仓库。输入 GitHub 用户名和公开仓库后，可以检查比赛进度所需的公开工程信息。</p>
+    <h3>${profile?.oauth ? `已通过 GitHub 登录` : "使用 GitHub 一键登录"}</h3>
+    <p>${profile?.oauth ? `当前账号 @${escapeHtml(profile.login)}，已通过 GitHub 授权读取公开资料和邮箱。` : "点击后跳转到 GitHub 官方授权页，用户确认后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。"}</p>
+    <div class="progress-page-actions">
+      <button class="button primary" type="button" data-action="github-oauth">${profile?.oauth ? "刷新 GitHub 登录状态" : "使用 GitHub 一键登录"}</button>
+      ${profile?.oauth ? `<button class="button secondary" type="button" data-action="github-logout">退出 GitHub 登录</button>` : ""}
+    </div>
     <form class="progress-form" id="progress-connect-form">
       <label class="form-field">
         <span>GitHub 用户名</span>
@@ -820,12 +954,20 @@ function initProgressPage() {
         <button class="button secondary" type="button" data-action="load-server-record">读取数据库进度</button>
         <button class="button secondary" type="button" data-action="clear-progress">清除本地数据</button>
       </div>
-      <p class="github-login-note">当前通过公开 GitHub 资料、公开仓库、报名编号和导入数据进行匹配；不读取私有仓库。</p>
-      <div class="progress-alert" id="progress-message" hidden></div>
+      <p class="github-login-note">GitHub 登录用于身份确认和账号匹配；仓库检查仍只读取公开仓库。未部署后端时，也可以手动输入公开仓库进行检查。</p>
+      <div class="progress-alert" id="progress-message" ${authMessage ? "" : "hidden"}>${escapeHtml(authMessage || "")}</div>
     </form>
   `;
 
   const form = $("#progress-connect-form");
+  loginCard.querySelector("[data-action='github-oauth']")?.addEventListener("click", () => {
+    startGitHubOAuth($("#progress-message"));
+  });
+  loginCard.querySelector("[data-action='github-logout']")?.addEventListener("click", () => {
+    logoutGitHubOAuth($("#progress-message"));
+    loginCard.dataset.enhanced = "false";
+    initProgressPage();
+  });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     await runRepoCheck(form.elements.repo.value, form.elements.email.value, form.elements.githubLogin.value);
@@ -860,6 +1002,7 @@ function initProgressPage() {
 
   renderPlanPanels();
   renderProgressDashboard();
+  syncGitHubOAuthSession();
 }
 
 async function runRepoCheck(repoInput, email, githubLogin) {
@@ -1030,6 +1173,7 @@ function initRegisterPage() {
         <p>如果当前页面未连接后台数据库，只会在浏览器本地保存非敏感报名信息；敏感信息和证件文件需要在后台可用时重新提交。</p>
       </div>
       <div class="progress-page-actions">
+        <button class="button secondary" type="button" data-action="github-oauth">使用 GitHub 登录填充资料</button>
         <button class="button primary" type="submit">提交报名信息</button>
         <a class="button secondary" href="progress.html">查看比赛进度</a>
         <button class="button secondary" type="button" data-action="export-registration">导出本地报名 JSON</button>
@@ -1043,7 +1187,11 @@ function initRegisterPage() {
     event.preventDefault();
     handleRegistrationSubmit(event.currentTarget);
   });
+  shell.querySelector("[data-action='github-oauth']")?.addEventListener("click", () => {
+    startGitHubOAuth($("#registration-message"));
+  });
   shell.querySelector("[data-action='export-registration']")?.addEventListener("click", exportRegistration);
+  syncGitHubOAuthSession();
 }
 
 async function handleRegistrationSubmit(form) {
