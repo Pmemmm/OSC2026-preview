@@ -71,9 +71,17 @@ data/mgpic2026.sqlite3
 - `GET /api/registrations/:id`：读取报名、审核状态和仓库检查
 - `PATCH /api/registrations/:id/status`：更新申报、验收、奖励和作品墙状态
 - `POST /api/registrations/:id/repo-check`：保存 GitHub 仓库检查结果
+- `POST /api/registrations/:id/ai-review`：调用 ChatGPT 生成审核建议；未配置 `OPENAI_API_KEY` 时使用本地规则检查
+- `POST /api/registrations/:id/advance`：管理员确认进入下一流程，并创建邮件通知
+- `POST /api/registrations/:id/notify`：仅发送一封进度通知邮件
 - `GET /api/registrations/:id/files/:kind`：下载申报书或学生证明
 - `DELETE /api/registrations/:id`：删除报名记录
 - `POST /api/import/feishu`：保存飞书导入记录
+
+两条报名路径都会保留：
+
+- 飞书路径：继续使用飞书表单收集报名信息，再从后台导入飞书 CSV/JSON，用邮箱、GitHub 仓库、GitHub 账号或项目名匹配选手进度。
+- 自建路径：官网报名页直接写入 SQLite，后台统一管理审核、AI 建议、流程推进和邮件通知。
 
 公网 GitHub Pages 预览页会自动降级为浏览器本地保存；部署到支持 Python 的服务器后，同源 `/api` 可直接写入 SQLite。
 
@@ -82,6 +90,13 @@ data/mgpic2026.sqlite3
 ```bash
 HOST=0.0.0.0 PORT=4174 MGPIC_DB=/data/mgpic2026.sqlite3 python3 server.py
 ```
+
+可选环境变量：
+
+- `OPENAI_API_KEY`：用于 ChatGPT 审核建议
+- `OPENAI_MODEL`：默认 `gpt-4o`
+- `SMTP_HOST` / `SMTP_PORT` / `SMTP_FROM`：用于邮件通知
+- `SMTP_USER` / `SMTP_PASSWORD` / `SMTP_TLS`：SMTP 登录与 TLS 配置
 
 ## 维护方式
 

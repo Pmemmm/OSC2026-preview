@@ -2164,7 +2164,8 @@ a {
 .admin-stats div,
 .admin-card,
 .admin-detail-grid div,
-.admin-files {
+.admin-files,
+.admin-ai-panel {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--panel-strong) 86%, transparent);
@@ -2308,7 +2309,8 @@ a {
   margin: 0 16px;
 }
 
-.admin-files h3 {
+.admin-files h3,
+.admin-ai-panel h3 {
   margin: 0 0 10px;
 }
 
@@ -2321,6 +2323,73 @@ a {
 
 .admin-file-link + .admin-file-link {
   margin-top: 8px;
+}
+
+.admin-ai-panel {
+  margin: 16px;
+  padding: 14px;
+}
+
+.admin-panel-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.admin-inline-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.admin-inline-form select {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  color: var(--text);
+  font: inherit;
+}
+
+.admin-review-list,
+.admin-notification-list {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-review-item,
+.admin-notification-item {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 76%, transparent);
+}
+
+.admin-review-item {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-review-item > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.admin-review-item span,
+.admin-notification-item span {
+  display: block;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+}
+
+.admin-review-item p,
+.admin-notification-item p {
+  margin: 0;
+  color: var(--text-soft);
+  line-height: 1.55;
 }
 
 .learn-journey {
@@ -2959,6 +3028,16 @@ a {
   .progress-step-top {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .admin-panel-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-inline-form .button,
+  .admin-inline-form select {
+    width: 100%;
   }
 
   .hero-banner-word {

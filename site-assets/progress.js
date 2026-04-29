@@ -3,6 +3,8 @@ const CHECK_KEY = "mgpic2026.repoCheck.v1";
 const FEISHU_KEY = "mgpic2026.feishuStatus.v1";
 const FEISHU_ROWS_KEY = "mgpic2026.feishuRows.v1";
 const GITHUB_PROFILE_KEY = "mgpic2026.githubProfile.v1";
+const AI_REVIEWS_KEY = "mgpic2026.aiReviews.v1";
+const NOTIFICATIONS_KEY = "mgpic2026.notifications.v1";
 const START_DATE_ISO = "2026-04-28T16:00:00Z";
 const PROPOSAL_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf";
 const ACCEPTANCE_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg";
@@ -292,6 +294,10 @@ function getFeishuRows() {
   return loadJson(FEISHU_ROWS_KEY, []);
 }
 
+function getNotifications() {
+  return loadJson(NOTIFICATIONS_KEY, []);
+}
+
 function getFeishuState() {
   return loadJson(FEISHU_KEY, {
     proposal: "待同步",
@@ -396,6 +402,8 @@ function saveBackendBundle(result, previous = getRegistration()) {
   });
   if (result.status) saveJson(FEISHU_KEY, { ...getFeishuState(), ...result.status, source: "backend" });
   if (result.repoCheck) saveJson(CHECK_KEY, result.repoCheck);
+  if (result.aiReviews) saveJson(AI_REVIEWS_KEY, result.aiReviews);
+  if (result.notifications) saveJson(NOTIFICATIONS_KEY, result.notifications);
 }
 
 async function saveRepoCheckToBackend(result) {
@@ -535,6 +543,8 @@ function renderProgressDashboard() {
   const check = getCheck();
   const profile = getGitHubProfile();
   const feishu = getFeishuState();
+  const notifications = getNotifications();
+  const lastNotification = notifications[0];
   const parsedRepo = parseRepo(registration.githubRepo || check?.repoUrl);
   const repoUrl = parsedRepo?.url || "";
   const passed = check?.checks?.filter((item) => item.passed).length || 0;
@@ -583,6 +593,7 @@ function renderProgressDashboard() {
       <div class="progress-source-card"><span>飞书报名数据</span><strong>${hasFeishuMatch ? "已匹配" : escapeHtml(feishu.proposal)}</strong><p>${hasFeishuMatch ? `通过${escapeHtml(feishu.matchField)}匹配，状态来自导入数据。` : "可导入飞书表 CSV/JSON 后自动匹配。"}</p></div>
       <div class="progress-source-card"><span>自建报名系统</span><strong>${hasRegistration ? "本地已保存" : "未填写"}</strong><p>${escapeHtml(registration.email || "当前原型保存到浏览器 localStorage。")}</p></div>
       <div class="progress-source-card"><span>作品墙状态</span><strong>${escapeHtml(feishu.showcase)}</strong><p>通过验收或表现突出的项目可进入展示墙。</p></div>
+      <div class="progress-source-card"><span>通知状态</span><strong>${lastNotification ? escapeHtml(lastNotification.status) : "暂无通知"}</strong><p>${lastNotification ? escapeHtml(lastNotification.subject || lastNotification.error || "已生成通知记录。") : "管理员推进流程后会邮件通知。"}</p></div>
     </div>
     <div class="progress-check-grid">
       ${checks.map((item) => `
@@ -595,6 +606,7 @@ function renderProgressDashboard() {
     </div>
     <div class="progress-dashboard-actions">
       <button class="button primary" type="button" data-action="recheck-repo">${repoUrl ? "重新检查仓库" : "填写仓库后检查"}</button>
+      <a class="button secondary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">飞书报名入口</a>
       <a class="button secondary" href="register.html">填写自建报名</a>
       <a class="button secondary" href="${ACCEPTANCE_FORM_URL}">提交验收</a>
     </div>
@@ -638,7 +650,7 @@ function renderPlanPanels(force = false) {
     <article class="path-card progress-plan-card progress-import-panel">
       <span class="tag">方案一</span>
       <h3>飞书报名数据同步</h3>
-      <p>支持把飞书表导出的 CSV 或 JSON 粘贴进来，本页会按邮箱、GitHub 仓库、GitHub 账号、项目名称自动匹配，并把审核状态写入进度看板。</p>
+      <p>继续保留飞书路径：选手仍可通过飞书表正式报名，管理员把飞书表导出的 CSV 或 JSON 导入后台后，本页会按邮箱、GitHub 仓库、GitHub 账号、项目名称自动匹配，并把审核状态写入进度看板。</p>
       <label class="form-field form-field--full">
         <span>飞书表 CSV / JSON</span>
         <textarea id="feishu-import-text" rows="7" placeholder="表头建议包含：姓名、邮箱、GitHub 仓库、项目名称、申报审核状态、验收状态、奖励状态、作品墙状态"></textarea>
@@ -647,6 +659,7 @@ function renderPlanPanels(force = false) {
         <button class="button primary" type="button" data-action="import-feishu">导入并匹配</button>
         <button class="button secondary" type="button" data-action="sample-feishu">填入示例数据</button>
         <label class="button secondary progress-file-button">上传 CSV<input id="feishu-file" type="file" accept=".csv,.json,text/csv,application/json"></label>
+        <a class="button secondary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">打开飞书报名表</a>
       </div>
       <div class="progress-alert" id="feishu-import-message">${rows.length ? `已导入 ${rows.length} 条记录，当前状态：${escapeHtml(feishu.proposal)}` : "还没有导入飞书数据。"}</div>
     </article>
@@ -690,6 +703,9 @@ function renderPlanPanels(force = false) {
       apiRequest("/api/import/feishu", {
         method: "POST",
         body: JSON.stringify({ source: "feishu", rows }),
+      }).then((result) => {
+        message.className = "progress-alert progress-alert--ok";
+        message.textContent = `已导入 ${rows.length} 条飞书记录，其中 ${result.upserted || 0} 条已写入后台报名库。`;
       }).catch(() => {});
       const state = applyFeishuMatch(rows);
       message.className = "progress-alert progress-alert--ok";
@@ -784,6 +800,8 @@ function initProgressPage() {
     localStorage.removeItem(FEISHU_KEY);
     localStorage.removeItem(FEISHU_ROWS_KEY);
     localStorage.removeItem(GITHUB_PROFILE_KEY);
+    localStorage.removeItem(AI_REVIEWS_KEY);
+    localStorage.removeItem(NOTIFICATIONS_KEY);
     location.reload();
   });
 

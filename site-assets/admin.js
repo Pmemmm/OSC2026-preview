@@ -105,6 +105,8 @@ function renderShell() {
       <div class="admin-toolbar-actions">
         <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
         <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
+        <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf" target="_blank" rel="noreferrer">飞书报名表</a>
+        <a class="button secondary" href="progress.html#progress-plans">导入飞书表</a>
         <button class="button primary" type="button" data-action="open-register">新增报名</button>
       </div>
     </div>
@@ -213,6 +215,33 @@ function fileLinks(files = []) {
   `).join("");
 }
 
+function reviewList(reviews = []) {
+  if (!reviews.length) return `<p>还没有 AI 审核建议。</p>`;
+  return reviews.map((review) => `
+    <div class="admin-review-item">
+      <div>
+        <strong>${escapeHtml(review.summary || "审核建议")}</strong>
+        <span>${escapeHtml(review.engine || "review")} / ${escapeHtml(review.model || "-")} / ${formatTime(review.createdAt)}</span>
+      </div>
+      <div>${statusBadge(`${review.decision || "needs_revision"} · ${review.score || 0}分`)}</div>
+      <p>下一步：${escapeHtml(review.nextStage || "-")}</p>
+      <p>理由：${escapeHtml((review.reasons || []).join("；") || "-")}</p>
+      <p>缺失项：${escapeHtml((review.missingItems || []).join("；") || "暂无")}</p>
+    </div>
+  `).join("");
+}
+
+function notificationList(notifications = []) {
+  if (!notifications.length) return `<p>还没有通知记录。</p>`;
+  return notifications.map((item) => `
+    <div class="admin-notification-item">
+      <strong>${escapeHtml(item.subject || "通知")}</strong>
+      <span>${escapeHtml(item.recipient || "-")} / ${escapeHtml(item.status || "pending")} / ${formatTime(item.createdAt)}</span>
+      ${item.error ? `<p>${escapeHtml(item.error)}</p>` : ""}
+    </div>
+  `).join("");
+}
+
 function renderDetail(data) {
   const item = data.registration;
   const status = data.status || {};
@@ -233,6 +262,21 @@ function renderDetail(data) {
       <h3>材料文件</h3>
       ${fileLinks(data.files)}
     </div>
+    <div class="admin-ai-panel">
+      <div class="admin-panel-head">
+        <h3>ChatGPT 审核建议</h3>
+        <form class="admin-inline-form" id="admin-ai-form">
+          <select name="mode">
+            <option value="proposal">申报审核</option>
+            <option value="acceptance">验收审核</option>
+            <option value="showcase">作品墙评选</option>
+          </select>
+          <button class="button secondary" type="submit">生成审核建议</button>
+        </form>
+      </div>
+      <div class="admin-review-list" id="admin-review-list">${reviewList(data.aiReviews)}</div>
+      <div class="progress-alert" id="admin-ai-message" hidden></div>
+    </div>
     <form class="admin-status-form" id="admin-status-form">
       <label class="form-field"><span>申报审核</span><select name="proposal">${selectOptions(["申报审核中", "申报通过", "申报需调整", "申报不通过"], status.proposal || "申报审核中")}</select></label>
       <label class="form-field"><span>验收状态</span><select name="acceptance">${selectOptions(["未提交", "验收审核中", "验收通过", "验收需调整", "验收不通过"], status.acceptance || "未提交")}</select></label>
@@ -245,8 +289,31 @@ function renderDetail(data) {
       </div>
       <div class="progress-alert" id="admin-detail-message" hidden></div>
     </form>
+    <div class="admin-ai-panel">
+      <div class="admin-panel-head">
+        <h3>流程推进与邮件通知</h3>
+      </div>
+      <form class="admin-status-form" id="admin-advance-form">
+        <label class="form-field"><span>推进阶段</span><select name="mode">
+          <option value="proposal">申报通过，进入项目开发</option>
+          <option value="acceptance">验收通过，进入优秀项目评选</option>
+          <option value="showcase">入选作品墙展示</option>
+        </select></label>
+        <label class="form-field"><span>邮件标题（可留空）</span><input name="subject" placeholder="默认使用 AI 建议标题"></label>
+        <label class="form-field admin-detail-wide"><span>邮件正文（可留空）</span><textarea name="body" rows="5" placeholder="默认使用 AI 建议正文"></textarea></label>
+        <div class="admin-form-actions">
+          <button class="button primary" type="submit">进入下一流程并通知</button>
+          <button class="button secondary" type="button" data-action="send-custom-notice">仅发送邮件通知</button>
+        </div>
+        <div class="progress-alert" id="admin-advance-message" hidden></div>
+      </form>
+      <div class="admin-notification-list">${notificationList(data.notifications)}</div>
+    </div>
   `;
   $("#admin-status-form").addEventListener("submit", (event) => saveStatus(event, item.id));
+  $("#admin-ai-form").addEventListener("submit", (event) => runAiReview(event, item.id));
+  $("#admin-advance-form").addEventListener("submit", (event) => advanceRegistration(event, item.id));
+  $("#admin-detail").querySelector("[data-action='send-custom-notice']").addEventListener("click", () => sendCustomNotice(item.id));
   $("#admin-detail").querySelector("[data-action='delete']").addEventListener("click", () => deleteRegistration(item.id));
 }
 
@@ -266,6 +333,76 @@ async function saveStatus(event, id) {
     message.className = "progress-alert progress-alert--ok";
     message.textContent = "状态已保存。";
     await loadRegistrations(false);
+    await selectRegistration(id);
+  } catch (error) {
+    message.className = "progress-alert progress-alert--error";
+    message.textContent = error.message;
+  }
+}
+
+async function runAiReview(event, id) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const message = $("#admin-ai-message");
+  message.hidden = false;
+  message.className = "progress-alert";
+  message.textContent = "正在生成 AI 审核建议...";
+  try {
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const result = await api(`/api/registrations/${encodeURIComponent(id)}/ai-review`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    message.className = "progress-alert progress-alert--ok";
+    message.textContent = `已生成建议：${result.review.summary}`;
+    await loadRegistrations(false);
+    await selectRegistration(id);
+  } catch (error) {
+    message.className = "progress-alert progress-alert--error";
+    message.textContent = error.message;
+  }
+}
+
+async function advanceRegistration(event, id) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const message = $("#admin-advance-message");
+  message.hidden = false;
+  message.className = "progress-alert";
+  message.textContent = "正在推进流程并创建通知...";
+  try {
+    const payload = Object.fromEntries(new FormData(form).entries());
+    const result = await api(`/api/registrations/${encodeURIComponent(id)}/advance`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    const notification = result.notification;
+    message.className = notification?.status === "failed" ? "progress-alert progress-alert--error" : "progress-alert progress-alert--ok";
+    message.textContent = notification
+      ? `流程已更新，邮件状态：${notification.status}${notification.error ? `（${notification.error}）` : ""}`
+      : "流程已更新，但该选手没有邮箱，未发送通知。";
+    await loadRegistrations(false);
+    await selectRegistration(id);
+  } catch (error) {
+    message.className = "progress-alert progress-alert--error";
+    message.textContent = error.message;
+  }
+}
+
+async function sendCustomNotice(id) {
+  const form = $("#admin-advance-form");
+  const message = $("#admin-advance-message");
+  const payload = Object.fromEntries(new FormData(form).entries());
+  message.hidden = false;
+  message.className = "progress-alert";
+  message.textContent = "正在创建邮件通知...";
+  try {
+    const result = await api(`/api/registrations/${encodeURIComponent(id)}/notify`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    message.className = result.notification.status === "failed" ? "progress-alert progress-alert--error" : "progress-alert progress-alert--ok";
+    message.textContent = `通知状态：${result.notification.status}${result.notification.error ? `（${result.notification.error}）` : ""}`;
     await selectRegistration(id);
   } catch (error) {
     message.className = "progress-alert progress-alert--error";
