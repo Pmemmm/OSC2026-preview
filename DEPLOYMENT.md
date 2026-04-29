@@ -10,7 +10,7 @@ GitHub Pages 页面会在静态域名下自动把 `/api/*` 请求转到这个 Re
 
 ## Render 部署
 
-1. 在 Render 新建 Blueprint，选择本仓库 `zongen01/MGPIC2026`。
+1. 在 Render 新建 Blueprint，选择本仓库 `moonbitlang/OSC2026`。
 2. Render 会读取 `render.yaml` 并创建 `mgpic2026` Web Service。
 3. 如果 Render 生成的域名不是 `https://mgpic2026.onrender.com`，把环境变量 `GITHUB_OAUTH_REDIRECT_URI` 改成实际域名：
    `https://你的域名/api/auth/github/callback`
@@ -21,7 +21,10 @@ GitHub Pages 页面会在静态域名下自动把 `/api/*` 请求转到这个 Re
 6. 把 OAuth App 的 `Client ID` 和 `Client Secret` 填入 Render 环境变量：
    `GITHUB_CLIENT_ID`
    `GITHUB_CLIENT_SECRET`
-7. 可选环境变量：
+7. 设置后台管理员 Token：
+   `ADMIN_TOKEN`
+   这是后台列表、详情、材料下载、审核推进和邮件通知接口的访问凭证，只应发给赛事工作人员。
+8. 可选环境变量：
    `OPENAI_API_KEY` 用于 ChatGPT 审核建议。
    `SMTP_HOST`、`SMTP_FROM`、`SMTP_USER`、`SMTP_PASSWORD` 用于发送邮件通知。
 
