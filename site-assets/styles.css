@@ -2647,6 +2647,18 @@ a {
   min-height: 260px;
 }
 
+.direction-card h3 {
+  font-size: clamp(19px, 1.55vw, 24px);
+  line-height: 1.14;
+  letter-spacing: -0.035em;
+}
+
+.direction-card p,
+.direction-card li {
+  font-size: 0.88rem;
+  line-height: 1.62;
+}
+
 .showcase-card .tag {
   min-height: 30px;
   padding: 0 12px;
