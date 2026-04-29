@@ -359,39 +359,43 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
 fn direction_cards(locale : Locale) -> Array[ListCard] {
   [
     {
-      title: t(locale, zh="入门友好型", en="Starter"),
-      desc: t(locale, zh="适合第一次参与 MoonBit 开源生态。", en="Good first MoonBit ecosystem projects."),
+      title: t(locale, zh="基础数据结构与算法", en="Data structures and algorithms"),
+      desc: t(locale, zh="适合沉淀可复用的基础算法能力。", en="Reusable foundations for common algorithmic needs."),
       items: [
-        t(locale, zh="日志库 / tracing 工具（可基于 moonbitlang/async）", en="Logging / tracing, optionally based on moonbitlang/async"),
-        t(locale, zh="indexmap、bitmask、Stopwatch / benchmark 小工具", en="indexmap, bitmask, Stopwatch / benchmark helpers"),
-        t(locale, zh="模板渲染器、deterministic simulation 框架", en="Template renderer or deterministic simulation framework"),
+        t(locale, zh="常用数据结构，例如 indexmap、bitmask", en="Common data structures such as indexmap and bitmask"),
+        t(locale, zh="Graph 相关算法库", en="Graph algorithm libraries"),
+        t(locale, zh="Pathfinding 工具库", en="Pathfinding libraries"),
+        t(locale, zh="moon prove 验证的通用算法库", en="General algorithm libraries verified with moon prove"),
       ],
     },
     {
-      title: t(locale, zh="标准生态包", en="Ecosystem packages"),
-      desc: t(locale, zh="补齐 MoonBit 常用开发能力。", en="Fill common MoonBit development gaps."),
+      title: t(locale, zh="工程基础设施与工具链", en="Engineering infrastructure"),
+      desc: t(locale, zh="补齐 MoonBit 工程化开发常用工具。", en="Common tools for MoonBit engineering workflows."),
       items: [
-        t(locale, zh="Graph 相关算法库、Pathfinding 工具库", en="Graph algorithms and pathfinding libraries"),
-        t(locale, zh="通用算法库，可结合 moon prove 验证", en="General algorithm libraries, optionally verified with moon prove"),
-        t(locale, zh="编译器底层基础设施，例如寄存器分配库", en="Compiler infrastructure such as register allocation libraries"),
-      ],
-    },
-    {
-      title: t(locale, zh="工具与格式", en="Tools and formats"),
-      desc: t(locale, zh="适合官网展示和社区传播。", en="Good for demos and community sharing."),
-      items: [
-        t(locale, zh="Markdown to HTML", en="Markdown to HTML"),
+        t(locale, zh="日志库 + tracing 工具（基于 moonbitlang/async）", en="Logging + tracing tools based on moonbitlang/async"),
         t(locale, zh="构建工具，类似 n2 / ninja", en="Build tools similar to n2 / ninja"),
-        t(locale, zh="特定格式的序列化 / 反序列化工具，类似 protobuf", en="Format-specific serialization / deserialization tools similar to protobuf"),
+        t(locale, zh="模板渲染器", en="Template renderer"),
+        t(locale, zh="Stopwatch / benchmark 小工具", en="Stopwatch / benchmark helpers"),
       ],
     },
     {
-      title: t(locale, zh="绑定与应用", en="Bindings and applications"),
-      desc: t(locale, zh="适合做可展示、可复用的生态项目。", en="Good for presentable and reusable ecosystem projects."),
+      title: t(locale, zh="系统能力与运行时框架", en="Runtime and systems"),
+      desc: t(locale, zh="面向更底层的运行时、并发和格式处理能力。", en="Lower-level runtime, concurrency, and format-processing capabilities."),
       items: [
-        t(locale, zh="小型 2D 游戏工具库或流行游戏引擎绑定", en="Small 2D game toolkits or popular game-engine bindings"),
+        t(locale, zh="Deterministic simulation 框架", en="Deterministic simulation framework"),
+        t(locale, zh="编译器底层基础设施，例如寄存器分配库", en="Compiler infrastructure such as register allocation libraries"),
+        t(locale, zh="面向特定格式的（反）序列化工具，类似 protobuf", en="Format-specific serialization / deserialization tools similar to protobuf"),
+        t(locale, zh="基于 moonbitlang/async 做的并发框架，比如 actor 框架", en="Concurrency frameworks based on moonbitlang/async, such as actor frameworks"),
+      ],
+    },
+    {
+      title: t(locale, zh="应用生态", en="Application ecosystem"),
+      desc: t(locale, zh="适合做可展示、可复用的生态项目。", en="Presentable and reusable ecosystem projects."),
+      items: [
+        t(locale, zh="Markdown to HTML 工具", en="Markdown to HTML tools"),
+        t(locale, zh="简易图表数据生成和预览", en="Simple chart data generation and preview"),
+        t(locale, zh="流行游戏引擎的 MoonBit 绑定", en="MoonBit bindings for popular game engines"),
         t(locale, zh="流行数据库的 MoonBit 绑定", en="MoonBit bindings for popular databases"),
-        t(locale, zh="基于 moonbitlang/async 的并发框架，例如 actor 框架", en="Concurrency frameworks based on moonbitlang/async, such as actor frameworks"),
       ],
     },
   ]
