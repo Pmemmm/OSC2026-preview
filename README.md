@@ -54,7 +54,7 @@ python3 server.py
 
 - 首页：`http://127.0.0.1:4174/`
 - 比赛进度：`http://127.0.0.1:4174/progress.html`
-- 自建报名：`http://127.0.0.1:4174/register.html`
+- 官方报名系统：`http://127.0.0.1:4174/register.html`
 - 后台管理：`http://127.0.0.1:4174/admin.html`
 - 健康检查：`http://127.0.0.1:4174/api/health`
 
@@ -85,7 +85,7 @@ data/mgpic2026.sqlite3
 两条报名路径都会保留：
 
 - 飞书路径：继续使用飞书表单收集报名信息，再从后台导入飞书 CSV/JSON，用邮箱、GitHub 仓库、GitHub 账号或项目名匹配选手进度。
-- 自建路径：官网报名页直接写入 SQLite，后台统一管理审核、AI 建议、流程推进和邮件通知。
+- 官方报名系统：官网报名页直接写入 SQLite，后台统一管理审核、AI 建议、流程推进和邮件通知。
 
 公网 GitHub Pages 预览页会自动降级为浏览器本地保存；部署到支持 Python 的服务器后，同源 `/api` 可直接写入 SQLite。
 

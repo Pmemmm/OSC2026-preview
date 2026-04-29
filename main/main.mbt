@@ -739,7 +739,7 @@ fn view_progress_page(model : Model) -> Html {
           ),
           div(class="progress-page-actions", [
             a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录查看进度", en="Sign in with GitHub and view progress")),
-            a(class="button secondary", href="register.html", t(model.locale, zh="自建报名系统", en="Registration system")),
+            a(class="button secondary", href="register.html", t(model.locale, zh="官方报名系统", en="Official registration system")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
         ]),
@@ -758,7 +758,7 @@ fn view_progress_page(model : Model) -> Html {
         ]),
         article(class="path-card progress-plan-card", [
           span(class="tag", t(model.locale, zh="预览中", en="Preview")),
-          h3(t(model.locale, zh="官网自建报名系统", en="Self-hosted registration")),
+          h3(t(model.locale, zh="官方报名系统", en="Official registration system")),
           p(t(model.locale, zh="报名页可写入后台数据库，并与审核、通知、作品墙状态进入同一套后台管理。", en="The registration page can write to the backend database and share the same admin flow for review, notifications, and showcase status.")),
         ]),
       ]),
@@ -776,7 +776,7 @@ fn view_register_page(model : Model) -> Html {
         div(class="register-copy", [
           p(class="eyebrow", t(model.locale, zh="比赛介绍", en="Contest intro")),
           h2(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="MoonBit open-source contest")),
-          p(t(model.locale, zh="这是官网自建报名系统的内部预览页，当前不放在首页公开入口。后续完善 GitHub OAuth、后台数据库和审核流程后再正式展示。", en="This is an internal preview of the self-hosted registration system. It is not linked from the homepage yet, and will be published after GitHub OAuth, backend storage, and review flows are ready.")),
+          p(t(model.locale, zh="这是官方报名系统的内部预览页，当前不放在首页公开入口。后续完善 GitHub OAuth、后台数据库和审核流程后再正式展示。", en="This is an internal preview of the official registration system. It is not linked from the homepage yet, and will be published after GitHub OAuth, backend storage, and review flows are ready.")),
           div(class="progress-page-actions", [
             a(class="button primary", href="#register-form", t(model.locale, zh="填写报名表单", en="Fill registration form")),
             a(class="button secondary", href="progress.html", t(model.locale, zh="返回比赛进度", en="Back to progress")),

@@ -966,8 +966,8 @@ function renderPlanPanels(force = false) {
     </article>
     <article class="path-card progress-plan-card progress-status-panel">
       <span class="tag">本地维护</span>
-      <h3>自建报名系统与后台状态</h3>
-      <p>自建报名页可保存报名信息，并同步到进度页。后台可统一维护申报审核、验收、奖励、通知和作品墙状态。</p>
+      <h3>官方报名系统与后台状态</h3>
+      <p>官方报名页可保存报名信息，并同步到进度页。后台可统一维护申报审核、验收、奖励、通知和作品墙状态。</p>
       <div class="progress-mini-list">
         <div><span>报名信息</span><strong>${registration.projectName ? escapeHtml(registration.projectName) : "未填写"}</strong></div>
         <div><span>联系邮箱</span><strong>${registration.email ? escapeHtml(registration.email) : "未填写"}</strong></div>
@@ -980,7 +980,7 @@ function renderPlanPanels(force = false) {
         <label class="form-field"><span>作品墙</span><select name="showcase">${statusOptions(feishu.showcase, ["待上墙", "候选项目", "已上墙", "暂不展示"])}</select></label>
         <div class="progress-compact-actions">
           <button class="button primary" type="submit">保存当前状态</button>
-          <a class="button secondary" href="${hostedPage("register.html")}">打开自建报名</a>
+          <a class="button secondary" href="${hostedPage("register.html")}">打开官方报名</a>
           <a class="button secondary" href="${hostedPage("admin.html")}">后台管理</a>
           <button class="button secondary" type="button" data-action="clear-registration">清除本地报名</button>
         </div>
