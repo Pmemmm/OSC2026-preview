@@ -733,13 +733,13 @@ fn view_progress_page(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="这里会把报名状态、GitHub 仓库检查、验收材料、通知记录和作品墙状态串起来。当前不放在首页公开入口，但保留为内部预览和后续上线准备。",
-              en="This page connects registration status, GitHub repository checks, acceptance materials, notifications, and showcase status. It is not linked from the homepage yet, but remains available for internal preview and later launch.",
+              zh="这里用于查看项目申报、GitHub 仓库检查、验收提交和作品展示状态。使用 GitHub 登录后可同步本人进度。",
+              en="Use this page to track project submission, GitHub repository checks, acceptance submission, and showcase status. Sign in with GitHub to sync your progress.",
             ),
           ),
           div(class="progress-page-actions", [
-            a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录查看进度", en="Sign in with GitHub and view progress")),
-            a(class="button secondary", href="register.html", t(model.locale, zh="官方报名系统", en="Official registration system")),
+            a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
+            a(class="button secondary", href="register.html", t(model.locale, zh="项目申报", en="Project submission")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
         ]),
@@ -752,14 +752,14 @@ fn view_progress_page(model : Model) -> Html {
       ]),
       div(id="progress-plans", class="progress-plan-grid", [
         article(class="path-card progress-plan-card", [
-          span(class="tag", t(model.locale, zh="预览中", en="Preview")),
-          h3(t(model.locale, zh="飞书报名数据同步", en="Feishu registration sync")),
-          p(t(model.locale, zh="后续可导入飞书表 CSV / JSON，匹配报名邮箱、GitHub 仓库和审核状态。", en="Feishu CSV / JSON imports can later match email, GitHub repository, and review status.")),
+          span(class="tag", t(model.locale, zh="项目申报", en="Project submission")),
+          h3(t(model.locale, zh="先提交项目信息", en="Submit project information first")),
+          p(t(model.locale, zh="提交 GitHub 仓库和一页 PDF 申报书，赛方会通过邮件反馈审核结果。", en="Submit your GitHub repository and one-page PDF proposal. The organizers will send review results by email.")),
         ]),
         article(class="path-card progress-plan-card", [
-          span(class="tag", t(model.locale, zh="预览中", en="Preview")),
-          h3(t(model.locale, zh="官方报名系统", en="Official registration system")),
-          p(t(model.locale, zh="报名页可写入后台数据库，并与审核、通知、作品墙状态进入同一套后台管理。", en="The registration page can write to the backend database and share the same admin flow for review, notifications, and showcase status.")),
+          span(class="tag", t(model.locale, zh="仓库检查", en="Repository check")),
+          h3(t(model.locale, zh="检查公开 GitHub 仓库", en="Check public GitHub repository")),
+          p(t(model.locale, zh="系统会检查公开仓库、README、CI、测试、许可证和提交记录，不需要私有仓库权限。", en="The system checks public repository data, README, CI, tests, license, and commit history without private repository permissions.")),
         ]),
       ]),
       article(class="progress-dashboard progress-dashboard--preview", [
@@ -776,7 +776,7 @@ fn view_register_page(model : Model) -> Html {
         div(class="register-copy", [
           p(class="eyebrow", t(model.locale, zh="比赛介绍", en="Contest intro")),
           h2(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="MoonBit open-source contest")),
-          p(t(model.locale, zh="这是官方报名系统的内部预览页，当前不放在首页公开入口。后续完善 GitHub OAuth、后台数据库和审核流程后再正式展示。", en="This is an internal preview of the official registration system. It is not linked from the homepage yet, and will be published after GitHub OAuth, backend storage, and review flows are ready.")),
+          p(t(model.locale, zh="这是官方报名系统页面，用于提交项目信息、申报书和必要的身份材料。提交后进入赛方审核流程。", en="This official registration page is used to submit project information, proposal documents, and required identity materials. Submitted projects enter organizer review.")),
           div(class="progress-page-actions", [
             a(class="button primary", href="#register-form", t(model.locale, zh="填写报名表单", en="Fill registration form")),
             a(class="button secondary", href="progress.html", t(model.locale, zh="返回比赛进度", en="Back to progress")),
