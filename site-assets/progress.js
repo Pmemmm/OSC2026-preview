@@ -43,6 +43,12 @@ function resolveApiBase() {
   return "";
 }
 
+function hostedPage(path) {
+  const cleanPath = String(path || "").replace(/^\//, "");
+  if (API_BASE && /github\.io$/i.test(window.location.hostname)) return `${API_BASE}/${cleanPath}`;
+  return cleanPath;
+}
+
 const fieldAliases = {
   name: ["姓名", "参赛者", "项目负责人", "负责人", "name"],
   email: ["邮箱", "联系邮箱", "联系方式", "email", "Email"],
@@ -724,6 +730,48 @@ function renderAvatar(profile) {
   return escapeHtml((profile?.login || "GH").slice(0, 2).toUpperCase());
 }
 
+function progressSourceCard(label, title, body, tone = "") {
+  return `
+    <div class="progress-source-card ${tone ? `progress-source-card--${tone}` : ""}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(title)}</strong>
+      <p>${escapeHtml(body)}</p>
+    </div>
+  `;
+}
+
+function renderCheckArea(checks, hasRepo) {
+  if (!hasRepo) {
+    return `
+      <div class="progress-empty-check">
+        <span>仓库检查</span>
+        <strong>填写 GitHub 仓库后开始检查</strong>
+        <p>系统会检查公开仓库、4 月 29 日后的有效 commits、README、CI、测试、许可证、MoonBit 代码和包配置。</p>
+      </div>
+    `;
+  }
+  if (!checks.length) {
+    return `
+      <div class="progress-empty-check">
+        <span>仓库检查</span>
+        <strong>仓库已填写，等待首次检查</strong>
+        <p>点击“检查公开仓库”后，这里会显示每一项是否通过。</p>
+      </div>
+    `;
+  }
+  return `
+    <div class="progress-check-grid">
+      ${checks.map((item) => `
+        <div class="${statusClass(item.passed)}">
+          <span>${item.passed ? "通过" : "待补"}</span>
+          <strong>${escapeHtml(item.label)}</strong>
+          <p>${escapeHtml(item.detail)}</p>
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function renderProgressDashboard() {
   const dashboard = $(".progress-dashboard--preview");
   if (!dashboard) return;
@@ -741,25 +789,69 @@ function renderProgressDashboard() {
   const hasRegistration = Boolean(registration.projectName || registration.githubRepo);
   const hasFeishuMatch = Boolean(feishu.record);
   const { stage, next } = inferStage(registration, check, feishu);
+  const hasRepo = Boolean(repoUrl);
+  const hasBackendRecord = registration.backendMode === "sqlite";
+  const hasImportedFeishu = feishu.source && feishu.source !== "none";
+  const hasShowcaseState = statusDone(feishu.acceptance) || statusDone(feishu.showcase) || /候选|已上墙|暂不展示/.test(String(feishu.showcase || ""));
   const percent = Math.max(12, Math.round(((profile ? 1 : 0) + (hasRegistration ? 1 : 0) + (hasFeishuMatch ? 1 : 0) + passed) / (total + 3) * 100));
-  const checks = check?.checks || [
-    { label: "公开仓库", passed: false, detail: "等待检查" },
-    { label: "有效 commits", passed: false, detail: "等待检查" },
-    { label: "README", passed: false, detail: "等待检查" },
-    { label: "CI", passed: false, detail: "等待检查" },
-    { label: "测试", passed: false, detail: "等待检查" },
-    { label: "许可证", passed: false, detail: "等待检查" },
-    { label: "MoonBit 代码", passed: false, detail: "等待检查" },
-    { label: "包配置", passed: false, detail: "等待检查" },
-  ];
+  const checks = check?.checks || [];
   const title = registration.projectName || check?.repo || profile?.login || "比赛进度看板";
   const repoLine = repoUrl
     ? `<a href="${escapeHtml(repoUrl)}" target="_blank" rel="noreferrer">${escapeHtml(repoUrl)}</a>`
-    : "填写 GitHub 仓库后可检查公开开发进度。";
-  const backendLabel = registration.backendMode === "sqlite" ? "SQLite 已保存" : "本地预览";
-  const backendDetail = registration.backendMode === "sqlite"
-    ? `数据库记录 #${escapeHtml(registration.serverId)}，可用于后台审核。`
-    : "当前静态预览仅保存非敏感进度数据；正式部署后会写入后台数据库。";
+    : "先填写报名信息或 GitHub 仓库，系统再生成检查结果。";
+  const sourceCards = [
+    progressSourceCard(
+      "GitHub 账号",
+      profile ? `@${profile.login}` : "可选登录",
+      profile?.oauth
+        ? "已通过 GitHub OAuth 授权；只读取公开资料和邮箱。"
+        : "可用 GitHub 一键登录自动带入账号；也可以只填写公开仓库地址。",
+      profile ? "ok" : ""
+    ),
+    progressSourceCard(
+      "报名信息",
+      hasRegistration ? "已填写" : "待填写",
+      hasRegistration
+        ? (registration.email || "已保存项目名称或 GitHub 仓库，可继续检查仓库。")
+        : "先提交飞书报名或官网报名，后续才能匹配审核、奖励和验收状态。",
+      hasRegistration ? "ok" : "todo"
+    ),
+  ];
+
+  if (hasBackendRecord || registration.backendMode === "local" || registration.backendError) {
+    sourceCards.push(progressSourceCard(
+      "数据库同步",
+      hasBackendRecord ? "已写入后台" : "等待后台",
+      hasBackendRecord
+        ? `数据库记录 #${registration.serverId}，管理员可审核和推进流程。`
+        : "Render 后端可用后会写入 SQLite；当前仅保留浏览器本地非敏感进度。",
+      hasBackendRecord ? "ok" : "todo"
+    ));
+  }
+  if (hasImportedFeishu) {
+    sourceCards.push(progressSourceCard(
+      "飞书报名数据",
+      hasFeishuMatch ? "已匹配" : feishu.proposal,
+      hasFeishuMatch ? `通过${feishu.matchField}匹配，状态来自导入数据。` : "管理员已导入飞书数据，但还没有匹配到当前项目。",
+      hasFeishuMatch ? "ok" : "todo"
+    ));
+  }
+  if (hasShowcaseState) {
+    sourceCards.push(progressSourceCard(
+      "作品墙状态",
+      feishu.showcase || "待上墙",
+      "通过验收或表现突出的项目可进入展示墙。",
+      statusDone(feishu.showcase) ? "ok" : ""
+    ));
+  }
+  if (lastNotification) {
+    sourceCards.push(progressSourceCard(
+      "通知状态",
+      lastNotification.status || "已记录",
+      lastNotification.subject || lastNotification.error || "管理员已生成通知记录。",
+      lastNotification.status === "sent" ? "ok" : ""
+    ));
+  }
 
   dashboard.innerHTML = `
     <div class="progress-user-row">
@@ -777,27 +869,15 @@ function renderProgressDashboard() {
       <div class="progress-summary-item"><span>下一步</span><strong>${escapeHtml(next)}</strong></div>
     </div>
     <div class="progress-data-source-grid">
-      <div class="progress-source-card"><span>GitHub 账号</span><strong>${profile ? `@${escapeHtml(profile.login)}` : "未连接"}</strong><p>${profile?.oauth ? "已通过 GitHub OAuth 授权；不涉及私有仓库权限。" : (profile ? "已读取公开资料，不涉及私有仓库权限。" : "可使用 GitHub 一键登录或手动输入用户名。")}</p></div>
-      <div class="progress-source-card"><span>后台数据库</span><strong>${backendLabel}</strong><p>${backendDetail}</p></div>
-      <div class="progress-source-card"><span>飞书报名数据</span><strong>${hasFeishuMatch ? "已匹配" : escapeHtml(feishu.proposal)}</strong><p>${hasFeishuMatch ? `通过${escapeHtml(feishu.matchField)}匹配，状态来自导入数据。` : "可导入飞书表 CSV/JSON 后自动匹配。"}</p></div>
-      <div class="progress-source-card"><span>官网报名</span><strong>${hasRegistration ? "已填写" : "未填写"}</strong><p>${escapeHtml(registration.email || "报名后可用邮箱、GitHub 仓库或报名编号匹配进度。")}</p></div>
-      <div class="progress-source-card"><span>作品墙状态</span><strong>${escapeHtml(feishu.showcase)}</strong><p>通过验收或表现突出的项目可进入展示墙。</p></div>
-      <div class="progress-source-card"><span>通知状态</span><strong>${lastNotification ? escapeHtml(lastNotification.status) : "暂无通知"}</strong><p>${lastNotification ? escapeHtml(lastNotification.subject || lastNotification.error || "已生成通知记录。") : "管理员推进流程后会邮件通知。"}</p></div>
+      ${sourceCards.join("")}
     </div>
-    <div class="progress-check-grid">
-      ${checks.map((item) => `
-        <div class="${statusClass(item.passed)}">
-          <span>${item.passed ? "通过" : "待补"}</span>
-          <strong>${escapeHtml(item.label)}</strong>
-          <p>${escapeHtml(item.detail)}</p>
-        </div>
-      `).join("")}
-    </div>
+    ${renderCheckArea(checks, hasRepo)}
     <div class="progress-dashboard-actions">
-      <button class="button primary" type="button" data-action="recheck-repo">${repoUrl ? "重新检查仓库" : "填写仓库后检查"}</button>
+      ${profile ? "" : `<a class="button primary" href="#progress-login">使用 GitHub 登录</a>`}
+      <button class="button ${profile ? "primary" : "secondary"}" type="button" data-action="recheck-repo">${repoUrl ? "检查公开仓库" : "填写仓库后检查"}</button>
       <a class="button secondary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">飞书报名入口</a>
-      <a class="button secondary" href="register.html">填写自建报名</a>
-      <a class="button secondary" href="${ACCEPTANCE_FORM_URL}">提交验收</a>
+      <a class="button secondary" href="${hostedPage("register.html")}">${hasRegistration ? "更新报名信息" : "填写官网报名"}</a>
+      ${hasRegistration || check ? `<a class="button secondary" href="${ACCEPTANCE_FORM_URL}" target="_blank" rel="noreferrer">提交验收</a>` : ""}
     </div>
   `;
 }
@@ -842,7 +922,7 @@ function renderPlanPanels(force = false) {
       <p>当前官方报名入口继续保留飞书表单。提交后赛方会通过邮件反馈申报审核结果，后续可把飞书数据同步到比赛进度。</p>
       <div class="progress-compact-actions">
         <a class="button primary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">打开飞书报名表</a>
-        <a class="button secondary" href="register.html">使用官网报名页</a>
+        <a class="button secondary" href="${hostedPage("register.html")}">使用官网报名页</a>
       </div>
     </article>
     <article class="path-card progress-plan-card">
@@ -859,7 +939,7 @@ function renderPlanPanels(force = false) {
       <h3>审核、通知和作品墙</h3>
       <p>管理员在后台维护申报、验收、奖励和作品墙状态后，选手可在本页看到更新；重要节点可通过邮件通知。</p>
       <div class="progress-compact-actions">
-        <a class="button secondary" href="admin.html">后台管理</a>
+        <a class="button secondary" href="${hostedPage("admin.html")}">后台管理</a>
         <a class="button secondary" href="${ACCEPTANCE_FORM_URL}" target="_blank" rel="noreferrer">验收入口</a>
       </div>
     </article>
@@ -898,8 +978,8 @@ function renderPlanPanels(force = false) {
         <label class="form-field"><span>作品墙</span><select name="showcase">${statusOptions(feishu.showcase, ["待上墙", "候选项目", "已上墙", "暂不展示"])}</select></label>
         <div class="progress-compact-actions">
           <button class="button primary" type="submit">保存当前状态</button>
-          <a class="button secondary" href="register.html">打开自建报名</a>
-          <a class="button secondary" href="admin.html">后台管理</a>
+          <a class="button secondary" href="${hostedPage("register.html")}">打开自建报名</a>
+          <a class="button secondary" href="${hostedPage("admin.html")}">后台管理</a>
           <button class="button secondary" type="button" data-action="clear-registration">清除本地报名</button>
         </div>
       </form>
@@ -1235,7 +1315,7 @@ function initRegisterPage() {
       <div class="progress-page-actions">
         <button class="button primary" type="submit">提交报名信息</button>
         <button class="button secondary" type="button" data-action="github-oauth">使用 GitHub OAuth 填充资料</button>
-        <a class="button secondary" href="progress.html">查看比赛进度</a>
+        <a class="button secondary" href="${hostedPage("progress.html")}">查看比赛进度</a>
         <a class="button secondary" href="${PROPOSAL_FORM_URL}">飞书正式报名</a>
         <button class="button secondary" type="button" data-action="export-registration">导出备份 JSON</button>
       </div>
@@ -1265,7 +1345,7 @@ async function handleRegistrationSubmit(form) {
     const result = await saveRegistrationToBackend({ ...value, ...files });
     if (result.mode === "backend") {
       msg.className = "progress-alert progress-alert--ok";
-      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库，报名编号 #${escapeHtml(result.registration.serverId)}。请保存这个编号，后续可进入 <a href="progress.html">比赛进度页</a> 查询审核和仓库检查状态。`;
+      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库，报名编号 #${escapeHtml(result.registration.serverId)}。请保存这个编号，后续可进入 <a href="${hostedPage("progress.html")}">比赛进度页</a> 查询审核和仓库检查状态。`;
     } else {
       msg.className = "progress-alert progress-alert--ok";
       msg.innerHTML = `当前页面未连接后台数据库，只保存了 ${escapeHtml(value.projectName || "项目")} 的非敏感报名信息到浏览器本地。身份证、银行卡和证件文件不会本地保存，请通过飞书正式报名或在后台可用时重新提交。`;

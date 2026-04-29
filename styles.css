@@ -2029,6 +2029,54 @@ a {
   line-height: 1.5;
 }
 
+.progress-source-card--ok {
+  border-color: color-mix(in srgb, #16a34a 28%, var(--border));
+}
+
+.progress-source-card--ok span {
+  background: color-mix(in srgb, #16a34a 12%, transparent);
+  color: color-mix(in srgb, #16a34a 82%, var(--text));
+}
+
+.progress-source-card--todo {
+  border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
+}
+
+.progress-empty-check {
+  padding: 18px;
+  border: 1px dashed color-mix(in srgb, var(--primary) 34%, var(--border));
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, var(--primary) 8%, transparent), transparent 36%),
+    color-mix(in srgb, var(--panel-strong) 82%, transparent);
+}
+
+.progress-empty-check span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.progress-empty-check strong {
+  display: block;
+  margin-top: 12px;
+  color: var(--text);
+  font-size: 1.08rem;
+}
+
+.progress-empty-check p {
+  max-width: 760px;
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
 .progress-check-card--pass {
   border-color: color-mix(in srgb, #16a34a 30%, var(--border));
 }
