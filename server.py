@@ -608,7 +608,7 @@ class Handler(SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type")
+        self.send_header("Access-Control-Allow-Headers", "Content-Type, X-MGPIC-Admin-Token")
         super().end_headers()
 
     def do_OPTIONS(self):
@@ -679,6 +679,55 @@ class Handler(SimpleHTTPRequestHandler):
         morsel = cookie.get(name)
         return morsel.value if morsel else ""
 
+    def admin_token(self):
+        return os.environ.get("ADMIN_TOKEN", "").strip()
+
+    def request_admin_token(self):
+        token = self.headers.get("X-MGPIC-Admin-Token", "").strip()
+        if token:
+            return token
+        query = parse_qs(urlparse(self.path).query)
+        return query.get("adminToken", [""])[0].strip()
+
+    def is_admin_request(self):
+        expected = self.admin_token()
+        provided = self.request_admin_token()
+        return bool(expected and provided and secrets.compare_digest(provided, expected))
+
+    def require_admin(self):
+        if not self.admin_token():
+            self.write_error("后台管理员 Token 未配置，管理接口暂不可用。请在 Render 环境变量中设置 ADMIN_TOKEN。", 403)
+            return False
+        if not self.is_admin_request():
+            self.write_error("需要管理员 Token。", 401)
+            return False
+        return True
+
+    def registration_matches_session(self, registration, session_row):
+        if registration is None or session_row is None:
+            return False
+        registration_login = (registration["github_login"] or "").strip().lower()
+        registration_email = (registration["email"] or "").strip().lower()
+        session_login = (session_row["github_login"] or "").strip().lower()
+        session_email = (session_row["email"] or "").strip().lower()
+        return bool(
+            (registration_login and session_login and registration_login == session_login)
+            or (registration_email and session_email and registration_email == session_email)
+        )
+
+    def can_access_registration(self, connection, registration_id):
+        registration = connection.execute(
+            "select * from registrations where id = ?", (registration_id,)
+        ).fetchone()
+        if registration is None:
+            return None, None, False
+        if self.is_admin_request():
+            return registration, None, True
+        session_row = self.current_github_session()
+        if session_row is None:
+            return registration, None, False
+        return registration, session_row, self.registration_matches_session(registration, session_row)
+
     def handle_api(self, method, path):
         try:
             if path == "/api/health" and method == "GET":
@@ -686,6 +735,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "ok": True,
                     "database": str(DB_PATH),
                     "githubOAuth": github_oauth_configured(),
+                    "adminToken": bool(self.admin_token()),
                 })
                 return
 
@@ -960,6 +1010,8 @@ class Handler(SimpleHTTPRequestHandler):
         self.end_headers()
 
     def list_registrations(self):
+        if not self.require_admin():
+            return
         with db() as connection:
             rows = connection.execute(
                 """
@@ -1027,17 +1079,22 @@ class Handler(SimpleHTTPRequestHandler):
         }
 
     def get_registration(self, registration_id):
-        query = parse_qs(urlparse(self.path).query)
-        include_sensitive = query.get("admin", ["0"])[0] == "1"
         with db() as connection:
+            registration, session_row, allowed = self.can_access_registration(connection, registration_id)
+            if registration is None:
+                self.write_error("报名记录不存在", 404)
+                return
+            if not allowed:
+                if session_row is None:
+                    self.write_error("请先使用 GitHub 登录后查看自己的比赛进度。", 401)
+                else:
+                    self.write_error("当前 GitHub 账号无权查看这条报名记录。", 403)
+                return
             bundle = self.get_registration_bundle(
                 connection,
                 registration_id,
-                include_sensitive=include_sensitive,
+                include_sensitive=self.is_admin_request(),
             )
-        if bundle is None:
-            self.write_error("报名记录不存在", 404)
-            return
         self.write_json(bundle)
 
     def create_registration(self):
@@ -1074,11 +1131,15 @@ class Handler(SimpleHTTPRequestHandler):
         timestamp = now_iso()
         values = self.registration_values(payload)
         with db() as connection:
-            exists = connection.execute(
-                "select id from registrations where id = ?", (registration_id,)
-            ).fetchone()
-            if exists is None:
+            registration, session_row, allowed = self.can_access_registration(connection, registration_id)
+            if registration is None:
                 self.write_error("报名记录不存在", 404)
+                return
+            if not allowed:
+                if session_row is None:
+                    self.write_error("请先使用 GitHub 登录后修改自己的报名记录。", 401)
+                else:
+                    self.write_error("当前 GitHub 账号无权修改这条报名记录。", 403)
                 return
             connection.execute(
                 """
@@ -1145,6 +1206,8 @@ class Handler(SimpleHTTPRequestHandler):
             )
 
     def update_status(self, registration_id):
+        if not self.require_admin():
+            return
         payload = self.read_json()
         timestamp = now_iso()
         with db() as connection:
@@ -1189,11 +1252,15 @@ class Handler(SimpleHTTPRequestHandler):
         if not isinstance(checks, list):
             checks = []
         with db() as connection:
-            exists = connection.execute(
-                "select id from registrations where id = ?", (registration_id,)
-            ).fetchone()
-            if exists is None:
+            registration, session_row, allowed = self.can_access_registration(connection, registration_id)
+            if registration is None:
                 self.write_error("报名记录不存在", 404)
+                return
+            if not allowed:
+                if session_row is None:
+                    self.write_error("请先使用 GitHub 登录后同步仓库检查结果。", 401)
+                else:
+                    self.write_error("当前 GitHub 账号无权同步这条报名记录。", 403)
                 return
             connection.execute(
                 """
@@ -1240,6 +1307,8 @@ class Handler(SimpleHTTPRequestHandler):
         return cursor.lastrowid
 
     def create_ai_review(self, registration_id):
+        if not self.require_admin():
+            return
         payload = self.read_json()
         mode = clean_text(payload, "mode") or "proposal"
         with db() as connection:
@@ -1253,6 +1322,8 @@ class Handler(SimpleHTTPRequestHandler):
         self.write_json({"review": ai_review_from_row(row)})
 
     def list_ai_reviews(self, registration_id):
+        if not self.require_admin():
+            return
         with db() as connection:
             rows = connection.execute(
                 "select * from ai_reviews where registration_id = ? order by id desc limit 50",
@@ -1293,6 +1364,8 @@ class Handler(SimpleHTTPRequestHandler):
         return cursor.lastrowid
 
     def advance_registration(self, registration_id):
+        if not self.require_admin():
+            return
         payload = self.read_json()
         mode = clean_text(payload, "mode") or "proposal"
         with db() as connection:
@@ -1372,6 +1445,8 @@ class Handler(SimpleHTTPRequestHandler):
         })
 
     def notify_registration(self, registration_id):
+        if not self.require_admin():
+            return
         payload = self.read_json()
         with db() as connection:
             bundle = self.get_registration_bundle(connection, registration_id)
@@ -1392,6 +1467,8 @@ class Handler(SimpleHTTPRequestHandler):
         self.write_json({"notification": notification_from_row(notification)})
 
     def list_files(self, registration_id):
+        if not self.require_admin():
+            return
         with db() as connection:
             rows = connection.execute(
                 "select * from registration_files where registration_id = ? order by kind",
@@ -1400,6 +1477,8 @@ class Handler(SimpleHTTPRequestHandler):
         self.write_json({"files": [file_from_row(row) for row in rows]})
 
     def download_file(self, registration_id, kind):
+        if not self.require_admin():
+            return
         with db() as connection:
             row = connection.execute(
                 "select * from registration_files where registration_id = ? and kind = ?",
@@ -1418,6 +1497,8 @@ class Handler(SimpleHTTPRequestHandler):
         self.wfile.write(data)
 
     def delete_registration(self, registration_id):
+        if not self.require_admin():
+            return
         with db() as connection:
             cursor = connection.execute("delete from registrations where id = ?", (registration_id,))
         if cursor.rowcount == 0:
@@ -1426,6 +1507,8 @@ class Handler(SimpleHTTPRequestHandler):
         self.write_json({"ok": True})
 
     def save_imported_records(self):
+        if not self.require_admin():
+            return
         payload = self.read_json()
         rows = payload.get("rows", [])
         if not isinstance(rows, list):

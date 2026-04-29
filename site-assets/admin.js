@@ -1,10 +1,12 @@
 const $ = (selector, root = document) => root.querySelector(selector);
 const API_BASE_KEY = "mgpic2026.apiBase";
+const ADMIN_TOKEN_KEY = "mgpic2026.adminToken";
 const DEFAULT_RENDER_API_BASE = "https://mgpic2026.onrender.com";
 
 let registrations = [];
 let selectedId = null;
 let apiBase = readApiBase();
+let adminToken = readAdminToken();
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
   "&": "&amp;",
@@ -19,6 +21,7 @@ async function api(path, options = {}) {
     ...options,
     headers: {
       "Content-Type": "application/json",
+      ...adminAuthHeaders(),
       ...(options.headers || {}),
     },
   });
@@ -33,6 +36,23 @@ async function api(path, options = {}) {
     throw new Error(message);
   }
   return response.json();
+}
+
+function readAdminToken() {
+  return localStorage.getItem(ADMIN_TOKEN_KEY) || "";
+}
+
+function setAdminToken(value) {
+  adminToken = String(value || "").trim();
+  if (adminToken) {
+    localStorage.setItem(ADMIN_TOKEN_KEY, adminToken);
+  } else {
+    localStorage.removeItem(ADMIN_TOKEN_KEY);
+  }
+}
+
+function adminAuthHeaders() {
+  return adminToken ? { "X-MGPIC-Admin-Token": adminToken } : {};
 }
 
 function normalizeApiBase(value) {
@@ -77,6 +97,19 @@ function apiUrl(path) {
 
 function currentEndpointLabel() {
   return apiBase || window.location.origin;
+}
+
+function promptAdminToken() {
+  const token = window.prompt("请输入后台管理员 Token。留空并确认会清除本机保存的 Token。", adminToken);
+  if (token === null) return;
+  setAdminToken(token);
+  loadRegistrations();
+}
+
+function adminFileUrl(path) {
+  const url = new URL(apiUrl(path), window.location.href);
+  if (adminToken) url.searchParams.set("adminToken", adminToken);
+  return url.href;
 }
 
 function isStaticPreviewHost() {
@@ -154,7 +187,7 @@ function renderDisconnected(error) {
         <p>${escapeHtml(staticHint)}</p>
         <p>当前连接地址：<code>${escapeHtml(currentEndpointLabel())}</code></p>
         <p>接口错误：${escapeHtml(error?.message || "无法连接 /api/health")}</p>
-        <p>如果这里持续报错，通常是 Render 服务还没有创建、未启动，或实际服务域名不是 <code>${escapeHtml(DEFAULT_RENDER_API_BASE)}</code>。</p>
+        <p>如果提示需要管理员 Token，请填写 Render 环境变量 <code>ADMIN_TOKEN</code> 对应的值；如果持续连接失败，通常是 Render 服务还没有启动，或实际服务域名不是 <code>${escapeHtml(DEFAULT_RENDER_API_BASE)}</code>。</p>
       </div>
       <form class="admin-api-form" id="admin-api-form">
         <label class="form-field admin-detail-wide">
@@ -166,15 +199,24 @@ function renderDisconnected(error) {
             autocomplete="url"
           >
         </label>
+        <label class="form-field admin-detail-wide">
+          <span>管理员 Token</span>
+          <input
+            name="adminToken"
+            value="${escapeHtml(adminToken)}"
+            placeholder="填写 Render 环境变量 ADMIN_TOKEN"
+            autocomplete="off"
+          >
+        </label>
         <p>
-          后端部署完成后，把 Render / Railway / 服务器生成的域名填在这里并保存。正式运营建议直接访问
-          <code>https://你的后端域名/admin.html</code>，不要用 GitHub Pages 管真实数据。
+          后台列表、详情、材料下载、审核推进和邮件通知都需要管理员 Token。正式运营建议直接访问
+          <code>https://你的后端域名/admin.html</code>，并只把 Token 发给赛事工作人员。
         </p>
         <div class="admin-form-actions">
-          <button class="button primary" type="submit">连接并在这里显示数据</button>
+          <button class="button primary" type="submit">保存并连接数据后台</button>
           <a class="button secondary" href="${escapeHtml(apiUrl("/admin.html"))}" target="_blank" rel="noreferrer">打开 Render 后台</a>
           <button class="button secondary" type="button" data-action="clear-api-base">恢复默认 Render 地址</button>
-          <a class="button secondary" href="https://github.com/zongen01/MGPIC2026/blob/main/DEPLOYMENT.md" target="_blank" rel="noreferrer">查看部署说明</a>
+          <a class="button secondary" href="https://github.com/moonbitlang/OSC2026/blob/main/DEPLOYMENT.md" target="_blank" rel="noreferrer">查看部署说明</a>
         </div>
       </form>
       <div class="admin-connect-steps">
@@ -201,6 +243,7 @@ function renderDisconnected(error) {
     event.preventDefault();
     const form = event.currentTarget;
     setApiBase(new FormData(form).get("apiBase"));
+    setAdminToken(new FormData(form).get("adminToken"));
     loadRegistrations();
   });
   app.querySelector("[data-action='clear-api-base']").addEventListener("click", () => {
@@ -224,6 +267,7 @@ function renderShell() {
       </div>
       <div class="admin-toolbar-actions">
         <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
+        <button class="button secondary" type="button" data-action="set-admin-token">管理员 Token</button>
         <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
         <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf" target="_blank" rel="noreferrer">飞书报名表</a>
         <a class="button secondary" href="progress.html#progress-plans">导入飞书表</a>
@@ -260,6 +304,7 @@ function renderShell() {
   `;
   $("#admin-search").addEventListener("input", renderList);
   app.querySelector("[data-action='refresh']").addEventListener("click", loadRegistrations);
+  app.querySelector("[data-action='set-admin-token']").addEventListener("click", promptAdminToken);
   app.querySelector("[data-action='export-csv']").addEventListener("click", exportCsv);
   app.querySelector("[data-action='open-register']").addEventListener("click", () => {
     window.location.href = apiBase ? `${apiBase}/register.html` : "register.html";
@@ -310,7 +355,7 @@ async function selectRegistration(id) {
   const detail = $("#admin-detail");
   detail.innerHTML = `<div class="progress-alert">正在读取 #${escapeHtml(id)}...</div>`;
   try {
-    const data = await api(`/api/registrations/${encodeURIComponent(id)}?admin=1`);
+    const data = await api(`/api/registrations/${encodeURIComponent(id)}`);
     renderDetail(data);
   } catch (error) {
     detail.innerHTML = `<div class="progress-alert progress-alert--error">${escapeHtml(error.message)}</div>`;
@@ -335,7 +380,7 @@ function fileLinks(files = []) {
     id_back: "身份证反面",
   };
   return files.map((file) => `
-    <a class="admin-file-link" href="${escapeHtml(apiUrl(file.downloadUrl))}" target="_blank" rel="noreferrer">
+    <a class="admin-file-link" href="${escapeHtml(adminFileUrl(file.downloadUrl))}" target="_blank" rel="noreferrer">
       ${escapeHtml(labels[file.kind] || file.kind)}：${escapeHtml(file.filename || "未命名文件")}
     </a>
   `).join("");

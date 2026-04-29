@@ -575,6 +575,7 @@ async function saveRegistrationToBackend(value) {
 async function syncRegistrationFromBackend() {
   const current = getRegistration();
   if (!current.serverId || backendSyncStarted) return;
+  if (!getGitHubProfile()?.oauth) return;
   backendSyncStarted = true;
   try {
     const result = await apiRequest(`/api/registrations/${encodeURIComponent(current.serverId)}`);
@@ -824,7 +825,7 @@ function renderProgressDashboard() {
       "数据库同步",
       hasBackendRecord ? "已写入后台" : "等待后台",
       hasBackendRecord
-        ? `数据库记录 #${registration.serverId}，管理员可审核和推进流程。`
+        ? "数据库已保存，管理员可审核和推进流程；用户侧不再使用编号查询。"
         : "Render 后端可用后会写入 SQLite；当前仅保留浏览器本地非敏感进度。",
       hasBackendRecord ? "ok" : "todo"
     ));
@@ -929,7 +930,7 @@ function renderPlanPanels(force = false) {
     <article class="path-card progress-plan-card">
       <span class="tag">进度查询</span>
       <h3>GitHub 仓库检查</h3>
-      <p>参赛者可以通过 GitHub 登录、报名编号或公开仓库地址查看当前状态。仓库检查只读取公开信息，不需要私有仓库权限。</p>
+      <p>参赛者通过 GitHub 登录后查看与本人账号匹配的状态，也可以先输入公开仓库地址检查 README、CI、测试、许可证和提交记录。仓库检查只读取公开信息，不需要私有仓库权限。</p>
       <div class="progress-mini-list">
         <div><span>当前项目</span><strong>${registration.projectName ? escapeHtml(registration.projectName) : "待填写"}</strong></div>
         <div><span>GitHub 仓库</span><strong>${registration.githubRepo ? "已填写" : "待填写"}</strong></div>
@@ -1072,10 +1073,6 @@ function initProgressPage() {
         <input name="githubLogin" placeholder="moonbit-builder" value="${escapeHtml(registration.githubLogin || profile?.login || "")}">
       </label>
       <label class="form-field">
-        <span>报名编号（已提交后可用来恢复数据库进度）</span>
-        <input name="serverId" inputmode="numeric" placeholder="例如 12" value="${escapeHtml(registration.serverId || "")}">
-      </label>
-      <label class="form-field">
         <span>GitHub 仓库</span>
         <input name="repo" type="url" placeholder="https://github.com/owner/project" value="${escapeHtml(repo)}">
       </label>
@@ -1085,10 +1082,9 @@ function initProgressPage() {
       </label>
       <div class="progress-page-actions">
         <button class="button primary" type="submit">检查公开仓库</button>
-        <button class="button secondary" type="button" data-action="load-server-record">按报名编号查询</button>
         <button class="button secondary" type="button" data-action="clear-progress">清除本地数据</button>
       </div>
-      <p class="github-login-note">已报名选手可输入报名编号恢复后台进度；没有编号时，也可以先输入公开 GitHub 仓库检查 README、CI、测试、许可证和提交记录。</p>
+      <p class="github-login-note">报名编号只作为内部记录编号，不作为查询凭证。后续查看个人进度请使用 GitHub 登录；未登录时仍可检查公开 GitHub 仓库。</p>
       <div class="progress-alert" id="progress-message" ${authMessage ? "" : "hidden"}>${escapeHtml(authMessage || "")}</div>
     </form>
   `;
@@ -1105,9 +1101,6 @@ function initProgressPage() {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     await runRepoCheck(form.elements.repo.value, form.elements.email.value, form.elements.githubLogin.value);
-  });
-  form.querySelector("[data-action='load-server-record']").addEventListener("click", async () => {
-    await loadServerRegistration(form.elements.serverId.value);
   });
   form.querySelector("[data-action='clear-progress']").addEventListener("click", () => {
     localStorage.removeItem(STORE_KEY);
@@ -1177,38 +1170,6 @@ async function runRepoCheck(repoInput, email, githubLogin) {
     if (message) {
       message.className = "progress-alert progress-alert--error";
       message.textContent = error.status === 404 ? "没有找到这个公开仓库，请检查地址或仓库权限。" : error.message;
-    }
-  }
-}
-
-async function loadServerRegistration(serverId) {
-  const message = $("#progress-message");
-  if (message) {
-    message.hidden = false;
-    message.className = "progress-alert";
-    message.textContent = "正在读取后台数据库记录...";
-  }
-  const id = String(serverId || "").trim();
-  if (!id) {
-    if (message) {
-      message.className = "progress-alert progress-alert--error";
-      message.textContent = "请输入报名编号。";
-    }
-    return;
-  }
-  try {
-    const result = await apiRequest(`/api/registrations/${encodeURIComponent(id)}`, { method: "GET" });
-    saveBackendBundle(result);
-    if (message) {
-      message.className = "progress-alert progress-alert--ok";
-      message.textContent = `已读取数据库记录 #${id}，比赛进度已更新。`;
-    }
-    renderPlanPanels(true);
-    renderProgressDashboard();
-  } catch (error) {
-    if (message) {
-      message.className = "progress-alert progress-alert--error";
-      message.textContent = error.status === 404 ? "没有找到这个报名编号。" : "当前未连接后台数据库，公网预览页只能读取浏览器本地数据。";
     }
   }
 }
@@ -1346,7 +1307,7 @@ async function handleRegistrationSubmit(form) {
     const result = await saveRegistrationToBackend({ ...value, ...files });
     if (result.mode === "backend") {
       msg.className = "progress-alert progress-alert--ok";
-      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库，报名编号 #${escapeHtml(result.registration.serverId)}。请保存这个编号，后续可进入 <a href="${hostedPage("progress.html")}">比赛进度页</a> 查询审核和仓库检查状态。`;
+      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到后台数据库。后续请使用 GitHub 登录进入 <a href="${hostedPage("progress.html")}">比赛进度页</a> 查看审核和仓库检查状态；报名编号仅作为后台内部记录，不作为查询凭证。`;
     } else {
       msg.className = "progress-alert progress-alert--ok";
       msg.innerHTML = `当前页面未连接后台数据库，只保存了 ${escapeHtml(value.projectName || "项目")} 的非敏感报名信息到浏览器本地。身份证、银行卡和证件文件不会本地保存，请通过飞书正式报名或在后台可用时重新提交。`;
