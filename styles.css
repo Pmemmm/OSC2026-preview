@@ -1699,13 +1699,13 @@ a {
 
 .progress-plan-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 18px;
   margin-top: 18px;
 }
 
 .progress-plan-card {
-  min-height: 360px;
+  min-height: 0;
   border: 1px solid var(--border);
   background:
     radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 10%, transparent), transparent 30%),
@@ -1715,6 +1715,31 @@ a {
 .progress-plan-card .button {
   margin-top: auto;
   width: fit-content;
+}
+
+.progress-admin-tools {
+  grid-column: 1 / -1;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: color-mix(in srgb, var(--panel-strong) 72%, transparent);
+}
+
+.progress-admin-tools summary {
+  cursor: pointer;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.progress-admin-tools summary::marker {
+  color: var(--primary);
+}
+
+.progress-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 14px;
 }
 
 .progress-dashboard--preview {
@@ -1865,6 +1890,13 @@ a {
 .register-system-note {
   margin-top: 12px;
   padding: 14px;
+}
+
+.register-prep-note {
+  margin: 0 0 14px;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 9%, transparent), transparent 34%),
+    color-mix(in srgb, var(--primary) 7%, var(--panel));
 }
 
 .register-disabled {
@@ -2839,6 +2871,7 @@ a {
   .showcase-wall-head,
   .progress-portal,
   .progress-plan-grid,
+  .progress-admin-grid,
   .progress-data-source-grid,
   .progress-summary-grid,
   .register-shell {

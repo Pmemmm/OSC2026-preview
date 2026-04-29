@@ -795,12 +795,12 @@ fn view_progress_page(model : Model) -> Html {
         ]),
         article(id="progress-login", class="github-login-card progress-login-card", [
           div(class="github-mark", "GH"),
-          h3(t(model.locale, zh="使用 GitHub 一键登录", en="One-click GitHub sign-in")),
+          h3(t(model.locale, zh="使用 GitHub 一键登录（开发中）", en="One-click GitHub sign-in (in development)")),
           p(
             t(
               model.locale,
-              zh="点击后跳转到 GitHub 官方授权页，用户确认授权后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。",
-              en="Click to open the official GitHub authorization page. After consent, users return to the progress page. Only public profile and email scopes are requested, not private repository access.",
+              zh="点击后跳转到 GitHub 官方授权页，用户确认授权后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。正式部署后即可使用 OAuth 登录。",
+              en="Click to open the official GitHub authorization page. After consent, users return to the progress page. Only public profile and email scopes are requested, not private repository access. OAuth sign-in is available after backend deployment.",
             ),
           ),
           a(class="button primary github-login-button", href="/api/auth/github/start?return_to=%2Fprogress.html", t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
@@ -809,20 +809,20 @@ fn view_progress_page(model : Model) -> Html {
       ]),
       div(id="progress-plans", class="progress-plan-grid", [
         article(class="path-card progress-plan-card", [
-          span(class="tag", t(model.locale, zh="方案一", en="Option A")),
-          h3(t(model.locale, zh="飞书报名数据同步", en="Sync Feishu registration data")),
-          p(t(model.locale, zh="继续使用飞书表单收集报名信息，后台导入飞书 CSV / JSON 后，按邮箱、GitHub 仓库、GitHub 账号或项目名匹配选手进度。", en="Continue collecting registrations through Feishu forms. After importing Feishu CSV / JSON, the backend matches progress by email, GitHub repository, GitHub username, or project name.")),
+          span(class="tag", t(model.locale, zh="报名路径", en="Registration path")),
+          h3(t(model.locale, zh="飞书正式报名", en="Official Feishu registration")),
+          p(t(model.locale, zh="当前官方报名入口继续保留飞书表单。提交后赛方会通过邮件反馈申报审核结果，后续可把飞书数据同步到比赛进度。", en="The official registration path keeps the Feishu form. Organizers respond by email after review, and the data can later sync into the progress page.")),
           ul(class="path-points", [
             li(t(model.locale, zh="需要飞书表字段：姓名、邮箱、GitHub 仓库、项目名、申报审核状态、验收状态、奖励状态。", en="Needs Feishu fields: name, email, GitHub repository, project name, proposal review status, acceptance status, and reward status.")),
             li(t(model.locale, zh="GitHub 公开信息只用于身份辅助匹配和公开仓库检查，不替代报名表。", en="Public GitHub info helps identity matching and public repository checks; it does not replace the registration form.")),
             li(t(model.locale, zh="适合快速上线，继续沿用现有飞书报名流程。", en="Best for quick launch while keeping the existing Feishu registration flow.")),
           ]),
-          a(class="button secondary", href=registration_href(), t(model.locale, zh="查看飞书报名入口", en="Open Feishu form")),
+          a(class="button primary", href=registration_href(), t(model.locale, zh="打开飞书报名表", en="Open Feishu form")),
         ]),
         article(class="path-card progress-plan-card", [
-          span(class="tag", t(model.locale, zh="方案二", en="Option B")),
-          h3(t(model.locale, zh="自建报名系统", en="Self-hosted registration system")),
-          p(t(model.locale, zh="作为飞书之外的第二条路径，官网报名页可直接写入后台数据库，和飞书导入的数据进入同一套审核、通知和进度系统。", en="As a second path alongside Feishu, the site registration form writes directly to the backend database and shares the same review, notification, and progress system as Feishu imports.")),
+          span(class="tag", t(model.locale, zh="官网报名", en="Website registration")),
+          h3(t(model.locale, zh="官网报名与后台审核", en="Website registration and review")),
+          p(t(model.locale, zh="作为飞书之外的第二条路径，官网报名页可直接写入后台数据库，并和飞书数据进入同一套审核、通知和进度系统。", en="As a second path alongside Feishu, the site registration form writes directly to the backend database and shares the same review, notification, and progress system as Feishu imports.")),
           ul(class="path-points", [
             li(t(model.locale, zh="选手填写项目信息、GitHub 仓库、申报书和学生证明。", en="Participants submit project info, GitHub repository, proposal, and student proof.")),
             li(t(model.locale, zh="后台可维护申报审核、验收审核、奖励发放、邮件通知和作品墙状态。", en="Admins can maintain proposal review, acceptance review, rewards, email notifications, and showcase states.")),
@@ -903,8 +903,12 @@ fn view_register_page(model : Model) -> Html {
             ),
             div([
               h3(t(model.locale, zh="MoonBit 开源大赛报名", en="MoonBit contest registration")),
-              p(t(model.locale, zh="填写后可进入后台审核和比赛进度同步。", en="Submitted records can enter admin review and progress sync.")),
+              p(t(model.locale, zh="提交后进入后台审核，并同步到比赛进度页；未连接后台时只会本地保存非敏感信息。", en="Submitted records enter admin review and sync to the progress page. Without a backend, only non-sensitive fields are kept locally.")),
             ]),
+          ]),
+          div(class="register-system-note register-prep-note", [
+            strong(t(model.locale, zh="报名前请准备好这些材料", en="Prepare these before registering")),
+            p(t(model.locale, zh="GitHub 公开仓库、一页 PDF 项目申报书、学生身份证明、身份证正反面水印版、银行卡号和开户支行。身份证水印建议写“仅用于 MoonBit 开源大赛奖金发放”。", en="Prepare a public GitHub repository, one-page proposal PDF, student proof, watermarked ID images, bank card number, and bank branch. Recommended ID watermark: for MoonBit contest reward payout only.")),
           ]),
           div(class="register-field-grid", [
             view_register_field(t(model.locale, zh="姓名", en="Name"), t(model.locale, zh="请输入真实姓名", en="Enter real name")),
@@ -945,8 +949,8 @@ fn view_register_page(model : Model) -> Html {
             p(t(model.locale, zh="上传身份证图片前，建议使用 AI 或图片工具添加水印，例如“仅用于 MoonBit 开源大赛奖金发放”。", en="Before uploading ID images, use AI or an image tool to add a watermark such as: for MoonBit contest reward payout only.")),
           ]),
           div(class="progress-page-actions", [
-            span(class="button secondary", t(model.locale, zh="使用 GitHub 登录填充资料", en="Fill with GitHub sign-in")),
             span(class="button primary", t(model.locale, zh="提交报名信息", en="Submit registration")),
+            span(class="button secondary", t(model.locale, zh="使用 GitHub OAuth 填充资料", en="Fill with GitHub OAuth")),
             a(class="button secondary", href=registration_href(), t(model.locale, zh="也可使用飞书报名", en="Use Feishu form")),
           ]),
         ]),
