@@ -205,7 +205,7 @@ async function startGitHubOAuth(message) {
     if (message) {
       message.className = "progress-alert progress-alert--error";
       message.textContent = error.status === 404
-        ? "当前 GitHub Pages 静态预览没有 OAuth 后端；部署 server.py 并配置 GitHub OAuth App 后即可一键登录。"
+        ? "Render OAuth 接口还不可用。请确认 Render 服务已创建并正在运行，然后配置 GitHub OAuth App。"
         : error.message;
     }
   }
@@ -1052,15 +1052,15 @@ function initProgressPage() {
   const authStatus = new URLSearchParams(window.location.search).get("github_auth");
   const authMessage = {
     ok: "GitHub 登录成功，已同步账号信息。",
-    not_configured: "后端还没有配置 GitHub OAuth App，暂时不能一键登录。",
+    not_configured: "Render 后端已连接，但还没有配置 GitHub OAuth App 的 Client ID / Secret。",
     denied: "你取消了 GitHub 授权。",
     state_error: "GitHub 授权状态已失效，请重新登录。",
     failed: "GitHub 授权失败，请稍后重试。",
   }[authStatus || ""];
   loginCard.innerHTML = `
     <div class="github-mark">GH</div>
-    <h3>${profile?.oauth ? `已通过 GitHub 登录` : "使用 GitHub 一键登录（开发中）"}</h3>
-    <p>${profile?.oauth ? `当前账号 @${escapeHtml(profile.login)}，已通过 GitHub 授权读取公开资料和邮箱。` : "点击后跳转到 GitHub 官方授权页，用户确认后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。正式部署后即可使用 OAuth 登录。"}</p>
+    <h3>${profile?.oauth ? `已通过 GitHub 登录` : "使用 GitHub 一键登录"}</h3>
+    <p>${profile?.oauth ? `当前账号 @${escapeHtml(profile.login)}，已通过 GitHub 授权读取公开资料和邮箱。` : "点击后会通过 Render 后端跳转到 GitHub 官方授权页，用户确认后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。"}</p>
     <div class="progress-page-actions">
       <button class="button primary" type="button" data-action="github-oauth">${profile?.oauth ? "刷新 GitHub 登录状态" : "使用 GitHub 一键登录"}</button>
       ${profile?.oauth ? `<button class="button secondary" type="button" data-action="github-logout">退出 GitHub 登录</button>` : ""}

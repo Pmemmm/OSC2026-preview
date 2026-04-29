@@ -244,6 +244,11 @@ fn acceptance_href() -> String {
 }
 
 ///|
+fn github_oauth_href() -> String {
+  "https://mgpic2026.onrender.com/api/auth/github/start?return_to=%2Fprogress.html"
+}
+
+///|
 fn is_standalone_page() -> Bool {
   if is_progress_page() {
     true
@@ -795,16 +800,16 @@ fn view_progress_page(model : Model) -> Html {
         ]),
         article(id="progress-login", class="github-login-card progress-login-card", [
           div(class="github-mark", "GH"),
-          h3(t(model.locale, zh="使用 GitHub 一键登录（开发中）", en="One-click GitHub sign-in (in development)")),
+          h3(t(model.locale, zh="使用 GitHub 一键登录", en="One-click GitHub sign-in")),
           p(
             t(
               model.locale,
-              zh="点击后跳转到 GitHub 官方授权页，用户确认授权后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。正式部署后即可使用 OAuth 登录。",
-              en="Click to open the official GitHub authorization page. After consent, users return to the progress page. Only public profile and email scopes are requested, not private repository access. OAuth sign-in is available after backend deployment.",
+              zh="点击后会通过 Render 后端跳转到 GitHub 官方授权页，用户确认授权后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。",
+              en="Click to start GitHub OAuth through the Render backend. After consent, users return to the progress page. Only public profile and email scopes are requested, not private repository access.",
             ),
           ),
-          a(class="button primary github-login-button", href="/api/auth/github/start?return_to=%2Fprogress.html", t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
-          p(class="github-login-note", t(model.locale, zh="GitHub Pages 静态预览不会保存授权密钥；部署后端并配置 GitHub OAuth App 后即可使用。", en="The static GitHub Pages preview does not store OAuth secrets. Deploy the backend and configure a GitHub OAuth App to enable this.")),
+          a(class="button primary github-login-button", href=github_oauth_href(), t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
+          p(class="github-login-note", t(model.locale, zh="登录成功后会自动同步 GitHub 用户名、公开资料和邮箱，用于匹配报名信息与公开仓库检查。", en="After sign-in, the site syncs your GitHub username, public profile, and email for registration matching and public repository checks.")),
         ]),
       ]),
       div(id="progress-plans", class="progress-plan-grid", [
