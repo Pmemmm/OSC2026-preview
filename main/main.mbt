@@ -334,22 +334,22 @@ fn about_cards(locale : Locale) -> Array[InfoCard] {
 fn process_items(locale : Locale) -> Array[ProcessItem] {
   [
     {
-      time: t(locale, zh="4 月 29 日 - 7/1", en="Apr 29 - Jul 1"),
+      time: t(locale, zh="4 月 29 日 - 7 月 1 日", en="Apr 29 - Jul 1"),
       title: t(locale, zh="项目申报", en="Project proposal"),
       desc: t(locale, zh="通过官方表单提交参赛信息、GitHub 仓库和一页 PDF 项目申报书；仓库需包含 10-20 个有效 commits。通过申报审核可获得 150 元启动支持。", en="Submit participant info, GitHub repository, and a one-page PDF proposal through the official form. The repository should contain 10-20 valid commits. Approved proposals may receive RMB 150 kickoff support."),
     },
     {
-      time: t(locale, zh="4 月 29 日 - 7/1", en="Apr 29 - Jul 1"),
+      time: t(locale, zh="4 月 29 日 - 7 月 1 日", en="Apr 29 - Jul 1"),
       title: t(locale, zh="项目开发与社区活动", en="Development and community"),
       desc: t(locale, zh="围绕公开仓库持续开发，保持提交记录、工单、合并请求和更新日志可追踪；赛事组提供指南、模板、答疑、宣讲和阶段展示。", en="Build in public with traceable commits, issues, pull requests, and changelogs. Organizers provide guides, templates, Q&A, talks, and stage showcases."),
     },
     {
-      time: t(locale, zh="6/1 - 7/1", en="Jun 1 - Jul 1"),
+      time: t(locale, zh="6 月 1 日 - 7 月 1 日", en="Jun 1 - Jul 1"),
       title: t(locale, zh="项目验收", en="Project acceptance"),
       desc: t(locale, zh="项目完成后通过验收表提交申请。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。", en="After completion, submit the acceptance form. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project."),
     },
     {
-      time: t(locale, zh="7/5", en="Jul 5"),
+      time: t(locale, zh="7 月 5 日", en="Jul 5"),
       title: t(locale, zh="优秀项目评选与展示", en="Final selection and showcase"),
       desc: t(locale, zh="赛事组根据完成度、MoonBit 生态贡献、工程质量和展示表现综合评估，入选项目需要参加决赛答辩；决赛具体地点和流程后续公布。", en="Organizers evaluate completion, MoonBit ecosystem contribution, engineering quality, and presentation. Selected projects join the final defense; the final venue and detailed process will be announced later."),
     },
