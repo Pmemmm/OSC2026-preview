@@ -2618,7 +2618,7 @@ a {
 
 .admin-layout {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(460px, 1.05fr);
+  grid-template-columns: 1fr;
   gap: 16px;
   align-items: start;
 }
@@ -2631,7 +2631,7 @@ a {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: center;
+  align-items: flex-start;
   padding: 16px;
   border-bottom: 1px solid var(--border);
 }
@@ -2642,12 +2642,20 @@ a {
   font-size: 1.2rem;
 }
 
+.admin-card-head p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+  max-width: 760px;
+}
+
 .admin-table-wrap {
   overflow-x: auto;
 }
 
 .admin-table {
   width: 100%;
+  min-width: 1320px;
   border-collapse: collapse;
 }
 
@@ -2678,6 +2686,18 @@ a {
   margin-top: 4px;
   color: var(--text-soft);
   font-size: 0.82rem;
+}
+
+.admin-table td strong {
+  display: block;
+  color: var(--text);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.admin-table td .admin-badge {
+  display: inline-flex;
+  margin-top: 0;
 }
 
 .admin-badge {

@@ -279,6 +279,42 @@ function statusBadge(value) {
   return `<span class="${klass}">${escapeHtml(text)}</span>`;
 }
 
+function sourceLabel(value) {
+  const labels = {
+    website: "官方报名系统",
+    feishu: "飞书渠道",
+    backend: "后台录入",
+  };
+  return labels[value] || value || "未知来源";
+}
+
+function materialSummary(item) {
+  const materials = [
+    ["申报书", item.proposalFileName],
+    ["学生证明", item.studentFileName],
+    ["身份证正面", item.idFrontFileName],
+    ["身份证反面", item.idBackFileName],
+  ].filter(([, filename]) => filename);
+  return materials.length ? materials.map(([label]) => label).join(" / ") : "未提交文件";
+}
+
+function sensitiveSummary(item) {
+  if (item.sensitiveSubmitted) return "敏感信息已提交";
+  if (item.idNumberMasked || item.bankAccountMasked) return "敏感信息已掩码";
+  return "未提交敏感信息";
+}
+
+function repoCheckSummary(item) {
+  const repoCheck = item.repoCheck;
+  if (!repoCheck) return { title: "未检查", body: "暂无仓库检查记录" };
+  const checks = repoCheck.checks || [];
+  const passed = checks.filter((check) => check.passed).length;
+  return {
+    title: `${passed} / ${checks.length || 8} 通过`,
+    body: `${repoCheck.commitCount ?? "-"} 个 4 月 29 日后公开 commits`,
+  };
+}
+
 function renderDisconnected(error) {
   const app = $("#admin-app");
   const message = error?.message || "无法连接 /api/health";
@@ -389,19 +425,25 @@ function renderShell() {
     <div class="admin-layout">
       <section class="admin-card">
         <div class="admin-card-head">
-          <h2>报名数据</h2>
+          <div>
+            <h2>全部提交数据</h2>
+            <p>这里展示 Render SQLite 中保存的全部报名记录。选中任意一行可查看完整报名字段、材料文件、仓库检查、AI 审核建议、流程状态和通知记录。</p>
+          </div>
           <span id="admin-count">0 条</span>
         </div>
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead>
               <tr>
-                <th>ID</th>
+                <th>编号 / 来源</th>
                 <th>项目与仓库</th>
                 <th>选手</th>
-                <th>当前阶段</th>
+                <th>联系方式 / 学校</th>
+                <th>材料与敏感信息</th>
+                <th>仓库检查</th>
+                <th>流程状态</th>
                 <th>奖励 / 作品墙</th>
-                <th>更新时间</th>
+                <th>提交时间</th>
               </tr>
             </thead>
             <tbody id="admin-table-body"></tbody>
@@ -465,29 +507,51 @@ function renderWorkflowBoard() {
 function renderList() {
   const rows = filteredRegistrations();
   $("#admin-count").textContent = `${rows.length} 条`;
-  $("#admin-table-body").innerHTML = rows.map((item) => `
-    <tr data-id="${item.id}" class="${Number(item.id) === Number(selectedId) ? "is-selected" : ""}">
-      <td>#${item.id}</td>
-      <td>
-        <strong>${escapeHtml(item.projectName || "未命名项目")}</strong>
-        <span>${escapeHtml(item.projectType || "未填写方向")}</span>
-        <span>${escapeHtml(item.githubRepo || "未填写仓库")}</span>
-      </td>
-      <td>
-        <strong>${escapeHtml(item.name || "未填写")}</strong>
-        <span>${escapeHtml(item.school || "学校未填")} / ${escapeHtml(item.email || "邮箱未填")}</span>
-      </td>
-      <td>
-        ${statusBadge(stageLabel(item))}
-        <span>${escapeHtml(item.status?.proposal || "申报审核中")} / ${escapeHtml(item.status?.acceptance || "未提交")}</span>
-      </td>
-      <td>
-        ${statusBadge(item.status?.reward)}
-        <span>${escapeHtml(item.status?.showcase || "待上墙")}</span>
-      </td>
-      <td>${formatTime(item.updatedAt)}</td>
-    </tr>
-  `).join("") || `<tr><td colspan="6">暂无报名记录。</td></tr>`;
+  $("#admin-table-body").innerHTML = rows.map((item) => {
+    const repoCheck = repoCheckSummary(item);
+    return `
+      <tr data-id="${item.id}" class="${Number(item.id) === Number(selectedId) ? "is-selected" : ""}">
+        <td>
+          <strong>#${item.id}</strong>
+          <span>${escapeHtml(sourceLabel(item.source))}</span>
+        </td>
+        <td>
+          <strong>${escapeHtml(item.projectName || "未命名项目")}</strong>
+          <span>${escapeHtml(item.projectType || "未填写方向")}</span>
+          <span>${escapeHtml(item.githubRepo || "未填写仓库")}</span>
+        </td>
+        <td>
+          <strong>${escapeHtml(item.name || "未填写")}</strong>
+          <span>GitHub：${escapeHtml(item.githubLogin || "未填写")}</span>
+        </td>
+        <td>
+          <strong>${escapeHtml(item.email || "邮箱未填")}</strong>
+          <span>${escapeHtml(item.school || "学校 / 组织未填")}</span>
+        </td>
+        <td>
+          <strong>${escapeHtml(materialSummary(item))}</strong>
+          <span>${escapeHtml(sensitiveSummary(item))}</span>
+        </td>
+        <td>
+          <strong>${escapeHtml(repoCheck.title)}</strong>
+          <span>${escapeHtml(repoCheck.body)}</span>
+        </td>
+        <td>
+          ${statusBadge(stageLabel(item))}
+          <span>申报：${escapeHtml(item.status?.proposal || "申报审核中")}</span>
+          <span>验收：${escapeHtml(item.status?.acceptance || "未提交")}</span>
+        </td>
+        <td>
+          ${statusBadge(item.status?.reward)}
+          <span>${escapeHtml(item.status?.showcase || "待上墙")}</span>
+        </td>
+        <td>
+          <strong>${formatTime(item.createdAt)}</strong>
+          <span>更新：${formatTime(item.updatedAt)}</span>
+        </td>
+      </tr>
+    `;
+  }).join("") || `<tr><td colspan="9">暂无报名记录。</td></tr>`;
 
   $("#admin-table-body").querySelectorAll("tr[data-id]").forEach((row) => {
     row.addEventListener("click", () => selectRegistration(row.dataset.id));
@@ -655,10 +719,13 @@ function renderDetail(data) {
       <div><span>学校 / 组织</span><strong>${escapeHtml(item.school || "-")}</strong></div>
       <div><span>GitHub 用户名</span><strong>${escapeHtml(item.githubLogin || "-")}</strong></div>
       <div><span>项目方向</span><strong>${escapeHtml(item.projectType || "-")}</strong></div>
-      <div><span>报名来源</span><strong>${escapeHtml(item.source || "-")}</strong></div>
+      <div><span>报名来源</span><strong>${escapeHtml(sourceLabel(item.source))}</strong></div>
+      <div><span>创建时间</span><strong>${formatTime(item.createdAt)}</strong></div>
+      <div><span>更新时间</span><strong>${formatTime(item.updatedAt)}</strong></div>
       <div><span>身份证号</span><strong>${escapeHtml(item.idNumber || item.idNumberMasked || "-")}</strong></div>
       <div><span>银行卡号</span><strong>${escapeHtml(item.bankAccount || item.bankAccountMasked || "-")}</strong></div>
       <div class="admin-detail-wide"><span>开户支行</span><strong>${escapeHtml(item.bankBranch || "-")}</strong></div>
+      <div class="admin-detail-wide"><span>材料与敏感信息状态</span><strong>${escapeHtml(materialSummary(item))}；${escapeHtml(sensitiveSummary(item))}</strong></div>
       <div class="admin-detail-wide"><span>GitHub 仓库</span><strong>${item.githubRepo ? `<a href="${escapeHtml(item.githubRepo)}" target="_blank" rel="noreferrer">${escapeHtml(item.githubRepo)}</a>` : "-"}</strong></div>
       <div class="admin-detail-wide"><span>项目简介</span><p>${escapeHtml(item.summary || "未填写")}</p></div>
     </div>
@@ -831,24 +898,33 @@ async function deleteRegistration(id) {
 
 function exportCsv() {
   const rows = filteredRegistrations();
-  const headers = ["ID", "姓名", "邮箱", "学校", "GitHub账号", "GitHub仓库", "项目名称", "项目方向", "申报状态", "验收状态", "奖励状态", "作品墙状态", "更新时间"];
+  const headers = ["ID", "报名来源", "姓名", "邮箱", "学校", "GitHub账号", "GitHub仓库", "项目名称", "项目方向", "项目简介", "材料状态", "敏感信息状态", "仓库检查", "申报状态", "验收状态", "奖励状态", "作品墙状态", "创建时间", "更新时间"];
   const lines = [
     headers.map(csvEscape).join(","),
-    ...rows.map((item) => [
-      item.id,
-      item.name,
-      item.email,
-      item.school,
-      item.githubLogin,
-      item.githubRepo,
-      item.projectName,
-      item.projectType,
-      item.status?.proposal,
-      item.status?.acceptance,
-      item.status?.reward,
-      item.status?.showcase,
-      item.updatedAt,
-    ].map(csvEscape).join(",")),
+    ...rows.map((item) => {
+      const repoCheck = repoCheckSummary(item);
+      return [
+        item.id,
+        sourceLabel(item.source),
+        item.name,
+        item.email,
+        item.school,
+        item.githubLogin,
+        item.githubRepo,
+        item.projectName,
+        item.projectType,
+        item.summary,
+        materialSummary(item),
+        sensitiveSummary(item),
+        `${repoCheck.title}；${repoCheck.body}`,
+        item.status?.proposal,
+        item.status?.acceptance,
+        item.status?.reward,
+        item.status?.showcase,
+        item.createdAt,
+        item.updatedAt,
+      ].map(csvEscape).join(",");
+    }),
   ];
   downloadText(`mgpic2026-registrations-${Date.now()}.csv`, lines.join("\n"), "text/csv;charset=utf-8");
 }

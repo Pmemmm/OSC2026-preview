@@ -1170,9 +1170,22 @@ class Handler(SimpleHTTPRequestHandler):
                   s.reward,
                   s.showcase,
                   s.notes,
-                  s.updated_at as status_updated_at
+                  s.updated_at as status_updated_at,
+                  c.repo_url as check_repo_url,
+                  c.commit_count as check_commit_count,
+                  c.checks_json as check_checks_json,
+                  c.checked_at as check_checked_at
                 from registrations r
                 left join registration_statuses s on s.registration_id = r.id
+                left join (
+                  select rc.*
+                  from repo_checks rc
+                  join (
+                    select registration_id, max(id) as id
+                    from repo_checks
+                    group by registration_id
+                  ) latest on latest.id = rc.id
+                ) c on c.registration_id = r.id
                 order by r.id desc
                 limit 500
                 """
@@ -1189,6 +1202,17 @@ class Handler(SimpleHTTPRequestHandler):
                 "updatedAt": row["status_updated_at"] or row["updated_at"],
                 "source": "backend",
             }
+            if row["check_checked_at"]:
+                try:
+                    checks = json.loads(row["check_checks_json"] or "[]")
+                except json.JSONDecodeError:
+                    checks = []
+                item["repoCheck"] = {
+                    "repoUrl": row["check_repo_url"] or "",
+                    "commitCount": row["check_commit_count"] or 0,
+                    "checks": checks,
+                    "checkedAt": row["check_checked_at"],
+                }
             registrations.append(item)
         self.write_json({"registrations": registrations})
 
