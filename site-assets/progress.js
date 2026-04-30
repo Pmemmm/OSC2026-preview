@@ -559,7 +559,14 @@ function saveRegistrationFromForm(form) {
     idBackFileName: form.elements.idBackFile?.files?.[0]?.name || previous.idBackFileName || "",
     updatedAt: new Date().toISOString(),
   };
-  saveJson(STORE_KEY, publicRegistrationValue(value));
+  saveJson(STORE_KEY, publicRegistrationValue({
+    ...value,
+    id: "",
+    serverId: "",
+    backendMode: "pending",
+    backendError: "",
+    backendSavedAt: "",
+  }));
   applyFeishuMatch(getFeishuRows());
   return value;
 }
@@ -601,7 +608,7 @@ async function saveRegistrationToBackend(value) {
           body: JSON.stringify(payload),
         });
       } catch (error) {
-        if (error.status !== 404) throw error;
+        if (![401, 403, 404].includes(error.status)) throw error;
         result = await apiRequest("/api/registrations", {
           method: "POST",
           body: JSON.stringify(payload),
