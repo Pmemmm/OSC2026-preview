@@ -21,9 +21,11 @@ GitHub Pages 页面会在静态域名下自动把 `/api/*` 请求转到这个 Re
 6. 把 OAuth App 的 `Client ID` 和 `Client Secret` 填入 Render 环境变量：
    `GITHUB_CLIENT_ID`
    `GITHUB_CLIENT_SECRET`
-7. 设置后台管理员 Token：
+7. 设置后台管理员权限：
    `ADMIN_TOKEN`
-   这是后台列表、详情、材料下载、审核推进和邮件通知接口的访问凭证，只应发给赛事工作人员。
+   这是后台列表、详情、材料下载、审核推进和邮件通知接口的备用访问凭证，只应发给赛事工作人员。
+   `ADMIN_GITHUB_LOGINS`
+   填写允许访问后台的 GitHub 用户名，多个账号用英文逗号分隔，例如 `zongen01,moonbit-admin`。配置后，管理员可在后台页面使用 GitHub OAuth 登录，不需要手动输入 Token。
 8. 可选环境变量：
    `OPENAI_API_KEY` 用于 ChatGPT 审核建议。
    `SMTP_HOST`、`SMTP_FROM`、`SMTP_USER`、`SMTP_PASSWORD` 用于发送邮件通知。
@@ -34,6 +36,7 @@ GitHub Pages 页面会在静态域名下自动把 `/api/*` 请求转到这个 Re
 - GitHub Pages 首页、报名页、比赛进度页和后台页已经默认把数据接口指向 `https://mgpic2026.onrender.com`。如果 Render 服务名变了，需要同步修改前端里的 `DEFAULT_RENDER_API_BASE`。
 - SQLite 数据库路径为 `/var/lib/mgpic/mgpic2026.sqlite3`，Render 会通过 Persistent Disk 持久化。
 - 报名表会收集身份证、银行卡和证明材料，部署平台必须限制管理员访问，不要把数据库文件公开。
+- 后台管理员推荐使用 `ADMIN_GITHUB_LOGINS` 白名单登录；`ADMIN_TOKEN` 保留给临时排障或没有 GitHub 权限的内部工作人员。
 - 如果继续使用 GitHub Pages 作为公开入口，需要再把页面里的 API base 指向后端域名；最简单稳定的方式是直接对外使用后端域名。
 
 ## 排查

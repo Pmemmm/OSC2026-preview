@@ -7,6 +7,7 @@ let registrations = [];
 let selectedId = null;
 let apiBase = readApiBase();
 let adminToken = readAdminToken();
+let adminSession = null;
 
 const STAGE_FILTERS = [
   ["all", "全部记录"],
@@ -43,6 +44,7 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => 
 async function api(path, options = {}) {
   const response = await fetch(apiUrl(path), {
     ...options,
+    credentials: "same-origin",
     headers: {
       "Content-Type": "application/json",
       ...adminAuthHeaders(),
@@ -130,10 +132,47 @@ function promptAdminToken() {
   loadRegistrations();
 }
 
+function adminOAuthStartUrl() {
+  return apiUrl(`/api/auth/github/start?return_to=${encodeURIComponent("/admin.html")}`);
+}
+
+function adminAccessBadge() {
+  if (adminSession?.user?.admin) {
+    return statusBadge(`GitHub 管理员 @${adminSession.user.login}`);
+  }
+  if (adminSession?.user && !adminSession.user.admin) {
+    return statusBadge(`GitHub @${adminSession.user.login} 未在白名单`);
+  }
+  if (adminToken) {
+    return statusBadge("管理员 Token 已授权");
+  }
+  return statusBadge("管理员未授权");
+}
+
 function adminFileUrl(path) {
   const url = new URL(apiUrl(path), window.location.href);
   if (adminToken) url.searchParams.set("adminToken", adminToken);
   return url.href;
+}
+
+async function syncAdminSession() {
+  try {
+    const session = await api("/api/auth/github/session");
+    adminSession = session?.authenticated ? session : null;
+    return session;
+  } catch {
+    adminSession = null;
+    return null;
+  }
+}
+
+async function logoutGitHubAdmin() {
+  try {
+    await api("/api/auth/github/logout", { method: "POST" });
+  } finally {
+    adminSession = null;
+    loadRegistrations();
+  }
 }
 
 function isStaticPreviewHost() {
@@ -254,7 +293,7 @@ function renderDisconnected(error) {
         <p>${escapeHtml(staticHint)}</p>
         <p>当前连接地址：<code>${escapeHtml(currentEndpointLabel())}</code></p>
         <p>接口提示：${escapeHtml(message)}</p>
-        <p>${needsToken ? "请填写赛事工作人员持有的管理员 Token。Token 只保存在当前浏览器本地，不会写入页面代码。" : `如果持续连接失败，请确认 Render 服务已启动，且实际服务域名为 <code>${escapeHtml(DEFAULT_RENDER_API_BASE)}</code>。`}</p>
+        <p>${needsToken ? "请使用管理员 GitHub 白名单账号登录，或填写赛事工作人员持有的管理员 Token。GitHub 登录账号必须出现在 Render 环境变量 ADMIN_GITHUB_LOGINS 中；Token 只保存在当前浏览器本地，不会写入页面代码。" : `如果持续连接失败，请确认 Render 服务已启动，且实际服务域名为 <code>${escapeHtml(DEFAULT_RENDER_API_BASE)}</code>。`}</p>
       </div>
       <form class="admin-api-form" id="admin-api-form">
         <label class="form-field admin-detail-wide">
@@ -276,10 +315,11 @@ function renderDisconnected(error) {
           >
         </label>
         <p>
-          后台列表、详情、材料下载、审核推进和邮件通知都需要管理员 Token。正式运营建议直接访问
-          <code>https://你的后端域名/admin.html</code>，并只把 Token 发给赛事工作人员。
+          后台列表、详情、材料下载、审核推进和邮件通知都需要管理员权限。推荐使用 GitHub 白名单登录；
+          管理员 Token 仅作为备用入口。
         </p>
         <div class="admin-form-actions">
+          <button class="button primary" type="button" data-action="admin-github-login">使用 GitHub 管理员登录</button>
           <button class="button primary" type="submit">保存并连接数据后台</button>
           <a class="button secondary" href="${escapeHtml(apiUrl("/admin.html"))}" target="_blank" rel="noreferrer">打开 Render 后台</a>
           <button class="button secondary" type="button" data-action="clear-api-base">恢复默认 Render 地址</button>
@@ -300,6 +340,9 @@ function renderDisconnected(error) {
     setApiBase("");
     loadRegistrations();
   });
+  app.querySelector("[data-action='admin-github-login']").addEventListener("click", () => {
+    window.location.href = adminOAuthStartUrl();
+  });
 }
 
 function renderShell() {
@@ -311,7 +354,7 @@ function renderShell() {
         <p>当前连接：<code>${escapeHtml(currentEndpointLabel())}</code>。这里集中处理报名、材料审核、仓库检查、AI 初审、流程推进和通知记录。</p>
       </div>
       <div class="admin-note-actions">
-        ${adminToken ? statusBadge("管理员已授权") : statusBadge("缺少管理员 Token")}
+        ${adminAccessBadge()}
       </div>
     </div>
     <div class="admin-toolbar">
@@ -326,6 +369,8 @@ function renderShell() {
         </label>
       </div>
       <div class="admin-toolbar-actions">
+        <a class="button secondary" href="${escapeHtml(adminOAuthStartUrl())}">GitHub 管理员登录</a>
+        ${adminSession?.user ? `<button class="button secondary" type="button" data-action="logout-github">退出 GitHub 登录</button>` : ""}
         <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
         <button class="button secondary" type="button" data-action="set-admin-token">管理员 Token</button>
         <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
@@ -366,6 +411,7 @@ function renderShell() {
   $("#admin-search").addEventListener("input", renderList);
   $("#admin-stage-filter").addEventListener("change", renderList);
   app.querySelector("[data-action='refresh']").addEventListener("click", loadRegistrations);
+  app.querySelector("[data-action='logout-github']")?.addEventListener("click", logoutGitHubAdmin);
   app.querySelector("[data-action='set-admin-token']").addEventListener("click", promptAdminToken);
   app.querySelector("[data-action='export-csv']").addEventListener("click", exportCsv);
   app.querySelector("[data-action='open-register']").addEventListener("click", () => {
@@ -806,6 +852,7 @@ async function loadRegistrations(showLoading = true) {
   if (showLoading) $("#admin-app").innerHTML = `<div class="progress-alert">正在连接后台数据库...</div>`;
   try {
     const health = await api("/api/health");
+    await syncAdminSession();
     if (showLoading) renderShell();
     const data = await api("/api/registrations");
     registrations = data.registrations || [];

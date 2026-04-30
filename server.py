@@ -221,6 +221,17 @@ def github_oauth_configured():
     return bool(os.environ.get("GITHUB_CLIENT_ID", "").strip() and os.environ.get("GITHUB_CLIENT_SECRET", "").strip())
 
 
+def admin_github_logins():
+    value = os.environ.get("ADMIN_GITHUB_LOGINS", "").strip()
+    if not value:
+        return set()
+    return {
+        item.strip().lower().lstrip("@")
+        for item in value.replace(";", ",").split(",")
+        if item.strip()
+    }
+
+
 def request_host(handler):
     return handler.headers.get("X-Forwarded-Host") or handler.headers.get("Host") or "127.0.0.1:4174"
 
@@ -808,14 +819,26 @@ class Handler(SimpleHTTPRequestHandler):
     def is_admin_request(self):
         expected = self.admin_token()
         provided = self.request_admin_token()
-        return bool(expected and provided and secrets.compare_digest(provided, expected))
+        if expected and provided and secrets.compare_digest(provided, expected):
+            return True
+        return self.is_admin_github_session()
+
+    def is_admin_github_session(self, row=None):
+        allowed = admin_github_logins()
+        if not allowed:
+            return False
+        session_row = row if row is not None else self.current_github_session()
+        if session_row is None:
+            return False
+        login = (session_row["github_login"] or "").strip().lower().lstrip("@")
+        return bool(login and login in allowed)
 
     def require_admin(self):
-        if not self.admin_token():
-            self.write_error("后台管理员 Token 未配置，管理接口暂不可用。请在 Render 环境变量中设置 ADMIN_TOKEN。", 403)
-            return False
         if not self.is_admin_request():
-            self.write_error("需要管理员 Token。", 401)
+            if admin_github_logins():
+                self.write_error("需要管理员 GitHub 白名单登录或管理员 Token。", 401)
+            else:
+                self.write_error("需要管理员 Token。若要使用 GitHub 管理员登录，请在 Render 环境变量中设置 ADMIN_GITHUB_LOGINS。", 401)
             return False
         return True
 
@@ -852,6 +875,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "database": str(DB_PATH),
                     "githubOAuth": github_oauth_configured(),
                     "adminToken": bool(self.admin_token()),
+                    "adminGithub": bool(admin_github_logins()),
                 })
                 return
 
@@ -1112,11 +1136,15 @@ class Handler(SimpleHTTPRequestHandler):
 
     def github_session(self):
         row = self.current_github_session()
+        user = self.github_session_user(row)
+        if user is not None:
+            user["admin"] = self.is_admin_github_session(row)
         self.write_json(
             {
                 "configured": github_oauth_configured(),
                 "authenticated": row is not None,
-                "user": self.github_session_user(row),
+                "user": user,
+                "adminConfigured": bool(admin_github_logins()),
             }
         )
 
