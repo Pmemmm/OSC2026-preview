@@ -358,25 +358,30 @@ function renderShell() {
       </div>
     </div>
     <div class="admin-toolbar">
-      <div class="admin-search-wrap">
-        <label class="form-field">
-          <span>搜索报名记录</span>
-          <input id="admin-search" placeholder="姓名 / 邮箱 / GitHub / 项目名称 / 状态">
-        </label>
-        <label class="form-field">
-          <span>流程筛选</span>
-          <select id="admin-stage-filter">${stageFilterOptions()}</select>
-        </label>
+      <div class="admin-toolbar-main">
+        <div class="admin-search-wrap">
+          <label class="form-field">
+            <span>搜索报名记录</span>
+            <input id="admin-search" placeholder="姓名 / 邮箱 / GitHub / 项目名称 / 状态">
+          </label>
+          <label class="form-field">
+            <span>流程筛选</span>
+            <select id="admin-stage-filter">${stageFilterOptions()}</select>
+          </label>
+        </div>
       </div>
-      <div class="admin-toolbar-actions">
-        <a class="button secondary" href="${escapeHtml(adminOAuthStartUrl())}">GitHub 管理员登录</a>
-        ${adminSession?.user ? `<button class="button secondary" type="button" data-action="logout-github">退出 GitHub 登录</button>` : ""}
-        <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
-        <button class="button secondary" type="button" data-action="set-admin-token">管理员 Token</button>
-        <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
-        <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf" target="_blank" rel="noreferrer">飞书报名表</a>
-        <a class="button secondary" href="progress.html#progress-plans">导入飞书表</a>
-        <button class="button primary" type="button" data-action="open-register">新增报名</button>
+      <div class="admin-toolbar-action-block">
+        <span class="admin-toolbar-label">常用操作</span>
+        <div class="admin-toolbar-actions">
+          <button class="button primary" type="button" data-action="open-register">新增报名</button>
+          <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
+          <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
+          <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf" target="_blank" rel="noreferrer">飞书报名表</a>
+          <a class="button secondary" href="progress.html#progress-plans">导入飞书表</a>
+          <button class="button secondary" type="button" data-action="set-admin-token">管理员 Token</button>
+          <a class="button secondary" href="${escapeHtml(adminOAuthStartUrl())}">GitHub 管理员登录</a>
+          ${adminSession?.user ? `<button class="button secondary" type="button" data-action="logout-github">退出 GitHub 登录</button>` : ""}
+        </div>
       </div>
     </div>
     <div class="admin-stats" id="admin-stats"></div>

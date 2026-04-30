@@ -2524,19 +2524,23 @@ a {
 
 .admin-toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
-  align-items: end;
-  padding: 16px;
+  gap: 18px;
+  align-items: stretch;
+  padding: 18px;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   background: var(--panel-strong);
 }
 
+.admin-toolbar-main {
+  display: grid;
+  gap: 12px;
+}
+
 .admin-search-wrap {
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) minmax(180px, 240px);
-  gap: 12px;
+  grid-template-columns: minmax(320px, 1fr) minmax(220px, 300px);
+  gap: 16px;
 }
 
 .admin-search-wrap select {
@@ -2549,6 +2553,30 @@ a {
   color: var(--text);
   font: inherit;
   font-weight: 800;
+}
+
+.admin-toolbar-action-block {
+  display: grid;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-toolbar-label {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.admin-toolbar-actions {
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-toolbar-actions .button {
+  min-height: 44px;
+  padding-inline: 18px;
 }
 
 .admin-stats {
