@@ -8,6 +8,7 @@ let selectedId = null;
 let apiBase = readApiBase();
 let adminToken = readAdminToken();
 let adminSession = null;
+let storageInfo = null;
 
 const STAGE_FILTERS = [
   ["all", "全部记录"],
@@ -17,6 +18,7 @@ const STAGE_FILTERS = [
   ["accepted", "验收通过"],
   ["showcase", "作品墙"],
   ["needs_action", "需要处理"],
+  ["archived", "已归档"],
 ];
 
 const REVIEW_MODE_LABELS = {
@@ -44,7 +46,7 @@ const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => 
 async function api(path, options = {}) {
   const response = await fetch(apiUrl(path), {
     ...options,
-    credentials: "same-origin",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...adminAuthHeaders(),
@@ -211,7 +213,10 @@ function filteredRegistrations() {
   const query = normalize($("#admin-search")?.value || "");
   const stage = $("#admin-stage-filter")?.value || "all";
   return registrations.filter((item) => {
-    const matchesStage = stage === "all" || registrationStage(item) === stage || (stage === "needs_action" && needsAction(item));
+    const matchesStage = stage === "all"
+      || registrationStage(item) === stage
+      || (stage === "needs_action" && needsAction(item))
+      || (stage === "archived" && item.archived);
     if (!matchesStage) return false;
     if (!query) return true;
     return [
@@ -273,7 +278,7 @@ function stageFilterOptions() {
 function statusBadge(value) {
   const text = String(value || "未设置");
   const done = /通过|已发放|已上墙|完成/.test(text);
-  const warn = /调整|拒绝|不通过|驳回/.test(text);
+  const warn = /调整|拒绝|不通过|驳回|归档/.test(text);
   const wait = /待发放|审核中|待上墙|未提交|未开始/.test(text);
   const klass = done ? "admin-badge admin-badge--ok" : warn ? "admin-badge admin-badge--warn" : wait ? "admin-badge admin-badge--wait" : "admin-badge";
   return `<span class="${klass}">${escapeHtml(text)}</span>`;
@@ -422,8 +427,9 @@ function renderShell() {
     </div>
     <div class="admin-stats" id="admin-stats"></div>
     <div class="admin-workflow-board" id="admin-workflow-board"></div>
+    <div class="admin-storage-panel" id="admin-storage-panel"></div>
     <div class="admin-layout">
-      <section class="admin-card">
+      <section class="admin-card admin-card--table">
         <div class="admin-card-head">
           <div>
             <h2>全部提交数据</h2>
@@ -450,7 +456,7 @@ function renderShell() {
           </table>
         </div>
       </section>
-      <section class="admin-card" id="admin-detail">
+      <section class="admin-card admin-card--detail" id="admin-detail">
         <div class="progress-alert">选择一条报名记录后，在这里查看详情和维护状态。</div>
       </section>
     </div>
@@ -474,6 +480,7 @@ function renderStats() {
   const accepted = registrations.filter((item) => /通过/.test(item.status?.acceptance || "")).length;
   const actionRequired = registrations.filter(needsAction).length;
   const showcased = registrations.filter((item) => /上墙|展示/.test(item.status?.showcase || "")).length;
+  const archived = registrations.filter((item) => item.archived).length;
   $("#admin-stats").innerHTML = `
     <div><span>报名总数</span><strong>${total}</strong></div>
     <div><span>申报待审</span><strong>${proposalPending}</strong></div>
@@ -482,6 +489,7 @@ function renderStats() {
     <div><span>验收通过</span><strong>${accepted}</strong></div>
     <div><span>需处理</span><strong>${actionRequired}</strong></div>
     <div><span>已上作品墙</span><strong>${showcased}</strong></div>
+    <div><span>已归档</span><strong>${archived}</strong></div>
   `;
   renderWorkflowBoard();
 }
@@ -504,16 +512,76 @@ function renderWorkflowBoard() {
   `;
 }
 
+function formatBytes(value) {
+  const size = Number(value || 0);
+  if (size < 1024) return `${size} B`;
+  if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+  return `${(size / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function backupLinks(backups = []) {
+  if (!backups.length) return `<p>暂无备份；后续每次报名、导入、状态修改、归档都会自动生成备份。</p>`;
+  return backups.slice(0, 5).map((backup) => `
+    <a class="admin-file-link" href="${escapeHtml(adminFileUrl(backup.downloadUrl))}" target="_blank" rel="noreferrer">
+      ${escapeHtml(backup.name)} · ${formatBytes(backup.size)}
+    </a>
+  `).join("");
+}
+
+function renderStorage() {
+  const panel = $("#admin-storage-panel");
+  if (!panel) return;
+  if (!storageInfo) {
+    panel.innerHTML = `
+      <div class="admin-storage-card">
+        <strong>数据安全</strong>
+        <p>正在读取数据库状态和备份信息...</p>
+      </div>
+    `;
+    return;
+  }
+  const counts = storageInfo.counts || {};
+  const latest = (storageInfo.backups || [])[0];
+  panel.innerHTML = `
+    <div class="admin-storage-card">
+      <div>
+        <span class="tag">数据安全</span>
+        <h3>SQLite 持久化数据库已连接</h3>
+        <p>数据库：<code>${escapeHtml(storageInfo.database)}</code></p>
+        <p>备份目录：<code>${escapeHtml(storageInfo.backupDir)}</code></p>
+      </div>
+      <div class="admin-storage-metrics">
+        <div><span>报名</span><strong>${counts.registrations ?? registrations.length}</strong></div>
+        <div><span>材料文件</span><strong>${counts.files ?? 0}</strong></div>
+        <div><span>数据库大小</span><strong>${formatBytes(storageInfo.databaseSize)}</strong></div>
+        <div><span>最近备份</span><strong>${latest ? formatTime(latest.createdAt) : "暂无"}</strong></div>
+      </div>
+      <div class="admin-storage-actions">
+        <button class="button primary" type="button" data-action="create-backup">立即生成备份</button>
+        <span>系统会在报名、导入、审核、状态修改、归档等写入动作后自动备份；默认最多保留 ${escapeHtml(storageInfo.maxBackups || 30)} 份。</span>
+      </div>
+      <div class="admin-backup-list">
+        ${backupLinks(storageInfo.backups)}
+      </div>
+    </div>
+  `;
+  panel.querySelector("[data-action='create-backup']")?.addEventListener("click", createBackup);
+}
+
 function renderList() {
   const rows = filteredRegistrations();
   $("#admin-count").textContent = `${rows.length} 条`;
   $("#admin-table-body").innerHTML = rows.map((item) => {
     const repoCheck = repoCheckSummary(item);
     return `
-      <tr data-id="${item.id}" class="${Number(item.id) === Number(selectedId) ? "is-selected" : ""}">
+      <tr data-id="${item.id}" class="${[
+        Number(item.id) === Number(selectedId) ? "is-selected" : "",
+        item.archived ? "is-archived" : "",
+      ].filter(Boolean).join(" ")}">
         <td>
           <strong>#${item.id}</strong>
           <span>${escapeHtml(sourceLabel(item.source))}</span>
+          ${item.archived ? statusBadge("已归档", { warn: true }) : ""}
         </td>
         <td>
           <strong>${escapeHtml(item.projectName || "未命名项目")}</strong>
@@ -548,6 +616,7 @@ function renderList() {
         <td>
           <strong>${formatTime(item.createdAt)}</strong>
           <span>更新：${formatTime(item.updatedAt)}</span>
+          ${item.archivedAt ? `<span>归档：${formatTime(item.archivedAt)}</span>` : ""}
         </td>
       </tr>
     `;
@@ -710,8 +779,9 @@ function renderDetail(data) {
   $("#admin-detail").innerHTML = `
     <div class="admin-card-head">
       <h2>#${item.id} ${escapeHtml(item.projectName || "未命名项目")}</h2>
-      <button class="button secondary" type="button" data-action="delete">删除</button>
+      <button class="button secondary" type="button" data-action="delete">归档记录</button>
     </div>
+    ${item.archived ? `<div class="progress-alert progress-alert--warn">这条记录已归档：${escapeHtml(formatTime(item.archivedAt))}。归档记录仍保留在数据库和备份中，不会从后台彻底删除。</div>` : ""}
     ${workflowStrip(status)}
     <div class="admin-detail-grid">
       <div><span>姓名</span><strong>${escapeHtml(item.name || "-")}</strong></div>
@@ -720,6 +790,7 @@ function renderDetail(data) {
       <div><span>GitHub 用户名</span><strong>${escapeHtml(item.githubLogin || "-")}</strong></div>
       <div><span>项目方向</span><strong>${escapeHtml(item.projectType || "-")}</strong></div>
       <div><span>报名来源</span><strong>${escapeHtml(sourceLabel(item.source))}</strong></div>
+      <div><span>记录状态</span><strong>${item.archived ? "已归档" : "正常"}</strong></div>
       <div><span>创建时间</span><strong>${formatTime(item.createdAt)}</strong></div>
       <div><span>更新时间</span><strong>${formatTime(item.updatedAt)}</strong></div>
       <div><span>身份证号</span><strong>${escapeHtml(item.idNumber || item.idNumberMasked || "-")}</strong></div>
@@ -889,16 +960,16 @@ async function sendCustomNotice(id) {
 }
 
 async function deleteRegistration(id) {
-  if (!window.confirm(`确认删除报名记录 #${id}？`)) return;
+  if (!window.confirm(`确认归档报名记录 #${id}？\n\n归档不会从数据库中彻底删除，系统会先生成备份，再把该记录标记为已归档。`)) return;
   await api(`/api/registrations/${encodeURIComponent(id)}`, { method: "DELETE" });
   selectedId = null;
-  $("#admin-detail").innerHTML = `<div class="progress-alert">记录已删除。</div>`;
+  $("#admin-detail").innerHTML = `<div class="progress-alert">记录已归档，数据仍保留在数据库和自动备份中。</div>`;
   await loadRegistrations(false);
 }
 
 function exportCsv() {
   const rows = filteredRegistrations();
-  const headers = ["ID", "报名来源", "姓名", "邮箱", "学校", "GitHub账号", "GitHub仓库", "项目名称", "项目方向", "项目简介", "材料状态", "敏感信息状态", "仓库检查", "申报状态", "验收状态", "奖励状态", "作品墙状态", "创建时间", "更新时间"];
+  const headers = ["ID", "报名来源", "记录状态", "姓名", "邮箱", "学校", "GitHub账号", "GitHub仓库", "项目名称", "项目方向", "项目简介", "材料状态", "敏感信息状态", "仓库检查", "申报状态", "验收状态", "奖励状态", "作品墙状态", "创建时间", "更新时间", "归档时间"];
   const lines = [
     headers.map(csvEscape).join(","),
     ...rows.map((item) => {
@@ -906,6 +977,7 @@ function exportCsv() {
       return [
         item.id,
         sourceLabel(item.source),
+        item.archived ? "已归档" : "正常",
         item.name,
         item.email,
         item.school,
@@ -923,10 +995,39 @@ function exportCsv() {
         item.status?.showcase,
         item.createdAt,
         item.updatedAt,
+        item.archivedAt,
       ].map(csvEscape).join(",");
     }),
   ];
   downloadText(`mgpic2026-registrations-${Date.now()}.csv`, lines.join("\n"), "text/csv;charset=utf-8");
+}
+
+async function loadStorageInfo() {
+  storageInfo = await api("/api/admin/storage");
+  renderStorage();
+}
+
+async function createBackup() {
+  const button = $("#admin-storage-panel")?.querySelector("[data-action='create-backup']");
+  if (button) {
+    button.disabled = true;
+    button.textContent = "正在生成备份...";
+  }
+  try {
+    const result = await api("/api/admin/backup", { method: "POST", body: JSON.stringify({}) });
+    storageInfo = {
+      ...(storageInfo || {}),
+      backups: result.backups || [result.backup].filter(Boolean),
+    };
+    await loadStorageInfo();
+  } catch (error) {
+    window.alert(`生成备份失败：${error.message}`);
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "立即生成备份";
+    }
+  }
 }
 
 async function loadRegistrations(showLoading = true) {
@@ -937,6 +1038,7 @@ async function loadRegistrations(showLoading = true) {
     if (showLoading) renderShell();
     const data = await api("/api/registrations");
     registrations = data.registrations || [];
+    await loadStorageInfo();
     renderStats();
     renderList();
     if (!registrations.length) {

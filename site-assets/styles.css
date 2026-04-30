@@ -2171,6 +2171,11 @@ a {
   color: color-mix(in srgb, #ef4444 78%, var(--text));
 }
 
+.progress-alert--warn {
+  border-color: color-mix(in srgb, var(--primary) 34%, var(--border));
+  color: color-mix(in srgb, var(--primary) 78%, var(--text));
+}
+
 .progress-data-source-grid,
 .progress-check-grid {
   display: grid;
@@ -2590,7 +2595,7 @@ a {
 
 .admin-stats {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   gap: 12px;
 }
 
@@ -2604,6 +2609,74 @@ a {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--panel-strong) 86%, transparent);
+}
+
+.admin-storage-panel {
+  margin-top: 16px;
+}
+
+.admin-storage-card {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.1fr) minmax(420px, 1.5fr);
+  gap: 18px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
+  box-shadow: var(--shadow-soft);
+}
+
+.admin-storage-card h3 {
+  margin: 10px 0 8px;
+  color: var(--text);
+  font-size: 1.25rem;
+}
+
+.admin-storage-card p {
+  margin: 6px 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.admin-storage-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-storage-metrics div {
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.64);
+}
+
+.admin-storage-metrics span,
+.admin-storage-actions span {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+}
+
+.admin-storage-metrics strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-size: 1.2rem;
+}
+
+.admin-storage-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-backup-list {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 8px;
 }
 
 .admin-stats div {
@@ -2637,6 +2710,11 @@ a {
   overflow: hidden;
 }
 
+.admin-card--table,
+.admin-card--detail {
+  width: 100%;
+}
+
 .admin-card-head {
   display: flex;
   justify-content: space-between;
@@ -2665,7 +2743,7 @@ a {
 
 .admin-table {
   width: 100%;
-  min-width: 1320px;
+  min-width: 1680px;
   border-collapse: collapse;
 }
 
@@ -2689,6 +2767,10 @@ a {
 .admin-table tbody tr:hover,
 .admin-table tbody tr.is-selected {
   background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.admin-table tbody tr.is-archived {
+  opacity: 0.72;
 }
 
 .admin-table td span {
@@ -3444,6 +3526,7 @@ a {
   .admin-toolbar,
   .admin-layout,
   .admin-search-wrap,
+  .admin-storage-card,
   .admin-workflow-board,
   .admin-connect-steps,
   .card-grid,
@@ -3470,6 +3553,10 @@ a {
   }
 
   .admin-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-storage-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -3548,6 +3635,11 @@ a {
   }
 
   .learn-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-storage-metrics,
+  .admin-backup-list {
     grid-template-columns: 1fr;
   }
 

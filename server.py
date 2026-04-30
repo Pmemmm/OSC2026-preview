@@ -18,6 +18,8 @@ from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse
 
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("MGPIC_DB", ROOT / "data" / "mgpic2026.sqlite3"))
+BACKUP_DIR = Path(os.environ.get("MGPIC_BACKUP_DIR", DB_PATH.parent / "backups"))
+MAX_BACKUPS = int(os.environ.get("MGPIC_MAX_BACKUPS", "30"))
 GITHUB_SESSION_COOKIE = "mgpic_github_session"
 GITHUB_SESSION_SECONDS = 60 * 60 * 24 * 14
 GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
@@ -48,6 +50,8 @@ REGISTRATION_EXTRA_COLUMNS = {
     "bank_branch": "text not null default ''",
     "id_front_file_name": "text not null default ''",
     "id_back_file_name": "text not null default ''",
+    "archived_at": "text not null default ''",
+    "archived_reason": "text not null default ''",
 }
 
 CONTEST_REVIEW_RULES = [
@@ -76,7 +80,57 @@ def db():
     connection = sqlite3.connect(DB_PATH)
     connection.row_factory = sqlite3.Row
     connection.execute("pragma foreign_keys = on")
+    connection.execute("pragma busy_timeout = 5000")
+    connection.execute("pragma journal_mode = wal")
     return connection
+
+
+def backup_name(reason):
+    reason = "".join(char if char.isalnum() or char in {"-", "_"} else "-" for char in str(reason or "manual").lower())
+    reason = "-".join(part for part in reason.split("-") if part)[:40] or "manual"
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    return f"mgpic2026-{stamp}-{reason}.sqlite3"
+
+
+def backup_info(path):
+    stat = path.stat()
+    return {
+        "name": path.name,
+        "size": stat.st_size,
+        "createdAt": datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat(),
+        "downloadUrl": f"/api/admin/backups/{quote(path.name)}",
+    }
+
+
+def list_backups(limit=20):
+    if not BACKUP_DIR.exists():
+        return []
+    backups = sorted(BACKUP_DIR.glob("mgpic2026-*.sqlite3"), key=lambda item: item.stat().st_mtime, reverse=True)
+    return [backup_info(path) for path in backups[:limit]]
+
+
+def prune_backups():
+    if MAX_BACKUPS <= 0 or not BACKUP_DIR.exists():
+        return
+    backups = sorted(BACKUP_DIR.glob("mgpic2026-*.sqlite3"), key=lambda item: item.stat().st_mtime, reverse=True)
+    for path in backups[MAX_BACKUPS:]:
+        try:
+            path.unlink()
+        except OSError:
+            pass
+
+
+def backup_database(reason="manual"):
+    if not DB_PATH.exists():
+        return None
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    destination = BACKUP_DIR / backup_name(reason)
+    temporary = BACKUP_DIR / f"{destination.name}.tmp"
+    with sqlite3.connect(DB_PATH) as source, sqlite3.connect(temporary) as target:
+        source.backup(target)
+    temporary.replace(destination)
+    prune_backups()
+    return backup_info(destination)
 
 
 def init_db():
@@ -309,6 +363,9 @@ def registration_from_row(row, include_sensitive=False):
         "bankAccountMasked": mask_middle(row["bank_account"]),
         "sensitiveSubmitted": sensitive_submitted,
         "source": row["source"],
+        "archivedAt": row["archived_at"],
+        "archivedReason": row["archived_reason"],
+        "archived": bool(row["archived_at"]),
         "backendMode": "sqlite",
     }
     if include_sensitive:
@@ -733,7 +790,13 @@ class Handler(SimpleHTTPRequestHandler):
         super().__init__(*args, directory=str(ROOT), **kwargs)
 
     def end_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
+        origin = self.headers.get("Origin", "").strip()
+        if origin:
+            self.send_header("Access-Control-Allow-Origin", origin)
+            self.send_header("Access-Control-Allow-Credentials", "true")
+            self.send_header("Vary", "Origin")
+        else:
+            self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
         self.send_header("Access-Control-Allow-Headers", "Content-Type, X-MGPIC-Admin-Token")
         super().end_headers()
@@ -907,6 +970,18 @@ class Handler(SimpleHTTPRequestHandler):
                 self.create_registration()
                 return
 
+            if path == "/api/admin/storage" and method == "GET":
+                self.admin_storage()
+                return
+
+            if path == "/api/admin/backup" and method == "POST":
+                self.create_admin_backup()
+                return
+
+            if path.startswith("/api/admin/backups/") and method == "GET":
+                self.download_admin_backup(unquote(path.rsplit("/", 1)[-1]))
+                return
+
             parts = [unquote(part) for part in path.strip("/").split("/")]
             if len(parts) >= 3 and parts[0] == "api" and parts[1] == "registrations":
                 registration_id = int(parts[2])
@@ -955,6 +1030,56 @@ class Handler(SimpleHTTPRequestHandler):
             self.write_error("JSON 格式错误", 400)
         except Exception as exc:
             self.write_error(str(exc), 500)
+
+    def admin_storage(self):
+        if not self.require_admin():
+            return
+        with db() as connection:
+            counts = {
+                "registrations": connection.execute("select count(*) from registrations").fetchone()[0],
+                "archived": connection.execute("select count(*) from registrations where archived_at != ''").fetchone()[0],
+                "files": connection.execute("select count(*) from registration_files").fetchone()[0],
+                "repoChecks": connection.execute("select count(*) from repo_checks").fetchone()[0],
+                "aiReviews": connection.execute("select count(*) from ai_reviews").fetchone()[0],
+                "notifications": connection.execute("select count(*) from notifications").fetchone()[0],
+                "imports": connection.execute("select count(*) from imported_records").fetchone()[0],
+            }
+        self.write_json({
+            "database": str(DB_PATH),
+            "databaseSize": DB_PATH.stat().st_size if DB_PATH.exists() else 0,
+            "backupDir": str(BACKUP_DIR),
+            "maxBackups": MAX_BACKUPS,
+            "counts": counts,
+            "backups": list_backups(),
+        })
+
+    def create_admin_backup(self):
+        if not self.require_admin():
+            return
+        backup = backup_database("manual")
+        if backup is None:
+            self.write_error("数据库文件还不存在，暂时无法生成备份。", 404)
+            return
+        self.write_json({"ok": True, "backup": backup, "backups": list_backups()})
+
+    def download_admin_backup(self, filename):
+        if not self.require_admin():
+            return
+        safe_name = Path(filename).name
+        if safe_name != filename or not safe_name.startswith("mgpic2026-") or not safe_name.endswith(".sqlite3"):
+            self.write_error("备份文件名不合法", 400)
+            return
+        path = BACKUP_DIR / safe_name
+        if not path.exists():
+            self.write_error("备份文件不存在", 404)
+            return
+        data = path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/vnd.sqlite3")
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Content-Disposition", f"attachment; filename*=UTF-8''{quote(safe_name)}")
+        self.end_headers()
+        self.wfile.write(data)
 
     def github_oauth_start(self):
         query = parse_qs(urlparse(self.path).query)
@@ -1341,6 +1466,7 @@ class Handler(SimpleHTTPRequestHandler):
             )
             self.upsert_files(connection, registration_id, payload, timestamp)
             bundle = self.get_registration_bundle(connection, registration_id)
+        backup_database("create")
         self.write_json(bundle, 201)
 
     def update_registration(self, registration_id):
@@ -1372,6 +1498,7 @@ class Handler(SimpleHTTPRequestHandler):
             )
             self.upsert_files(connection, registration_id, payload, timestamp)
             bundle = self.get_registration_bundle(connection, registration_id)
+        backup_database("update")
         self.write_json(bundle)
 
     def registration_values(self, payload):
@@ -1461,6 +1588,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "select * from registration_statuses where registration_id = ?",
                 (registration_id,),
             ).fetchone()
+        backup_database("status")
         self.write_json({"status": status_from_row(status)})
 
     def save_repo_check(self, registration_id):
@@ -1493,6 +1621,7 @@ class Handler(SimpleHTTPRequestHandler):
                     clean_text(payload, "checkedAt") or now_iso(),
                 ),
             )
+        backup_database("repo-check")
         self.write_json({"ok": True})
 
     def insert_ai_review(self, connection, registration_id, mode, review):
@@ -1537,6 +1666,7 @@ class Handler(SimpleHTTPRequestHandler):
             review = openai_review(bundle, mode)
             review_id = self.insert_ai_review(connection, registration_id, mode, review)
             row = connection.execute("select * from ai_reviews where id = ?", (review_id,)).fetchone()
+        backup_database("ai-review")
         self.write_json({"review": ai_review_from_row(row)})
 
     def list_ai_reviews(self, registration_id):
@@ -1657,6 +1787,7 @@ class Handler(SimpleHTTPRequestHandler):
             notification = connection.execute(
                 "select * from notifications where id = ?", (notification_id,)
             ).fetchone() if notification_id else None
+        backup_database("advance")
         self.write_json({
             **updated,
             "notification": notification_from_row(notification),
@@ -1682,6 +1813,7 @@ class Handler(SimpleHTTPRequestHandler):
             notification = connection.execute(
                 "select * from notifications where id = ?", (notification_id,)
             ).fetchone()
+        backup_database("notify")
         self.write_json({"notification": notification_from_row(notification)})
 
     def list_files(self, registration_id):
@@ -1717,12 +1849,26 @@ class Handler(SimpleHTTPRequestHandler):
     def delete_registration(self, registration_id):
         if not self.require_admin():
             return
+        backup_database("before-archive")
+        timestamp = now_iso()
         with db() as connection:
-            cursor = connection.execute("delete from registrations where id = ?", (registration_id,))
-        if cursor.rowcount == 0:
-            self.write_error("报名记录不存在", 404)
-            return
-        self.write_json({"ok": True})
+            cursor = connection.execute(
+                """
+                update registrations
+                set archived_at = ?, archived_reason = '管理员归档', updated_at = ?
+                where id = ? and archived_at = ''
+                """,
+                (timestamp, timestamp, registration_id),
+            )
+            if cursor.rowcount == 0:
+                exists = connection.execute(
+                    "select id from registrations where id = ?", (registration_id,)
+                ).fetchone()
+                if exists is None:
+                    self.write_error("报名记录不存在", 404)
+                    return
+        backup_database("archive")
+        self.write_json({"ok": True, "archived": True})
 
     def save_imported_records(self):
         if not self.require_admin():
@@ -1738,6 +1884,7 @@ class Handler(SimpleHTTPRequestHandler):
                 (now_iso(), clean_text(payload, "source") or "feishu", json.dumps(rows, ensure_ascii=False)),
             )
             upserted = self.upsert_feishu_rows(connection, rows)
+        backup_database("import")
         self.write_json({"ok": True, "count": len(rows), "upserted": upserted})
 
     def upsert_feishu_rows(self, connection, rows):
