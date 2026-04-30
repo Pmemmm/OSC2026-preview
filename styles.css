@@ -855,6 +855,10 @@ a {
 .stat-key,
 .tag {
   display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  justify-self: start;
+  align-self: start;
   align-items: center;
   min-height: 36px;
   padding: 0 14px;
