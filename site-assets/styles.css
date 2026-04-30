@@ -1634,6 +1634,10 @@ a {
   align-items: center;
 }
 
+.progress-user-row--no-avatar {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
 .progress-user-row strong {
   display: block;
   color: var(--text);
@@ -1643,6 +1647,8 @@ a {
 .progress-user-row p {
   margin: 4px 0 0;
   color: var(--text-soft);
+  line-height: 1.55;
+  word-break: break-word;
 }
 
 .progress-logout {

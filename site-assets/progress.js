@@ -993,7 +993,7 @@ function renderProgressDashboard() {
   const avatarMarkup = renderAvatar(profile);
 
   dashboard.innerHTML = `
-    <div class="progress-user-row">
+    <div class="progress-user-row ${avatarMarkup ? "" : "progress-user-row--no-avatar"}">
       ${avatarMarkup ? `<div class="progress-avatar">${avatarMarkup}</div>` : ""}
       <div>
         <strong>${escapeHtml(title)}</strong>
