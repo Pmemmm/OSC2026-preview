@@ -591,18 +591,38 @@ function backendPayload(value) {
 async function saveRegistrationToBackend(value) {
   const previous = getRegistration();
   const serverId = value.serverId || previous.serverId;
-  const path = serverId ? `/api/registrations/${encodeURIComponent(serverId)}` : "/api/registrations";
-  const method = serverId ? "PUT" : "POST";
+  const payload = backendPayload(value);
   try {
-    const result = await apiRequest(path, {
-      method,
-      body: JSON.stringify(backendPayload(value)),
-    });
+    let result = null;
+    if (serverId) {
+      try {
+        result = await apiRequest(`/api/registrations/${encodeURIComponent(serverId)}`, {
+          method: "PUT",
+          body: JSON.stringify(payload),
+        });
+      } catch (error) {
+        if (error.status !== 404) throw error;
+        result = await apiRequest("/api/registrations", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+      }
+    } else {
+      result = await apiRequest("/api/registrations", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+    }
+    if (!result?.registration?.id) {
+      throw new Error("服务器没有返回报名记录，请重新提交。");
+    }
     const saved = publicRegistrationValue({
       ...value,
       ...result.registration,
+      id: result.registration.id,
       serverId: result.registration.id,
       backendMode: "sqlite",
+      backendError: "",
       backendSavedAt: result.registration.updatedAt || result.registration.createdAt || new Date().toISOString(),
     });
     saveJson(STORE_KEY, saved);
@@ -610,6 +630,8 @@ async function saveRegistrationToBackend(value) {
   } catch (error) {
     const saved = publicRegistrationValue({
       ...value,
+      id: "",
+      serverId: "",
       backendMode: "local",
       backendError: error.message,
     });
@@ -1247,7 +1269,7 @@ function initRegisterPage() {
   const requireIdFront = data.idFrontFileName ? "" : "required";
   const requireIdBack = data.idBackFileName ? "" : "required";
   shell.innerHTML = `
-    <form class="registration-form" id="registration-form">
+    <form class="registration-form" id="registration-form" action="javascript:void(0)">
       <div class="register-form-head">
         <img class="register-head-logo" src="site-assets/moonbit-logo.png?v=20260428-progress-system" alt="MoonBit Logo">
         <div>
@@ -1313,6 +1335,10 @@ function initRegisterPage() {
 }
 
 async function handleRegistrationSubmit(form) {
+  if (form.dataset.submitting === "true") return;
+  form.dataset.submitting = "true";
+  const submitButton = form.querySelector("button[type='submit']");
+  if (submitButton) submitButton.disabled = true;
   const value = saveRegistrationFromForm(form);
   const msg = $("#registration-message");
   msg.hidden = false;
@@ -1323,14 +1349,19 @@ async function handleRegistrationSubmit(form) {
     const result = await saveRegistrationToBackend({ ...value, ...files });
     if (result.mode === "backend") {
       msg.className = "progress-alert progress-alert--ok";
-      msg.innerHTML = `已保存 ${escapeHtml(value.projectName || "项目")} 到服务器。后续请使用 GitHub 登录进入 <a href="${hostedPage("progress.html")}">比赛进度页</a> 查看审核和仓库检查状态；报名编号仅作为赛方内部记录，不作为查询凭证。`;
+      msg.innerHTML = `报名成功，${escapeHtml(value.projectName || "项目")} 已写入服务器。请留在本页面查看提示；后续可使用 GitHub 登录进入 <a href="${hostedPage("progress.html")}">比赛进度页</a> 查看审核和仓库检查状态。`;
     } else {
-      msg.className = "progress-alert progress-alert--ok";
-      msg.innerHTML = `当前页面未连接服务器，只保存了 ${escapeHtml(value.projectName || "项目")} 的非敏感报名信息到浏览器本地。身份证、银行卡和证件文件不会本地保存，请通过飞书正式报名或在服务器可用时重新提交。`;
+      msg.className = "progress-alert progress-alert--error";
+      msg.innerHTML = `报名没有写入服务器，只临时保存了 ${escapeHtml(value.projectName || "项目")} 的非敏感信息到当前浏览器。请不要关闭本页，稍后重新点击“提交报名信息”，或使用飞书正式报名。错误：${escapeHtml(result.error?.message || "服务器连接失败")}`;
     }
+    msg.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (error) {
     msg.className = "progress-alert progress-alert--error";
     msg.textContent = error.message || "保存失败，请稍后重试。";
+    msg.scrollIntoView({ behavior: "smooth", block: "center" });
+  } finally {
+    form.dataset.submitting = "false";
+    if (submitButton) submitButton.disabled = false;
   }
 }
 
