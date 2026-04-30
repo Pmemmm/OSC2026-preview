@@ -251,7 +251,7 @@ function renderRegisterGitHubStatus(user = getGitHubProfile()) {
   const authMessage = githubAuthMessage();
   target.innerHTML = `
     <div class="register-github-identity">
-      ${profile?.avatarUrl ? `<img src="${escapeHtml(profile.avatarUrl)}" alt="@${escapeHtml(profile.login)}">` : `<span class="github-mark">GH</span>`}
+      ${profile?.avatarUrl ? `<img src="${escapeHtml(profile.avatarUrl)}" alt="@${escapeHtml(profile.login)}">` : ""}
       <div>
         <strong>${profile ? `已登录 GitHub：@${escapeHtml(profile.login)}` : "建议先使用 GitHub 一键登录"}</strong>
         <p>${profile ? "报名表会自动带入 GitHub 用户名和邮箱；后续比赛进度也会按该账号匹配。" : "只申请读取公开资料和邮箱，不会申请私有仓库权限。登录后可减少手填并方便后续查看比赛进度。"}</p>
@@ -795,9 +795,10 @@ function humanTime(iso) {
 }
 
 function renderAvatar(profile) {
+  if (!profile) return "";
   const avatarUrl = safeHttpUrl(profile?.avatarUrl);
   if (avatarUrl) return `<img src="${escapeHtml(avatarUrl)}" alt="${escapeHtml(profile.login || "GitHub")}">`;
-  return escapeHtml((profile?.login || "GH").slice(0, 2).toUpperCase());
+  return profile?.login ? escapeHtml(profile.login.slice(0, 2).toUpperCase()) : "";
 }
 
 function progressSourceCard(label, title, body, tone = "") {
@@ -982,10 +983,11 @@ function renderProgressDashboard() {
       lastNotification.status === "sent" ? "ok" : ""
     ));
   }
+  const avatarMarkup = renderAvatar(profile);
 
   dashboard.innerHTML = `
     <div class="progress-user-row">
-      <div class="progress-avatar">${renderAvatar(profile)}</div>
+      ${avatarMarkup ? `<div class="progress-avatar">${avatarMarkup}</div>` : ""}
       <div>
         <strong>${escapeHtml(title)}</strong>
         <p>${repoLine}</p>
@@ -1085,7 +1087,6 @@ function initProgressPage() {
     failed: "GitHub 授权失败，请稍后重试。",
   }[authStatus || ""];
   loginCard.innerHTML = `
-    <div class="github-mark">GH</div>
     <h3>${profile?.oauth ? `已通过 GitHub 登录` : "使用 GitHub 一键登录"}</h3>
     <p>${profile?.oauth ? `当前账号 @${escapeHtml(profile.login)}，已通过 GitHub 授权读取公开资料和邮箱。` : "点击后会通过 Render 后端跳转到 GitHub 官方授权页，用户确认后返回比赛进度页；权限只申请读取公开资料和邮箱，不申请私有仓库权限。"}</p>
     <div class="progress-page-actions">

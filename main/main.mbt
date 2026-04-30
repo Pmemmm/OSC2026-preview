@@ -744,7 +744,6 @@ fn view_progress_page(model : Model) -> Html {
           ]),
         ]),
         article(id="progress-login", class="github-login-card progress-login-card", [
-          div(class="github-mark", "GH"),
           h3(t(model.locale, zh="使用 GitHub 一键登录", en="One-click GitHub sign-in")),
           p(t(model.locale, zh="点击后通过 Render 后端跳转到 GitHub 官方授权页；权限只申请公开资料和邮箱，不申请私有仓库权限。", en="Click to start GitHub OAuth through the Render backend. Only public profile and email scopes are requested, not private repository access.")),
           a(class="button primary github-login-button", href=github_oauth_href(), t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
