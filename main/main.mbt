@@ -733,13 +733,13 @@ fn view_progress_page(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="这里用于查看项目申报、GitHub 仓库检查、验收提交和作品展示状态。使用 GitHub 登录后可同步本人进度。",
-              en="Use this page to track project submission, GitHub repository checks, acceptance submission, and showcase status. Sign in with GitHub to sync your progress.",
+              zh="这里用于查看项目申报、GitHub 仓库检查、验收提交和作品展示状态。正式申报请通过官方渠道提交，并以官方表单记录为准。",
+              en="Use this page to track project submission, GitHub repository checks, acceptance submission, and showcase status. Official submissions must go through the official form and follow its records.",
             ),
           ),
           div(class="progress-page-actions", [
             a(class="button primary", href="#progress-login", t(model.locale, zh="使用 GitHub 登录", en="Sign in with GitHub")),
-            a(class="button secondary", href="register.html", t(model.locale, zh="项目申报", en="Project submission")),
+            a(class="button secondary", href="register.html", t(model.locale, zh="官方渠道申报", en="Official submission")),
             a(class="button secondary", href="index.html#top", t(model.locale, zh="返回赛事首页", en="Back to home")),
           ]),
         ]),
