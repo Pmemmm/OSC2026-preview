@@ -165,6 +165,20 @@ def init_db():
               foreign key (registration_id) references registrations(id) on delete cascade
             );
 
+            create table if not exists status_events (
+              id integer primary key autoincrement,
+              registration_id integer not null,
+              created_at text not null,
+              action text not null default '',
+              action_label text not null default '',
+              operator text not null default '',
+              from_status_json text not null default '{}',
+              to_status_json text not null default '{}',
+              note text not null default '',
+              notification_id integer,
+              foreign key (registration_id) references registrations(id) on delete cascade
+            );
+
             create table if not exists repo_checks (
               id integer primary key autoincrement,
               registration_id integer not null,
@@ -401,6 +415,49 @@ def status_from_row(row):
     }
 
 
+def status_snapshot(value):
+    if value is None:
+        return {
+            "proposal": "申报审核中",
+            "acceptance": "未提交",
+            "reward": "未开始",
+            "showcase": "待上墙",
+            "notes": "",
+        }
+    if isinstance(value, sqlite3.Row):
+        return {
+            "proposal": value["proposal"],
+            "acceptance": value["acceptance"],
+            "reward": value["reward"],
+            "showcase": value["showcase"],
+            "notes": value["notes"],
+        }
+    return {
+        "proposal": value.get("proposal") or "申报审核中",
+        "acceptance": value.get("acceptance") or "未提交",
+        "reward": value.get("reward") or "未开始",
+        "showcase": value.get("showcase") or "待上墙",
+        "notes": value.get("notes") or "",
+    }
+
+
+def status_event_from_row(row):
+    if row is None:
+        return None
+    return {
+        "id": row["id"],
+        "registrationId": row["registration_id"],
+        "createdAt": row["created_at"],
+        "action": row["action"],
+        "actionLabel": row["action_label"],
+        "operator": row["operator"],
+        "fromStatus": json_object(row["from_status_json"]),
+        "toStatus": json_object(row["to_status_json"]),
+        "note": row["note"],
+        "notificationId": row["notification_id"],
+    }
+
+
 def repo_check_from_row(row):
     if row is None:
         return None
@@ -479,6 +536,38 @@ def upsert_payload_snapshot(connection, registration_id, payload, source, timest
             timestamp,
             source,
             json.dumps(sanitize_submission_payload(payload), ensure_ascii=False),
+        ),
+    )
+
+
+def insert_status_event(
+    connection,
+    registration_id,
+    action,
+    action_label,
+    operator,
+    from_status,
+    to_status,
+    note="",
+    notification_id=None,
+):
+    connection.execute(
+        """
+        insert into status_events (
+          registration_id, created_at, action, action_label, operator,
+          from_status_json, to_status_json, note, notification_id
+        ) values (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            registration_id,
+            now_iso(),
+            action,
+            action_label,
+            operator,
+            json.dumps(status_snapshot(from_status), ensure_ascii=False),
+            json.dumps(status_snapshot(to_status), ensure_ascii=False),
+            note,
+            notification_id,
         ),
     )
 
@@ -967,6 +1056,14 @@ class Handler(SimpleHTTPRequestHandler):
             return False
         return True
 
+    def admin_operator_label(self):
+        row = self.current_github_session()
+        if self.is_admin_github_session(row):
+            return f"GitHub @{row['github_login']}"
+        if self.admin_token() and self.request_admin_token():
+            return "管理员 Token"
+        return "管理员"
+
     def registration_matches_session(self, registration, session_row):
         if registration is None or session_row is None:
             return False
@@ -1067,6 +1164,9 @@ class Handler(SimpleHTTPRequestHandler):
                     return
                 if len(parts) == 4 and parts[3] == "advance" and method == "POST":
                     self.advance_registration(registration_id)
+                    return
+                if len(parts) == 4 and parts[3] == "transition" and method == "POST":
+                    self.transition_registration(registration_id)
                     return
                 if len(parts) == 4 and parts[3] == "notify" and method == "POST":
                     self.notify_registration(registration_id)
@@ -1466,6 +1566,10 @@ class Handler(SimpleHTTPRequestHandler):
             "select * from notifications where registration_id = ? order by id desc limit 10",
             (registration_id,),
         ).fetchall()
+        status_events = connection.execute(
+            "select * from status_events where registration_id = ? order by id desc limit 30",
+            (registration_id,),
+        ).fetchall()
         return {
             "registration": registration_from_row(registration, include_sensitive=include_sensitive),
             "status": status_from_row(status),
@@ -1474,6 +1578,7 @@ class Handler(SimpleHTTPRequestHandler):
             "rawPayload": payload_from_row(payload) if include_sensitive else None,
             "aiReviews": [ai_review_from_row(row) for row in ai_reviews],
             "notifications": [notification_from_row(row) for row in notifications],
+            "statusEvents": [status_event_from_row(row) for row in status_events] if include_sensitive else [],
         }
 
     def review_file_texts(self, connection, registration_id):
@@ -1623,6 +1728,7 @@ class Handler(SimpleHTTPRequestHandler):
             return
         payload = self.read_json()
         timestamp = now_iso()
+        operator = self.admin_operator_label()
         with db() as connection:
             exists = connection.execute(
                 "select id from registrations where id = ?", (registration_id,)
@@ -1630,6 +1736,10 @@ class Handler(SimpleHTTPRequestHandler):
             if exists is None:
                 self.write_error("报名记录不存在", 404)
                 return
+            previous = connection.execute(
+                "select * from registration_statuses where registration_id = ?",
+                (registration_id,),
+            ).fetchone()
             connection.execute(
                 """
                 insert into registration_statuses (
@@ -1657,6 +1767,16 @@ class Handler(SimpleHTTPRequestHandler):
                 "select * from registration_statuses where registration_id = ?",
                 (registration_id,),
             ).fetchone()
+            insert_status_event(
+                connection,
+                registration_id,
+                "manual_status",
+                "手动保存状态",
+                operator,
+                previous,
+                status,
+                clean_text(payload, "notes"),
+            )
         backup_database("status")
         self.write_json({"status": status_from_row(status)})
 
@@ -1780,11 +1900,212 @@ class Handler(SimpleHTTPRequestHandler):
         )
         return cursor.lastrowid
 
+    def transition_definition(self, action, registration):
+        project = registration.get("projectName") or "未命名项目"
+        definitions = {
+            "proposal_pass": {
+                "label": "申报通过，进入项目开发",
+                "updates": {"proposal": "申报通过", "reward": "启动支持待发放"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」申报通过",
+                "body": (
+                    f"同学你好，你的项目「{project}」已通过项目申报审核，进入项目开发阶段。\n\n"
+                    "请继续完善公开仓库、README、示例、测试、CI 和许可证信息。启动支持将按赛事安排处理。"
+                ),
+            },
+            "proposal_revise": {
+                "label": "申报需调整",
+                "updates": {"proposal": "申报需调整"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」申报材料需调整",
+                "body": (
+                    f"同学你好，你的项目「{project}」申报材料需要补充或调整。\n\n"
+                    "请查看赛事通知中的修改意见，补齐后可重新提交或联系赛事工作人员。"
+                ),
+            },
+            "proposal_reject": {
+                "label": "申报不通过",
+                "updates": {"proposal": "申报不通过"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」申报未通过",
+                "body": (
+                    f"同学你好，你的项目「{project}」本次申报暂未通过。\n\n"
+                    "如需继续参与，请根据反馈调整项目方向、材料或仓库内容后再提交。"
+                ),
+            },
+            "acceptance_review": {
+                "label": "进入项目验收审核",
+                "updates": {"proposal": "申报通过", "acceptance": "验收审核中"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」进入验收审核",
+                "body": (
+                    f"同学你好，你的项目「{project}」已进入项目验收审核阶段。\n\n"
+                    "赛事组会检查 README、示例、测试、CI、许可证、mooncakes.io 发布或包配置等验收要求。"
+                ),
+            },
+            "acceptance_pass": {
+                "label": "验收通过，进入优秀项目评选",
+                "updates": {
+                    "proposal": "申报通过",
+                    "acceptance": "验收通过",
+                    "reward": "完成支持待发放",
+                    "showcase": "候选项目",
+                },
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」验收通过",
+                "body": (
+                    f"同学你好，你的项目「{project}」已通过项目验收，可进入优秀项目评选与展示候选。\n\n"
+                    "完成支持将按赛事安排处理，后续如入选展示或答辩，赛事组会继续通知。"
+                ),
+            },
+            "acceptance_revise": {
+                "label": "验收需调整",
+                "updates": {"acceptance": "验收需调整"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」验收需调整",
+                "body": (
+                    f"同学你好，你的项目「{project}」验收材料或仓库内容仍需调整。\n\n"
+                    "请重点补齐 README、示例、测试、CI、许可证、包配置或核心功能可复现问题。"
+                ),
+            },
+            "acceptance_reject": {
+                "label": "验收不通过",
+                "updates": {"acceptance": "验收不通过"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」验收未通过",
+                "body": (
+                    f"同学你好，你的项目「{project}」本次验收暂未通过。\n\n"
+                    "如仍在赛事周期内，可根据反馈继续完善后重新提交验收。"
+                ),
+            },
+            "reward_start_paid": {
+                "label": "启动支持已发放",
+                "updates": {"reward": "启动支持已发放"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」启动支持已处理",
+                "body": f"同学你好，你的项目「{project}」启动支持状态已更新为已发放。",
+            },
+            "reward_finish_paid": {
+                "label": "完成支持已发放",
+                "updates": {"reward": "完成支持已发放"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」完成支持已处理",
+                "body": f"同学你好，你的项目「{project}」完成支持状态已更新为已发放。",
+            },
+            "showcase_candidate": {
+                "label": "设为作品墙候选",
+                "updates": {"showcase": "候选项目"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」进入作品墙候选",
+                "body": f"同学你好，你的项目「{project}」已进入作品墙候选池，赛事组会继续评估展示信息。",
+            },
+            "showcase_publish": {
+                "label": "上架作品墙展示",
+                "updates": {
+                    "proposal": "申报通过",
+                    "acceptance": "验收通过",
+                    "showcase": "已上墙",
+                },
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」已入选作品墙",
+                "body": (
+                    f"同学你好，你的项目「{project}」已入选赛事作品墙展示。\n\n"
+                    "后续可能获得官网展示、社区传播、作者访谈或技术文章发布机会。"
+                ),
+            },
+            "showcase_hide": {
+                "label": "暂不展示",
+                "updates": {"showcase": "暂不展示"},
+                "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」展示状态更新",
+                "body": f"同学你好，你的项目「{project}」当前暂不进入作品墙公开展示。",
+            },
+        }
+        return definitions.get(action)
+
+    def payload_wants_notification(self, payload):
+        value = payload.get("notify", True)
+        if isinstance(value, str):
+            return value.strip().lower() not in ("0", "false", "no", "off", "不发送")
+        return value is not False
+
+    def transition_registration(self, registration_id):
+        if not self.require_admin():
+            return
+        payload = self.read_json()
+        action = clean_text(payload, "action")
+        timestamp = now_iso()
+        operator = self.admin_operator_label()
+        with db() as connection:
+            bundle = self.get_registration_bundle(connection, registration_id)
+            if bundle is None:
+                self.write_error("报名记录不存在", 404)
+                return
+            registration = bundle["registration"]
+            definition = self.transition_definition(action, registration)
+            if definition is None:
+                self.write_error("未知流程流转操作", 400)
+                return
+            previous = status_snapshot(bundle.get("status"))
+            next_status = {**previous, **definition["updates"]}
+            note = clean_text(payload, "note")
+            if note:
+                next_status["notes"] = note
+            connection.execute(
+                """
+                insert into registration_statuses (
+                  registration_id, proposal, acceptance, reward, showcase, notes, updated_at
+                ) values (?, ?, ?, ?, ?, ?, ?)
+                on conflict(registration_id) do update set
+                  proposal = excluded.proposal,
+                  acceptance = excluded.acceptance,
+                  reward = excluded.reward,
+                  showcase = excluded.showcase,
+                  notes = excluded.notes,
+                  updated_at = excluded.updated_at
+                """,
+                (
+                    registration_id,
+                    next_status["proposal"],
+                    next_status["acceptance"],
+                    next_status["reward"],
+                    next_status["showcase"],
+                    next_status["notes"],
+                    timestamp,
+                ),
+            )
+            notification_id = None
+            if self.payload_wants_notification(payload) and registration.get("email"):
+                subject = clean_text(payload, "subject") or definition["subject"]
+                body = clean_text(payload, "body") or definition["body"]
+                if note:
+                    body = f"{body}\n\n管理员备注：{note}"
+                notification_id = self.insert_notification(
+                    connection,
+                    registration_id,
+                    registration["email"],
+                    subject,
+                    body,
+                )
+            insert_status_event(
+                connection,
+                registration_id,
+                action,
+                definition["label"],
+                operator,
+                previous,
+                next_status,
+                note,
+                notification_id,
+            )
+            updated = self.get_registration_bundle(
+                connection,
+                registration_id,
+                include_sensitive=True,
+            )
+            notification = connection.execute(
+                "select * from notifications where id = ?", (notification_id,)
+            ).fetchone() if notification_id else None
+        backup_database("transition")
+        self.write_json({
+            **updated,
+            "notification": notification_from_row(notification),
+        })
+
     def advance_registration(self, registration_id):
         if not self.require_admin():
             return
         payload = self.read_json()
         mode = clean_text(payload, "mode") or "proposal"
+        operator = self.admin_operator_label()
         with db() as connection:
             bundle = self.get_registration_bundle(connection, registration_id)
             if bundle is None:
@@ -1852,6 +2173,17 @@ class Handler(SimpleHTTPRequestHandler):
             notification_id = None
             if registration.get("email"):
                 notification_id = self.insert_notification(connection, registration_id, registration["email"], subject, body)
+            insert_status_event(
+                connection,
+                registration_id,
+                f"advance_{mode}",
+                "进入下一流程",
+                operator,
+                current,
+                next_status,
+                clean_text(payload, "notes"),
+                notification_id,
+            )
             updated = self.get_registration_bundle(connection, registration_id)
             notification = connection.execute(
                 "select * from notifications where id = ?", (notification_id,)

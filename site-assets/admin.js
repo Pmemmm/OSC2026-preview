@@ -1,4 +1,5 @@
 const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
 const API_BASE_KEY = "mgpic2026.apiBase";
 const ADMIN_TOKEN_KEY = "mgpic2026.adminToken";
 const DEFAULT_RENDER_API_BASE = "https://mgpic2026.onrender.com";
@@ -33,6 +34,36 @@ const FLOW_STEPS = [
   ["acceptance", "项目验收"],
   ["showcase", "优秀评选"],
   ["display", "作品展示"],
+];
+
+const TRANSITION_GROUPS = [
+  {
+    title: "申报审核",
+    actions: [
+      ["proposal_pass", "申报通过", "进入项目开发，并标记启动支持待发放", "primary"],
+      ["proposal_revise", "需调整", "材料不足，退回选手补充", "secondary"],
+      ["proposal_reject", "不通过", "项目暂不进入后续流程", "danger"],
+    ],
+  },
+  {
+    title: "项目验收",
+    actions: [
+      ["acceptance_review", "进入验收", "收到验收材料，开始审核", "secondary"],
+      ["acceptance_pass", "验收通过", "进入优秀项目评选，标记完成支持待发放", "primary"],
+      ["acceptance_revise", "验收需调整", "验收材料或仓库需补齐", "secondary"],
+      ["acceptance_reject", "验收不通过", "项目暂不通过验收", "danger"],
+    ],
+  },
+  {
+    title: "奖励与展示",
+    actions: [
+      ["reward_start_paid", "启动支持已发放", "记录 150 元启动支持状态", "secondary"],
+      ["reward_finish_paid", "完成支持已发放", "记录 350 元完成支持状态", "secondary"],
+      ["showcase_candidate", "作品墙候选", "进入展示候选池", "secondary"],
+      ["showcase_publish", "上架作品墙", "前台作品墙公开展示", "primary"],
+      ["showcase_hide", "暂不展示", "不进入公开展示", "danger"],
+    ],
+  },
 ];
 
 const escapeHtml = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({
@@ -797,6 +828,84 @@ function notificationList(notifications = []) {
   `).join("");
 }
 
+function statusLine(status = {}) {
+  return [
+    `申报：${status.proposal || "-"}`,
+    `验收：${status.acceptance || "-"}`,
+    `奖励：${status.reward || "-"}`,
+    `作品墙：${status.showcase || "-"}`,
+  ].join(" / ");
+}
+
+function statusEventList(events = []) {
+  if (!events.length) {
+    return `<p>还没有流程流转记录。后续通过这里推进、退回或上墙都会自动记录。</p>`;
+  }
+  return events.map((event) => `
+    <div class="admin-event-item">
+      <div>
+        <strong>${escapeHtml(event.actionLabel || event.action || "流程更新")}</strong>
+        <span>${escapeHtml(event.operator || "管理员")} · ${formatTime(event.createdAt)}</span>
+      </div>
+      <p>从：${escapeHtml(statusLine(event.fromStatus))}</p>
+      <p>到：${escapeHtml(statusLine(event.toStatus))}</p>
+      ${event.note ? `<p>备注：${escapeHtml(event.note)}</p>` : ""}
+      ${event.notificationId ? `<span class="admin-event-tag">已创建通知 #${escapeHtml(event.notificationId)}</span>` : `<span class="admin-event-tag">未发送通知</span>`}
+    </div>
+  `).join("");
+}
+
+function transitionPanel(data) {
+  const status = data.status || {};
+  return `
+    <div class="admin-transition-panel">
+      <div class="admin-section-title">
+        <div>
+          <h3>流程流转操作台</h3>
+          <p>选择操作后会更新选手进度页，并写入流转记录；勾选通知时会给选手邮箱创建通知。</p>
+        </div>
+        <span>${escapeHtml(statusLine(status))}</span>
+      </div>
+      <div class="admin-transition-controls">
+        <label class="form-field admin-transition-note">
+          <span>本次操作备注</span>
+          <textarea id="admin-transition-note" rows="3" placeholder="例如：申报书缺少许可证说明；README 和测试已补齐。"></textarea>
+        </label>
+        <label class="admin-transition-check">
+          <input id="admin-transition-notify" type="checkbox" checked />
+          <span>同步给选手邮箱创建通知</span>
+        </label>
+      </div>
+      <div class="admin-transition-groups">
+        ${TRANSITION_GROUPS.map((group) => `
+          <div class="admin-transition-group">
+            <h4>${escapeHtml(group.title)}</h4>
+            <div class="admin-transition-actions">
+              ${group.actions.map(([key, label, desc, tone]) => `
+                <button class="admin-transition-action is-${escapeHtml(tone)}" type="button" data-transition="${escapeHtml(key)}">
+                  <strong>${escapeHtml(label)}</strong>
+                  <span>${escapeHtml(desc)}</span>
+                </button>
+              `).join("")}
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      <div class="progress-alert" id="admin-transition-message" hidden></div>
+      <div class="admin-event-layout">
+        <div class="admin-files">
+          <h3>流程流转记录</h3>
+          ${statusEventList(data.statusEvents)}
+        </div>
+        <div class="admin-files">
+          <h3>通知记录</h3>
+          ${notificationList(data.notifications)}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function flowStepClass(status, step) {
   if (step === "proposal") return /通过/.test(status.proposal || "") ? "is-done" : "is-current";
   if (step === "development") return /通过/.test(status.proposal || "") && !/验收/.test(status.acceptance || "") ? "is-current" : /验收|通过/.test(status.acceptance || "") ? "is-done" : "";
@@ -902,6 +1011,7 @@ function renderDetail(data) {
     <div class="progress-alert">
       敏感信息仅用于奖金发放和必要身份核验。对外导出或转交前请确认最小必要范围，不要放到公开进度页或作品墙。
     </div>
+    ${transitionPanel(data)}
     ${completeSubmissionPanel(data)}
     ${ruleChecklist()}
     ${repoCheckPanel(data.repoCheck)}
@@ -935,34 +1045,12 @@ function renderDetail(data) {
       </div>
       <div class="progress-alert" id="admin-detail-message" hidden></div>
     </form>
-    <div class="admin-ai-panel">
-      <div class="admin-panel-head">
-        <div>
-          <h3>流程推进与邮件通知</h3>
-          <p>推进会同步更新选手进度页，并尝试通过邮件通知选手；SMTP 未配置时会保留待发送记录。</p>
-        </div>
-      </div>
-      <form class="admin-status-form" id="admin-advance-form">
-        <label class="form-field"><span>推进阶段</span><select name="mode">
-          <option value="proposal">申报通过，进入项目开发</option>
-          <option value="acceptance">验收通过，进入优秀项目评选</option>
-          <option value="showcase">入选作品墙展示</option>
-        </select></label>
-        <label class="form-field"><span>邮件标题（可留空）</span><input name="subject" placeholder="默认使用 AI 建议标题"></label>
-        <label class="form-field admin-detail-wide"><span>邮件正文（可留空）</span><textarea name="body" rows="5" placeholder="默认使用 AI 建议正文"></textarea></label>
-        <div class="admin-form-actions">
-          <button class="button primary" type="submit">进入下一流程并通知</button>
-          <button class="button secondary" type="button" data-action="send-custom-notice">仅发送邮件通知</button>
-        </div>
-        <div class="progress-alert" id="admin-advance-message" hidden></div>
-      </form>
-      <div class="admin-notification-list">${notificationList(data.notifications)}</div>
-    </div>
   `;
   $("#admin-status-form").addEventListener("submit", (event) => saveStatus(event, item.id));
   $("#admin-ai-form").addEventListener("submit", (event) => runAiReview(event, item.id));
-  $("#admin-advance-form").addEventListener("submit", (event) => advanceRegistration(event, item.id));
-  $("#admin-detail").querySelector("[data-action='send-custom-notice']").addEventListener("click", () => sendCustomNotice(item.id));
+  $$(".admin-transition-action", $("#admin-detail")).forEach((button) => {
+    button.addEventListener("click", () => transitionRegistration(item.id, button.dataset.transition));
+  });
   $("#admin-detail").querySelector("[data-action='delete']").addEventListener("click", () => deleteRegistration(item.id));
 }
 
@@ -1009,6 +1097,45 @@ async function runAiReview(event, id) {
   } catch (error) {
     message.className = "progress-alert progress-alert--error";
     message.textContent = error.message;
+  }
+}
+
+async function transitionRegistration(id, action) {
+  if (!action) return;
+  const button = $$("[data-transition]").find((item) => item.dataset.transition === action);
+  const label = button?.querySelector("strong")?.textContent || "流程流转";
+  if (!window.confirm(`确认执行「${label}」？\n\n该操作会更新选手进度页，并写入后台流转记录。`)) return;
+  const message = $("#admin-transition-message");
+  message.hidden = false;
+  message.className = "progress-alert";
+  message.textContent = "正在更新流程状态...";
+  $$(".admin-transition-action").forEach((item) => {
+    item.disabled = true;
+  });
+  try {
+    const payload = {
+      action,
+      note: $("#admin-transition-note")?.value || "",
+      notify: $("#admin-transition-notify")?.checked ?? true,
+    };
+    const result = await api(`/api/registrations/${encodeURIComponent(id)}/transition`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    const notification = result.notification;
+    message.className = notification?.status === "failed" ? "progress-alert progress-alert--error" : "progress-alert progress-alert--ok";
+    message.textContent = notification
+      ? `流程已更新，通知状态：${notification.status}${notification.error ? `（${notification.error}）` : ""}`
+      : "流程已更新。本次未创建邮件通知。";
+    await loadRegistrations(false);
+    await selectRegistration(id);
+  } catch (error) {
+    message.className = "progress-alert progress-alert--error";
+    message.textContent = error.message;
+  } finally {
+    $$(".admin-transition-action").forEach((item) => {
+      item.disabled = false;
+    });
   }
 }
 
