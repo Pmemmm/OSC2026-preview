@@ -820,8 +820,8 @@ const _M0FP38zongen0116mgpic2026_2dsite4main34view__requirements_2econstr_2f3611
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3544 = "register-system";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3545 = "section section--progress progress-page-section";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3546 = "container";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3547 = "register-shell";
-const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3548 = "register-copy";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3547 = "register-shell register-shell--stacked";
+const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3548 = "register-copy register-copy--top";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3549 = "eyebrow";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3550 = "progress-page-actions";
 const _M0FP38zongen0116mgpic2026_2dsite4main36view__register__page_2econstr_2f3551 = "button primary";

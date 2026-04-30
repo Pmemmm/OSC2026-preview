@@ -771,8 +771,8 @@ fn view_progress_page(model : Model) -> Html {
 fn view_register_page(model : Model) -> Html {
   section(id="register-system", class="section section--progress progress-page-section", [
     div(class="container", [
-      div(class="register-shell", [
-        div(class="register-copy", [
+      div(class="register-shell register-shell--stacked", [
+        div(class="register-copy register-copy--top", [
           p(class="eyebrow", t(model.locale, zh="比赛介绍", en="Contest intro")),
           h2(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="MoonBit open-source contest")),
           p(t(model.locale, zh="这是官方报名系统页面，用于提交项目信息、申报书和必要的身份材料。提交后进入赛方审核流程。", en="This official registration page is used to submit project information, proposal documents, and required identity materials. Submitted projects enter organizer review.")),

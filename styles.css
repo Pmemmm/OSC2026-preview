@@ -1345,6 +1345,66 @@ a {
   gap: 18px;
 }
 
+.showcase-live-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: end;
+  margin: 0 0 16px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--panel) 78%, transparent);
+}
+
+.showcase-live-toolbar label {
+  display: grid;
+  gap: 8px;
+}
+
+.showcase-live-toolbar span {
+  color: var(--text);
+  font-weight: 900;
+}
+
+.showcase-live-toolbar input {
+  min-height: 44px;
+  width: 100%;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  color: var(--text);
+  font: inherit;
+}
+
+.showcase-live-toolbar p {
+  margin: 0;
+  color: var(--text-soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.showcase-empty-state {
+  grid-column: 1 / -1;
+  padding: 22px;
+  border: 1px dashed color-mix(in srgb, var(--primary) 34%, var(--border));
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+}
+
+.showcase-empty-state strong {
+  display: block;
+  color: var(--text);
+  font-size: 1.1rem;
+}
+
+.showcase-empty-state p {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  line-height: 1.65;
+}
+
 .showcase-project-card {
   position: relative;
   overflow: hidden;
@@ -1638,6 +1698,75 @@ a {
   color: var(--text);
 }
 
+.progress-flow-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.progress-flow-strip div {
+  min-height: 118px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+}
+
+.progress-flow-strip span {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.progress-flow-strip strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--text);
+  font-size: 0.98rem;
+}
+
+.progress-flow-strip p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.progress-flow-strip .is-current {
+  border-color: color-mix(in srgb, var(--primary) 32%, var(--border));
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.progress-flow-strip .is-current span {
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #fff;
+}
+
+.progress-flow-strip .is-done {
+  border-color: color-mix(in srgb, #16a34a 28%, var(--border));
+  background: color-mix(in srgb, #16a34a 8%, transparent);
+}
+
+.progress-flow-strip .is-done span {
+  background: #16a34a;
+  color: #fff;
+}
+
+.progress-flow-strip .is-warn {
+  border-color: color-mix(in srgb, #f97316 32%, var(--border));
+  background: color-mix(in srgb, #f97316 8%, transparent);
+}
+
+.progress-flow-strip .is-warn span {
+  background: #f97316;
+  color: #fff;
+}
+
 .progress-step-list {
   display: grid;
   gap: 10px;
@@ -1708,7 +1837,7 @@ a {
 
 .progress-plan-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
   margin-top: 18px;
 }
@@ -1772,9 +1901,39 @@ a {
   box-shadow: var(--shadow);
 }
 
+.register-shell--stacked {
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
 .register-copy {
   display: grid;
   align-content: center;
+}
+
+.register-copy--top {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 22px;
+  align-items: end;
+  padding: clamp(18px, 2.4vw, 26px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--primary) 10%, transparent), transparent 46%),
+    color-mix(in srgb, var(--panel-strong) 86%, transparent);
+}
+
+.register-copy--top .eyebrow,
+.register-copy--top h2,
+.register-copy--top p:not(.eyebrow) {
+  grid-column: 1;
+}
+
+.register-copy--top .progress-page-actions {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  justify-content: flex-end;
+  margin-top: 0;
 }
 
 .register-copy h2 {
@@ -1784,6 +1943,11 @@ a {
   font-size: clamp(34px, 5vw, 56px);
   line-height: 1.02;
   letter-spacing: -0.05em;
+}
+
+.register-copy--top h2 {
+  max-width: 18ch;
+  font-size: clamp(34px, 4.2vw, 52px);
 }
 
 .register-copy p:not(.eyebrow) {
@@ -1826,6 +1990,60 @@ a {
 .register-form-head p {
   margin: 4px 0 0;
   color: var(--text-soft);
+}
+
+.register-github-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--primary) 28%, var(--border));
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 12%, transparent), transparent 34%),
+    color-mix(in srgb, var(--primary) 7%, var(--panel));
+}
+
+.register-github-identity {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.register-github-identity img {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 auto;
+  border-radius: 18px;
+  object-fit: cover;
+  box-shadow: var(--shadow);
+}
+
+.register-github-identity strong {
+  display: block;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.register-github-identity p {
+  margin: 4px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.register-github-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.register-github-card .progress-alert {
+  grid-column: 1 / -1;
+  margin: 0;
 }
 
 .register-field-grid,
@@ -2259,9 +2477,30 @@ a {
 }
 
 .admin-operator-note {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
   background:
     radial-gradient(circle at top right, color-mix(in srgb, var(--primary-strong) 8%, transparent), transparent 30%),
     color-mix(in srgb, var(--panel-strong) 82%, transparent);
+}
+
+.admin-operator-note strong {
+  color: var(--text);
+}
+
+.admin-operator-note p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+.admin-note-actions {
+  flex: 0 0 auto;
 }
 
 .admin-disconnected {
@@ -2334,13 +2573,59 @@ a {
 
 .admin-toolbar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 14px;
-  align-items: end;
-  padding: 16px;
+  gap: 18px;
+  align-items: stretch;
+  padding: 18px;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   background: var(--panel-strong);
+}
+
+.admin-toolbar-main {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-search-wrap {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(220px, 300px);
+  gap: 16px;
+}
+
+.admin-search-wrap select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+  color: var(--text);
+  font: inherit;
+  font-weight: 800;
+}
+
+.admin-toolbar-action-block {
+  display: grid;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-toolbar-label {
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.admin-toolbar-actions {
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-toolbar-actions .button {
+  min-height: 44px;
+  padding-inline: 18px;
 }
 
 .admin-stats {
@@ -2353,7 +2638,9 @@ a {
 .admin-card,
 .admin-detail-grid div,
 .admin-files,
-.admin-ai-panel {
+.admin-ai-panel,
+.admin-rule-panel div,
+.admin-workflow-board div {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--panel-strong) 86%, transparent);
@@ -2443,7 +2730,7 @@ a {
   display: block;
   margin-top: 6px;
   color: var(--text);
-  font-size: 2rem;
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
   letter-spacing: -0.04em;
 }
 
@@ -2563,12 +2850,86 @@ a {
   color: color-mix(in srgb, #f97316 84%, var(--text));
 }
 
+.admin-badge--wait {
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: color-mix(in srgb, var(--accent) 72%, var(--text));
+}
+
+.admin-workflow-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.admin-workflow-board div {
+  padding: 14px;
+}
+
+.admin-workflow-board span,
+.admin-flow-strip span {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  color: #fff;
+  font-weight: 900;
+}
+
+.admin-workflow-board strong {
+  display: block;
+  margin-top: 10px;
+  color: var(--text);
+}
+
+.admin-workflow-board p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
 .admin-detail-grid,
 .admin-status-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   padding: 16px;
+}
+
+.admin-flow-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  padding: 14px 16px 0;
+}
+
+.admin-flow-strip div {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  min-height: 48px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+  color: var(--text-soft);
+}
+
+.admin-flow-strip .is-current {
+  border-color: color-mix(in srgb, var(--primary) 34%, var(--border));
+  background: color-mix(in srgb, var(--primary) 9%, transparent);
+  color: var(--text);
+}
+
+.admin-flow-strip .is-done {
+  border-color: color-mix(in srgb, #16a34a 28%, var(--border));
+  background: color-mix(in srgb, #16a34a 9%, transparent);
+  color: var(--text);
+}
+
+.admin-flow-strip .is-done span {
+  background: #16a34a;
 }
 
 .admin-detail-grid div,
@@ -2794,6 +3155,11 @@ a {
   word-break: break-word;
 }
 
+.admin-detail-grid a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
 .admin-detail-wide,
 .admin-status-form .admin-detail-wide {
   grid-column: 1 / -1;
@@ -2806,6 +3172,64 @@ a {
 .admin-files h3,
 .admin-ai-panel h3 {
   margin: 0 0 10px;
+}
+
+.admin-section-title {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.admin-section-title h3 {
+  margin: 0;
+}
+
+.admin-section-title span {
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.admin-rule-panel,
+.admin-check-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 16px;
+}
+
+.admin-rule-panel div,
+.admin-check-grid div {
+  padding: 12px;
+}
+
+.admin-rule-panel strong,
+.admin-check-grid strong {
+  color: var(--text);
+}
+
+.admin-rule-panel p,
+.admin-check-grid p,
+.admin-ai-panel p {
+  margin: 6px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.admin-check-grid div {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--panel) 72%, transparent);
+}
+
+.admin-check-grid .is-pass {
+  border-color: color-mix(in srgb, #16a34a 26%, var(--border));
+}
+
+.admin-check-grid .is-fail {
+  border-color: color-mix(in srgb, #f97316 28%, var(--border));
 }
 
 .admin-file-link {
@@ -2883,6 +3307,26 @@ a {
 .admin-notification-item p {
   margin: 0;
   color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.admin-review-item details {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+
+.admin-review-item summary {
+  cursor: pointer;
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.admin-review-item pre {
+  overflow: auto;
+  white-space: pre-wrap;
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  font: inherit;
   line-height: 1.55;
 }
 
@@ -3325,7 +3769,9 @@ a {
   .admin-hero,
   .admin-toolbar,
   .admin-layout,
+  .admin-search-wrap,
   .admin-storage-card,
+  .admin-workflow-board,
   .admin-connect-steps,
   .card-grid,
   .learn-step-grid,
@@ -3335,8 +3781,10 @@ a {
   .prize-spotlight,
   .prize-table-grid,
   .showcase-wall-head,
+  .showcase-live-toolbar,
   .progress-portal,
   .progress-plan-grid,
+  .progress-flow-strip,
   .progress-admin-grid,
   .progress-data-source-grid,
   .progress-summary-grid,
@@ -3368,6 +3816,17 @@ a {
 
   .progress-user-row {
     grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .register-copy--top {
+    grid-template-columns: 1fr;
+  }
+
+  .register-copy--top .progress-page-actions {
+    grid-column: 1;
+    grid-row: auto;
+    justify-content: flex-start;
+    margin-top: 10px;
   }
 
   .progress-logout {
@@ -3529,6 +3988,10 @@ a {
     grid-template-columns: 1fr;
   }
 
+  .showcase-live-toolbar {
+    align-items: stretch;
+  }
+
   .progress-portal,
   .github-login-card,
   .progress-dashboard,
@@ -3545,12 +4008,30 @@ a {
 
   .register-field-grid,
   .register-upload-grid,
+  .register-github-card,
   .admin-stats,
   .admin-detail-grid,
   .admin-status-form,
+  .admin-rule-panel,
+  .admin-check-grid,
+  .admin-flow-strip,
+  .progress-flow-strip,
   .progress-check-grid,
   .progress-status-editor {
     grid-template-columns: 1fr;
+  }
+
+  .admin-operator-note {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .register-github-actions {
+    justify-content: stretch;
+  }
+
+  .register-github-actions .button {
+    width: 100%;
   }
 
   .progress-dashboard-actions .button {
