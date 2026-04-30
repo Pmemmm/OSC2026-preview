@@ -863,8 +863,8 @@ function progressFlowItems(registration, check, feishu, profile) {
       current: !profile?.oauth,
     },
     {
-      title: "项目申报",
-      body: hasRegistration ? "已填写项目或仓库信息，等待赛方审核。" : "提交报名信息、GitHub 仓库和 PDF 申报书。",
+      title: "官方渠道申报",
+      body: hasRegistration ? "已通过官方渠道填写项目或仓库信息，等待赛方审核。" : "通过官方渠道提交报名信息、GitHub 仓库和 PDF 申报书。",
       done: hasRegistration || statusDone(feishu.proposal),
       current: Boolean(profile?.oauth && !hasRegistration),
     },
@@ -951,7 +951,7 @@ function renderProgressDashboard() {
       hasRegistration ? "已填写" : "待填写",
       hasRegistration
         ? (registration.email || "已保存项目名称或 GitHub 仓库，可继续检查仓库。")
-        : "先完成项目申报，后续才能匹配审核、奖励和验收状态。",
+        : "先完成官方渠道申报，后续才能匹配审核、奖励和验收状态。",
       hasRegistration ? "ok" : "todo"
     ),
   ];
@@ -1015,7 +1015,7 @@ function renderProgressDashboard() {
     <div class="progress-dashboard-actions">
       ${profile ? "" : `<a class="button primary" href="#progress-login">使用 GitHub 登录</a>`}
       <button class="button ${profile ? "primary" : "secondary"}" type="button" data-action="recheck-repo">${repoUrl ? "检查公开仓库" : "填写仓库后检查"}</button>
-      <a class="button secondary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">项目申报入口</a>
+      <a class="button secondary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">官方渠道申报</a>
       <a class="button secondary" href="${hostedPage("register.html")}">${hasRegistration ? "更新报名信息" : "填写官网报名"}</a>
       ${hasRegistration || check ? `<a class="button secondary" href="${ACCEPTANCE_FORM_URL}" target="_blank" rel="noreferrer">提交验收</a>` : ""}
     </div>
@@ -1057,11 +1057,11 @@ function renderPlanPanels(force = false) {
 
   plans.innerHTML = `
     <article class="path-card progress-plan-card">
-      <span class="tag">项目申报</span>
-      <h3>${hasProject ? "已开始，继续完善项目" : "先提交项目信息"}</h3>
-      <p>提交 GitHub 仓库和一页 PDF 申报书，赛方会通过邮件反馈申报审核结果。</p>
+      <span class="tag">官方渠道申报</span>
+      <h3>${hasProject ? "已开始，继续完善项目" : "先通过官方渠道提交"}</h3>
+      <p>通过官方渠道提交 GitHub 仓库和一页 PDF 申报书，赛方会通过邮件反馈申报审核结果。</p>
       <div class="progress-compact-actions">
-        <a class="button primary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">项目申报入口</a>
+        <a class="button primary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">官方渠道申报</a>
         <a class="button secondary" href="${ACCEPTANCE_FORM_URL}" target="_blank" rel="noreferrer">提交验收</a>
       </div>
     </article>

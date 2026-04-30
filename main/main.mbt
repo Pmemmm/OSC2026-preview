@@ -751,9 +751,9 @@ fn view_progress_page(model : Model) -> Html {
       ]),
       div(id="progress-plans", class="progress-plan-grid", [
         article(class="path-card progress-plan-card", [
-          span(class="tag", t(model.locale, zh="项目申报", en="Project submission")),
-          h3(t(model.locale, zh="先提交项目信息", en="Submit project information first")),
-          p(t(model.locale, zh="提交 GitHub 仓库和一页 PDF 申报书，赛方会通过邮件反馈审核结果。", en="Submit your GitHub repository and one-page PDF proposal. The organizers will send review results by email.")),
+          span(class="tag", t(model.locale, zh="官方渠道申报", en="Official submission")),
+          h3(t(model.locale, zh="先通过官方渠道提交", en="Submit through the official channel first")),
+          p(t(model.locale, zh="通过官方渠道提交 GitHub 仓库和一页 PDF 申报书，赛方会通过邮件反馈申报审核结果。", en="Submit your GitHub repository and one-page PDF proposal through the official channel. The organizers will send review results by email.")),
         ]),
         article(class="path-card progress-plan-card", [
           span(class="tag", t(model.locale, zh="仓库检查", en="Repository check")),
