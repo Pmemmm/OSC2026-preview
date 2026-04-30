@@ -1065,15 +1065,6 @@ function renderPlanPanels(force = false) {
         <div><span>GitHub 仓库</span><strong>${registration.githubRepo || check?.repoUrl ? "已填写" : "待填写"}</strong></div>
       </div>
     </article>
-    <article class="path-card progress-plan-card">
-      <span class="tag">查看状态</span>
-      <h3>登录后查看个人进度</h3>
-      <p>GitHub 登录用于确认本人账号，后续可查看项目申报、验收、奖励和作品展示状态。</p>
-      <div class="progress-compact-actions">
-        <a class="button secondary" href="#progress-login">登录 / 检查仓库</a>
-        <a class="button secondary" href="${hostedPage("register.html")}">官方报名系统</a>
-      </div>
-    </article>
   `;
 }
 
