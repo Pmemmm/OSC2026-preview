@@ -376,7 +376,7 @@ function renderShell() {
           <button class="button primary" type="button" data-action="open-register">新增报名</button>
           <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
           <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
-          <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf" target="_blank" rel="noreferrer">飞书报名表</a>
+          <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf" target="_blank" rel="noreferrer">查看飞书渠道报名</a>
           <a class="button secondary" href="progress.html#progress-plans">导入飞书表</a>
           <button class="button secondary" type="button" data-action="set-admin-token">管理员 Token</button>
           <a class="button secondary" href="${escapeHtml(adminOAuthStartUrl())}">GitHub 管理员登录</a>
