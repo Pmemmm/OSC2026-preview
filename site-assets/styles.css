@@ -2902,6 +2902,70 @@ a {
   padding: 12px;
 }
 
+.admin-complete-panel {
+  margin: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
+}
+
+.admin-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.admin-info-item {
+  min-width: 0;
+  padding: 13px 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.admin-info-item--wide {
+  grid-column: 1 / -1;
+}
+
+.admin-info-item span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.admin-info-item strong,
+.admin-info-item p,
+.admin-info-item a {
+  color: var(--text);
+  font-weight: 800;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.admin-info-item p {
+  margin: 0;
+  font-weight: 600;
+  white-space: pre-wrap;
+}
+
+.admin-json-preview {
+  max-height: 360px;
+  margin: 12px 0 0;
+  overflow: auto;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  color: var(--text);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+}
+
 .admin-detail-grid strong,
 .admin-detail-grid p {
   display: block;
@@ -3560,6 +3624,10 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  .admin-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .progress-user-row {
     grid-template-columns: 56px minmax(0, 1fr);
   }
@@ -3639,6 +3707,7 @@ a {
   }
 
   .admin-storage-metrics,
+  .admin-info-grid,
   .admin-backup-list {
     grid-template-columns: 1fr;
   }

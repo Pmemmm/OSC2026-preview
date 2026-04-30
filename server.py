@@ -182,6 +182,14 @@ def init_db():
               payload_json text not null
             );
 
+            create table if not exists registration_payloads (
+              registration_id integer primary key,
+              updated_at text not null,
+              source text not null default 'website',
+              payload_json text not null default '{}',
+              foreign key (registration_id) references registrations(id) on delete cascade
+            );
+
             create table if not exists registration_files (
               registration_id integer not null,
               kind text not null,
@@ -419,6 +427,60 @@ def file_from_row(row):
         "updatedAt": row["updated_at"],
         "downloadUrl": f"/api/registrations/{row['registration_id']}/files/{row['kind']}",
     }
+
+
+def payload_from_row(row):
+    if row is None:
+        return None
+    try:
+        payload = json.loads(row["payload_json"] or "{}")
+    except json.JSONDecodeError:
+        payload = {"raw": row["payload_json"] or ""}
+    return {
+        "updatedAt": row["updated_at"],
+        "source": row["source"],
+        "payload": payload,
+    }
+
+
+def safe_payload_value(value):
+    if isinstance(value, dict):
+        result = {}
+        for key, item in value.items():
+            if key == "data":
+                result[key] = f"[已单独保存文件内容，长度 {len(str(item or ''))}]"
+            else:
+                result[key] = safe_payload_value(item)
+        return result
+    if isinstance(value, list):
+        return [safe_payload_value(item) for item in value]
+    return value
+
+
+def sanitize_submission_payload(payload):
+    if not isinstance(payload, dict):
+        return {}
+    return {key: safe_payload_value(value) for key, value in payload.items()}
+
+
+def upsert_payload_snapshot(connection, registration_id, payload, source, timestamp):
+    connection.execute(
+        """
+        insert into registration_payloads (
+          registration_id, updated_at, source, payload_json
+        ) values (?, ?, ?, ?)
+        on conflict(registration_id) do update set
+          updated_at = excluded.updated_at,
+          source = excluded.source,
+          payload_json = excluded.payload_json
+        """,
+        (
+            registration_id,
+            timestamp,
+            source,
+            json.dumps(sanitize_submission_payload(payload), ensure_ascii=False),
+        ),
+    )
 
 
 def extract_review_text_from_file(row, max_chars=12000):
@@ -1392,6 +1454,10 @@ class Handler(SimpleHTTPRequestHandler):
             "select * from registration_files where registration_id = ? order by kind",
             (registration_id,),
         ).fetchall()
+        payload = connection.execute(
+            "select * from registration_payloads where registration_id = ?",
+            (registration_id,),
+        ).fetchone()
         ai_reviews = connection.execute(
             "select * from ai_reviews where registration_id = ? order by id desc limit 10",
             (registration_id,),
@@ -1405,6 +1471,7 @@ class Handler(SimpleHTTPRequestHandler):
             "status": status_from_row(status),
             "repoCheck": repo_check_from_row(repo_check),
             "files": [file_from_row(row) for row in files],
+            "rawPayload": payload_from_row(payload) if include_sensitive else None,
             "aiReviews": [ai_review_from_row(row) for row in ai_reviews],
             "notifications": [notification_from_row(row) for row in notifications],
         }
@@ -1465,6 +1532,7 @@ class Handler(SimpleHTTPRequestHandler):
                 (registration_id, timestamp),
             )
             self.upsert_files(connection, registration_id, payload, timestamp)
+            upsert_payload_snapshot(connection, registration_id, payload, "website", timestamp)
             bundle = self.get_registration_bundle(connection, registration_id)
         backup_database("create")
         self.write_json(bundle, 201)
@@ -1497,6 +1565,7 @@ class Handler(SimpleHTTPRequestHandler):
                 (timestamp, *values, registration_id),
             )
             self.upsert_files(connection, registration_id, payload, timestamp)
+            upsert_payload_snapshot(connection, registration_id, payload, registration["source"] or "website", timestamp)
             bundle = self.get_registration_bundle(connection, registration_id)
         backup_database("update")
         self.write_json(bundle)
@@ -2006,6 +2075,13 @@ class Handler(SimpleHTTPRequestHandler):
                     data["showcase"] or "待上墙",
                     timestamp,
                 ),
+            )
+            upsert_payload_snapshot(
+                connection,
+                registration_id,
+                {"source": "feishu", "mapped": data, "raw": row},
+                "feishu",
+                timestamp,
             )
             count += 1
         return count

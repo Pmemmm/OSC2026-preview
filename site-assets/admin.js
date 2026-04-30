@@ -664,6 +664,105 @@ function fileLinks(files = []) {
   `).join("");
 }
 
+function valueOrDash(value) {
+  const text = String(value ?? "").trim();
+  return text || "-";
+}
+
+function detailValue(value, options = {}) {
+  const text = valueOrDash(value);
+  if (options.link && text !== "-") {
+    return `<a href="${escapeHtml(text)}" target="_blank" rel="noreferrer">${escapeHtml(text)}</a>`;
+  }
+  if (options.multiline) {
+    return `<p>${escapeHtml(text)}</p>`;
+  }
+  return `<strong>${escapeHtml(text)}</strong>`;
+}
+
+function infoItem(label, value, options = {}) {
+  return `
+    <div class="${options.wide ? "admin-info-item admin-info-item--wide" : "admin-info-item"}">
+      <span>${escapeHtml(label)}</span>
+      ${detailValue(value, options)}
+    </div>
+  `;
+}
+
+function fileInfoItems(item, files = []) {
+  const byKind = Object.fromEntries((files || []).map((file) => [file.kind, file]));
+  const definitions = [
+    ["项目申报书 PDF", "proposal", item.proposalFileName],
+    ["学生身份证明", "student", item.studentFileName],
+    ["身份证正面（水印版）", "id_front", item.idFrontFileName],
+    ["身份证反面（水印版）", "id_back", item.idBackFileName],
+  ];
+  return definitions.map(([label, kind, fallbackName]) => {
+    const file = byKind[kind];
+    const filename = file?.filename || fallbackName || "";
+    const meta = file ? `${filename || "未命名文件"} · ${formatBytes(file.size)} · ${file.contentType || "文件"}` : filename;
+    return infoItem(label, meta || "未上传");
+  }).join("");
+}
+
+function rawPayloadPanel(rawPayload) {
+  if (!rawPayload?.payload) {
+    return `
+      <div class="admin-files">
+        <h3>原始填报快照</h3>
+        <p>这条记录创建于原始快照功能上线前，后台会展示数据库中已有字段；之后新提交和飞书导入都会保存完整填报快照。</p>
+      </div>
+    `;
+  }
+  return `
+    <div class="admin-files admin-detail-wide">
+      <div class="admin-section-title">
+        <h3>原始填报快照</h3>
+        <span>${escapeHtml(sourceLabel(rawPayload.source))} · ${formatTime(rawPayload.updatedAt)}</span>
+      </div>
+      <pre class="admin-json-preview">${escapeHtml(JSON.stringify(rawPayload.payload, null, 2))}</pre>
+    </div>
+  `;
+}
+
+function completeSubmissionPanel(data) {
+  const item = data.registration || {};
+  const status = data.status || {};
+  return `
+    <div class="admin-complete-panel">
+      <div class="admin-section-title">
+        <h3>完整填报信息</h3>
+        <span>管理员可见，含奖金发放相关敏感信息</span>
+      </div>
+      <div class="admin-info-grid">
+        ${infoItem("报名编号", `#${item.id || "-"}`)}
+        ${infoItem("报名来源", sourceLabel(item.source))}
+        ${infoItem("记录状态", item.archived ? `已归档：${formatTime(item.archivedAt)}` : "正常")}
+        ${infoItem("创建时间", formatTime(item.createdAt))}
+        ${infoItem("更新时间", formatTime(item.updatedAt))}
+        ${infoItem("姓名", item.name)}
+        ${infoItem("联系邮箱", item.email)}
+        ${infoItem("学校 / 组织", item.school)}
+        ${infoItem("身份证号", item.idNumber || item.idNumberMasked)}
+        ${infoItem("银行卡号", item.bankAccount || item.bankAccountMasked)}
+        ${infoItem("开户支行", item.bankBranch, { wide: true })}
+        ${infoItem("GitHub 用户名", item.githubLogin)}
+        ${infoItem("GitHub 仓库", item.githubRepo, { link: true, wide: true })}
+        ${infoItem("项目名称", item.projectName)}
+        ${infoItem("项目方向", item.projectType)}
+        ${infoItem("项目简介", item.summary, { multiline: true, wide: true })}
+        ${fileInfoItems(item, data.files)}
+        ${infoItem("申报审核状态", status.proposal)}
+        ${infoItem("验收状态", status.acceptance)}
+        ${infoItem("奖励状态", status.reward)}
+        ${infoItem("作品墙状态", status.showcase)}
+        ${infoItem("管理员备注", status.notes, { multiline: true, wide: true })}
+      </div>
+      ${rawPayloadPanel(data.rawPayload)}
+    </div>
+  `;
+}
+
 function reviewList(reviews = []) {
   if (!reviews.length) return `<p>还没有 AI 审核建议。</p>`;
   return reviews.map((review) => `
@@ -803,6 +902,7 @@ function renderDetail(data) {
     <div class="progress-alert">
       敏感信息仅用于奖金发放和必要身份核验。对外导出或转交前请确认最小必要范围，不要放到公开进度页或作品墙。
     </div>
+    ${completeSubmissionPanel(data)}
     ${ruleChecklist()}
     ${repoCheckPanel(data.repoCheck)}
     <div class="admin-files">
