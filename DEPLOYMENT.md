@@ -36,6 +36,8 @@ GitHub Pages 页面会在静态域名下自动把 `/api/*` 请求转到这个 Re
 - GitHub Pages 首页、报名页、比赛进度页和后台页已经默认把数据接口指向 `https://mgpic2026.onrender.com`。如果 Render 服务名变了，需要同步修改前端里的 `DEFAULT_RENDER_API_BASE`。
 - SQLite 数据库路径为 `/var/lib/mgpic/mgpic2026.sqlite3`，Render 会通过 Persistent Disk 持久化。
 - 数据库备份目录为 `/var/lib/mgpic/backups`。系统会在报名、导入、审核、状态修改、归档等写入动作后自动生成 SQLite 备份，默认保留最近 30 份。
+- 完整 JSON 快照目录为 `/var/lib/mgpic/snapshots`，审计日志为 `/var/lib/mgpic/ledger/events.jsonl`。每次写入都会同步生成 `latest.json`，服务启动时如果发现数据库为空，会尝试用 `latest.json` 自动恢复。
+- 后台的“数据安全”区域可以手动生成备份、导出完整 JSON、下载审计日志。涉及身份证、银行卡和材料文件，导出文件只能交给赛事管理员保存。
 - 报名表会收集身份证、银行卡和证明材料，部署平台必须限制管理员访问，不要把数据库文件公开。
 - 后台管理员推荐使用 `ADMIN_GITHUB_LOGINS` 白名单登录；`ADMIN_TOKEN` 保留给临时排障或没有 GitHub 权限的内部工作人员。
 - 如果继续使用 GitHub Pages 作为公开入口，需要再把页面里的 API base 指向后端域名；最简单稳定的方式是直接对外使用后端域名。

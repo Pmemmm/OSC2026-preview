@@ -2714,6 +2714,25 @@ a {
   gap: 8px;
 }
 
+.admin-backup-grid {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.admin-backup-grid > div {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.56);
+}
+
+.admin-backup-grid strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
 .admin-stats div {
   padding: 16px;
 }
@@ -3771,6 +3790,7 @@ a {
   .admin-layout,
   .admin-search-wrap,
   .admin-storage-card,
+  .admin-backup-grid,
   .admin-workflow-board,
   .admin-connect-steps,
   .card-grid,

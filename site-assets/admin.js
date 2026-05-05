@@ -559,6 +559,15 @@ function backupLinks(backups = []) {
   `).join("");
 }
 
+function snapshotLinks(snapshots = []) {
+  if (!snapshots.length) return `<p>暂无 JSON 快照；后续每次写入都会同步生成。</p>`;
+  return snapshots.slice(0, 5).map((snapshot) => `
+    <a class="admin-file-link" href="${escapeHtml(adminFileUrl(snapshot.downloadUrl))}" target="_blank" rel="noreferrer">
+      ${escapeHtml(snapshot.name)} · ${formatBytes(snapshot.size)}
+    </a>
+  `).join("");
+}
+
 function renderStorage() {
   const panel = $("#admin-storage-panel");
   if (!panel) return;
@@ -573,6 +582,7 @@ function renderStorage() {
   }
   const counts = storageInfo.counts || {};
   const latest = (storageInfo.backups || [])[0];
+  const latestSnapshot = (storageInfo.snapshots || [])[0];
   panel.innerHTML = `
     <div class="admin-storage-card">
       <div>
@@ -580,23 +590,37 @@ function renderStorage() {
         <h3>SQLite 持久化数据库已连接</h3>
         <p>数据库：<code>${escapeHtml(storageInfo.database)}</code></p>
         <p>备份目录：<code>${escapeHtml(storageInfo.backupDir)}</code></p>
+        <p>快照目录：<code>${escapeHtml(storageInfo.snapshotDir || "")}</code></p>
       </div>
       <div class="admin-storage-metrics">
         <div><span>报名</span><strong>${counts.registrations ?? registrations.length}</strong></div>
         <div><span>材料文件</span><strong>${counts.files ?? 0}</strong></div>
         <div><span>数据库大小</span><strong>${formatBytes(storageInfo.databaseSize)}</strong></div>
         <div><span>最近备份</span><strong>${latest ? formatTime(latest.createdAt) : "暂无"}</strong></div>
+        <div><span>最近快照</span><strong>${latestSnapshot ? formatTime(latestSnapshot.createdAt) : "暂无"}</strong></div>
+        <div><span>审计日志</span><strong>${formatBytes(storageInfo.ledgerSize || 0)}</strong></div>
       </div>
       <div class="admin-storage-actions">
         <button class="button primary" type="button" data-action="create-backup">立即生成备份</button>
-        <span>系统会在报名、导入、审核、状态修改、归档等写入动作后自动备份；默认最多保留 ${escapeHtml(storageInfo.maxBackups || 30)} 份。</span>
+        <a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/export"))}" target="_blank" rel="noreferrer">导出完整 JSON</a>
+        <button class="button secondary" type="button" data-action="restore-json">从 JSON 恢复</button>
+        ${storageInfo.ledgerSize ? `<a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/ledger"))}" target="_blank" rel="noreferrer">下载审计日志</a>` : ""}
+        <span>系统会在报名、导入、审核、状态修改、归档等写入动作后，同时生成 SQLite 备份、完整 JSON 快照和审计日志；服务启动时若数据库为空，会尝试从 latest.json 自动恢复。</span>
       </div>
-      <div class="admin-backup-list">
-        ${backupLinks(storageInfo.backups)}
+      <div class="admin-backup-grid">
+        <div>
+          <strong>SQLite 备份</strong>
+          <div class="admin-backup-list">${backupLinks(storageInfo.backups)}</div>
+        </div>
+        <div>
+          <strong>JSON 快照</strong>
+          <div class="admin-backup-list">${snapshotLinks(storageInfo.snapshots)}</div>
+        </div>
       </div>
     </div>
   `;
   panel.querySelector("[data-action='create-backup']")?.addEventListener("click", createBackup);
+  panel.querySelector("[data-action='restore-json']")?.addEventListener("click", restoreFromJsonFile);
 }
 
 function renderList() {
@@ -1254,6 +1278,43 @@ async function createBackup() {
       button.disabled = false;
       button.textContent = "立即生成备份";
     }
+  }
+}
+
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => reject(new Error("文件读取失败"));
+    reader.readAsText(file, "utf-8");
+  });
+}
+
+function pickJsonFile() {
+  return new Promise((resolve) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "application/json,.json";
+    input.addEventListener("change", () => resolve(input.files?.[0] || null), { once: true });
+    input.click();
+  });
+}
+
+async function restoreFromJsonFile() {
+  const file = await pickJsonFile();
+  if (!file) return;
+  if (!window.confirm("恢复会用 JSON 里的数据覆盖当前后台数据库。继续前请确认已导出当前数据备份。")) return;
+  try {
+    const text = await readFileAsText(file);
+    const payload = JSON.parse(text);
+    const result = await api("/api/admin/restore", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    window.alert(`恢复完成：${result.before} 条 -> ${result.after} 条。`);
+    await loadRegistrations();
+  } catch (error) {
+    window.alert(`恢复失败：${error.message}`);
   }
 }
 

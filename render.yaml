@@ -14,8 +14,14 @@ services:
         value: /var/lib/mgpic/mgpic2026.sqlite3
       - key: MGPIC_BACKUP_DIR
         value: /var/lib/mgpic/backups
+      - key: MGPIC_SNAPSHOT_DIR
+        value: /var/lib/mgpic/snapshots
+      - key: MGPIC_LEDGER_PATH
+        value: /var/lib/mgpic/ledger/events.jsonl
       - key: MGPIC_MAX_BACKUPS
         value: "30"
+      - key: MGPIC_MAX_SNAPSHOTS
+        value: "100"
       - key: GITHUB_OAUTH_REDIRECT_URI
         value: https://mgpic2026.onrender.com/api/auth/github/callback
       - key: GITHUB_CLIENT_ID

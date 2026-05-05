@@ -19,7 +19,10 @@ from urllib.parse import parse_qs, quote, unquote, urlencode, urlparse
 ROOT = Path(__file__).resolve().parent
 DB_PATH = Path(os.environ.get("MGPIC_DB", ROOT / "data" / "mgpic2026.sqlite3"))
 BACKUP_DIR = Path(os.environ.get("MGPIC_BACKUP_DIR", DB_PATH.parent / "backups"))
+SNAPSHOT_DIR = Path(os.environ.get("MGPIC_SNAPSHOT_DIR", DB_PATH.parent / "snapshots"))
+LEDGER_PATH = Path(os.environ.get("MGPIC_LEDGER_PATH", DB_PATH.parent / "ledger" / "events.jsonl"))
 MAX_BACKUPS = int(os.environ.get("MGPIC_MAX_BACKUPS", "30"))
+MAX_SNAPSHOTS = int(os.environ.get("MGPIC_MAX_SNAPSHOTS", "100"))
 GITHUB_SESSION_COOKIE = "mgpic_github_session"
 GITHUB_SESSION_SECONDS = 60 * 60 * 24 * 14
 GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
@@ -69,6 +72,20 @@ CONTEST_REVIEW_RULES = [
     "优秀项目评选综合完成度、MoonBit 生态贡献、工程质量、文档体验、展示表现和长期维护潜力；入选项目可能参加决赛答辩，地点和流程后续公布。",
     "AI 工具可以用于代码生成、接口设计、测试补全、文档撰写和移植分析，但最终质量、许可证和技术边界由参赛者负责。",
 ]
+
+EXPORT_TABLES = [
+    "registrations",
+    "registration_statuses",
+    "status_events",
+    "repo_checks",
+    "imported_records",
+    "registration_payloads",
+    "registration_files",
+    "ai_reviews",
+    "notifications",
+]
+
+RESTORE_TABLES = list(reversed(EXPORT_TABLES))
 
 
 def now_iso():
@@ -131,6 +148,159 @@ def backup_database(reason="manual"):
     temporary.replace(destination)
     prune_backups()
     return backup_info(destination)
+
+
+def snapshot_name(reason):
+    reason = "".join(char if char.isalnum() or char in {"-", "_"} else "-" for char in str(reason or "manual").lower())
+    reason = "-".join(part for part in reason.split("-") if part)[:40] or "manual"
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    return f"mgpic2026-{stamp}-{reason}.json"
+
+
+def snapshot_info(path):
+    stat = path.stat()
+    return {
+        "name": path.name,
+        "size": stat.st_size,
+        "createdAt": datetime.fromtimestamp(stat.st_mtime, timezone.utc).isoformat(),
+        "downloadUrl": f"/api/admin/snapshots/{quote(path.name)}",
+    }
+
+
+def list_snapshots(limit=20):
+    if not SNAPSHOT_DIR.exists():
+        return []
+    snapshots = sorted(SNAPSHOT_DIR.glob("mgpic2026-*.json"), key=lambda item: item.stat().st_mtime, reverse=True)
+    return [snapshot_info(path) for path in snapshots[:limit]]
+
+
+def prune_snapshots():
+    if MAX_SNAPSHOTS <= 0 or not SNAPSHOT_DIR.exists():
+        return
+    snapshots = sorted(SNAPSHOT_DIR.glob("mgpic2026-*.json"), key=lambda item: item.stat().st_mtime, reverse=True)
+    for path in snapshots[MAX_SNAPSHOTS:]:
+        try:
+            path.unlink()
+        except OSError:
+            pass
+
+
+def write_text_atomic(path, text):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_name(f"{path.name}.tmp")
+    temporary.write_text(text, encoding="utf-8")
+    temporary.replace(path)
+
+
+def write_json_atomic(path, payload):
+    write_text_atomic(path, json.dumps(payload, ensure_ascii=False, indent=2))
+
+
+def append_ledger_event(event):
+    LEDGER_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with LEDGER_PATH.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(event, ensure_ascii=False, separators=(",", ":")) + "\n")
+
+
+def table_rows(connection, table):
+    rows = connection.execute(f"select * from {table}").fetchall()
+    return [dict(row) for row in rows]
+
+
+def database_export(connection=None, reason="manual"):
+    close_connection = False
+    if connection is None:
+        connection = db()
+        close_connection = True
+    try:
+        tables = {table: table_rows(connection, table) for table in EXPORT_TABLES}
+        return {
+            "version": 1,
+            "reason": reason,
+            "exportedAt": now_iso(),
+            "database": str(DB_PATH),
+            "tables": tables,
+            "counts": {table: len(rows) for table, rows in tables.items()},
+        }
+    finally:
+        if close_connection:
+            connection.close()
+
+
+def snapshot_database(reason="manual"):
+    if not DB_PATH.exists():
+        return None
+    with db() as connection:
+        export = database_export(connection, reason)
+    SNAPSHOT_DIR.mkdir(parents=True, exist_ok=True)
+    destination = SNAPSHOT_DIR / snapshot_name(reason)
+    write_json_atomic(destination, export)
+    write_json_atomic(SNAPSHOT_DIR / "latest.json", export)
+    prune_snapshots()
+    append_ledger_event({
+        "event": "snapshot",
+        "reason": reason,
+        "createdAt": export["exportedAt"],
+        "snapshot": destination.name,
+        "counts": export["counts"],
+    })
+    return snapshot_info(destination)
+
+
+def persist_database(reason="manual"):
+    backup = backup_database(reason)
+    snapshot = snapshot_database(reason)
+    return {"backup": backup, "snapshot": snapshot}
+
+
+def restore_export(connection, export):
+    tables = export.get("tables") if isinstance(export, dict) else None
+    if not isinstance(tables, dict):
+        raise ValueError("恢复文件缺少 tables 字段")
+    for table in RESTORE_TABLES:
+        connection.execute(f"delete from {table}")
+    for table in EXPORT_TABLES:
+        rows = tables.get(table) or []
+        if not rows:
+            continue
+        columns = [row["name"] for row in connection.execute(f"pragma table_info({table})").fetchall()]
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            available = [column for column in columns if column in row]
+            if not available:
+                continue
+            placeholders = ", ".join(["?"] * len(available))
+            column_sql = ", ".join(available)
+            connection.execute(
+                f"insert into {table} ({column_sql}) values ({placeholders})",
+                [row.get(column) for column in available],
+            )
+
+
+def recover_database_from_latest_snapshot():
+    latest = SNAPSHOT_DIR / "latest.json"
+    if not latest.exists():
+        return None
+    with db() as connection:
+        count = connection.execute("select count(*) from registrations").fetchone()[0]
+        if count > 0:
+            return None
+        try:
+            export = json.loads(latest.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            return {"ok": False, "error": str(exc), "snapshot": str(latest)}
+        snapshot_count = len((export.get("tables") or {}).get("registrations") or [])
+        if snapshot_count <= 0:
+            return None
+        restore_export(connection, export)
+        append_ledger_event({
+            "event": "auto-recover",
+            "createdAt": now_iso(),
+            "snapshot": latest.name,
+            "registrations": snapshot_count,
+        })
+        return {"ok": True, "snapshot": str(latest), "registrations": snapshot_count}
 
 
 def init_db():
@@ -977,8 +1147,10 @@ class Handler(SimpleHTTPRequestHandler):
     def do_DELETE(self):
         self.handle_api("DELETE", urlparse(self.path).path)
 
-    def read_json(self):
+    def read_json(self, max_bytes=15 * 1024 * 1024):
         size = int(self.headers.get("Content-Length", "0"))
+        if size > max_bytes:
+            raise ValueError("请求体过大")
         if size == 0:
             return {}
         body = self.rfile.read(size).decode("utf-8")
@@ -1137,8 +1309,24 @@ class Handler(SimpleHTTPRequestHandler):
                 self.create_admin_backup()
                 return
 
+            if path == "/api/admin/export" and method == "GET":
+                self.download_admin_export()
+                return
+
+            if path == "/api/admin/ledger" and method == "GET":
+                self.download_admin_ledger()
+                return
+
+            if path == "/api/admin/restore" and method == "POST":
+                self.restore_admin_export()
+                return
+
             if path.startswith("/api/admin/backups/") and method == "GET":
                 self.download_admin_backup(unquote(path.rsplit("/", 1)[-1]))
+                return
+
+            if path.startswith("/api/admin/snapshots/") and method == "GET":
+                self.download_admin_snapshot(unquote(path.rsplit("/", 1)[-1]))
                 return
 
             parts = [unquote(part) for part in path.strip("/").split("/")]
@@ -1210,19 +1398,79 @@ class Handler(SimpleHTTPRequestHandler):
             "database": str(DB_PATH),
             "databaseSize": DB_PATH.stat().st_size if DB_PATH.exists() else 0,
             "backupDir": str(BACKUP_DIR),
+            "snapshotDir": str(SNAPSHOT_DIR),
+            "ledgerPath": str(LEDGER_PATH),
             "maxBackups": MAX_BACKUPS,
+            "maxSnapshots": MAX_SNAPSHOTS,
             "counts": counts,
             "backups": list_backups(),
+            "snapshots": list_snapshots(),
+            "latestSnapshot": str(SNAPSHOT_DIR / "latest.json") if (SNAPSHOT_DIR / "latest.json").exists() else "",
+            "ledgerSize": LEDGER_PATH.stat().st_size if LEDGER_PATH.exists() else 0,
         })
 
     def create_admin_backup(self):
         if not self.require_admin():
             return
-        backup = backup_database("manual")
-        if backup is None:
+        persisted = persist_database("manual")
+        if persisted["backup"] is None:
             self.write_error("数据库文件还不存在，暂时无法生成备份。", 404)
             return
-        self.write_json({"ok": True, "backup": backup, "backups": list_backups()})
+        self.write_json({
+            "ok": True,
+            "backup": persisted["backup"],
+            "snapshot": persisted["snapshot"],
+            "backups": list_backups(),
+            "snapshots": list_snapshots(),
+        })
+
+    def download_admin_export(self):
+        if not self.require_admin():
+            return
+        with db() as connection:
+            payload = database_export(connection, "admin-export")
+        body = json.dumps(payload, ensure_ascii=False, indent=2).encode("utf-8")
+        filename = f"mgpic2026-export-{datetime.now(timezone.utc).strftime('%Y%m%d-%H%M%S')}.json"
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+        self.end_headers()
+        self.wfile.write(body)
+
+    def download_admin_ledger(self):
+        if not self.require_admin():
+            return
+        if not LEDGER_PATH.exists():
+            self.write_error("审计日志还不存在。", 404)
+            return
+        body = LEDGER_PATH.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Content-Disposition", 'attachment; filename="mgpic2026-ledger.jsonl"')
+        self.end_headers()
+        self.wfile.write(body)
+
+    def restore_admin_export(self):
+        if not self.require_admin():
+            return
+        payload = self.read_json(max_bytes=30 * 1024 * 1024)
+        if not isinstance(payload, dict):
+            self.write_error("恢复数据必须是 JSON 对象", 400)
+            return
+        with db() as connection:
+            before = connection.execute("select count(*) from registrations").fetchone()[0]
+            restore_export(connection, payload)
+            after = connection.execute("select count(*) from registrations").fetchone()[0]
+        persisted = persist_database("restore")
+        self.write_json({
+            "ok": True,
+            "before": before,
+            "after": after,
+            "backup": persisted["backup"],
+            "snapshot": persisted["snapshot"],
+        })
 
     def download_admin_backup(self, filename):
         if not self.require_admin():
@@ -1238,6 +1486,25 @@ class Handler(SimpleHTTPRequestHandler):
         data = path.read_bytes()
         self.send_response(200)
         self.send_header("Content-Type", "application/vnd.sqlite3")
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Content-Disposition", f"attachment; filename*=UTF-8''{quote(safe_name)}")
+        self.end_headers()
+        self.wfile.write(data)
+
+    def download_admin_snapshot(self, filename):
+        if not self.require_admin():
+            return
+        safe_name = Path(filename).name
+        if safe_name != filename or not safe_name.startswith("mgpic2026-") or not safe_name.endswith(".json"):
+            self.write_error("快照文件名不合法", 400)
+            return
+        path = SNAPSHOT_DIR / safe_name
+        if not path.exists():
+            self.write_error("快照文件不存在", 404)
+            return
+        data = path.read_bytes()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Content-Disposition", f"attachment; filename*=UTF-8''{quote(safe_name)}")
         self.end_headers()
@@ -1639,7 +1906,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.upsert_files(connection, registration_id, payload, timestamp)
             upsert_payload_snapshot(connection, registration_id, payload, "website", timestamp)
             bundle = self.get_registration_bundle(connection, registration_id)
-        backup_database("create")
+        persist_database("create")
         self.write_json(bundle, 201)
 
     def update_registration(self, registration_id):
@@ -1672,7 +1939,7 @@ class Handler(SimpleHTTPRequestHandler):
             self.upsert_files(connection, registration_id, payload, timestamp)
             upsert_payload_snapshot(connection, registration_id, payload, registration["source"] or "website", timestamp)
             bundle = self.get_registration_bundle(connection, registration_id)
-        backup_database("update")
+        persist_database("update")
         self.write_json(bundle)
 
     def registration_values(self, payload):
@@ -1777,7 +2044,7 @@ class Handler(SimpleHTTPRequestHandler):
                 status,
                 clean_text(payload, "notes"),
             )
-        backup_database("status")
+        persist_database("status")
         self.write_json({"status": status_from_row(status)})
 
     def save_repo_check(self, registration_id):
@@ -1810,7 +2077,7 @@ class Handler(SimpleHTTPRequestHandler):
                     clean_text(payload, "checkedAt") or now_iso(),
                 ),
             )
-        backup_database("repo-check")
+        persist_database("repo-check")
         self.write_json({"ok": True})
 
     def insert_ai_review(self, connection, registration_id, mode, review):
@@ -1855,7 +2122,7 @@ class Handler(SimpleHTTPRequestHandler):
             review = openai_review(bundle, mode)
             review_id = self.insert_ai_review(connection, registration_id, mode, review)
             row = connection.execute("select * from ai_reviews where id = ?", (review_id,)).fetchone()
-        backup_database("ai-review")
+        persist_database("ai-review")
         self.write_json({"review": ai_review_from_row(row)})
 
     def list_ai_reviews(self, registration_id):
@@ -2094,7 +2361,7 @@ class Handler(SimpleHTTPRequestHandler):
             notification = connection.execute(
                 "select * from notifications where id = ?", (notification_id,)
             ).fetchone() if notification_id else None
-        backup_database("transition")
+        persist_database("transition")
         self.write_json({
             **updated,
             "notification": notification_from_row(notification),
@@ -2188,7 +2455,7 @@ class Handler(SimpleHTTPRequestHandler):
             notification = connection.execute(
                 "select * from notifications where id = ?", (notification_id,)
             ).fetchone() if notification_id else None
-        backup_database("advance")
+        persist_database("advance")
         self.write_json({
             **updated,
             "notification": notification_from_row(notification),
@@ -2214,7 +2481,7 @@ class Handler(SimpleHTTPRequestHandler):
             notification = connection.execute(
                 "select * from notifications where id = ?", (notification_id,)
             ).fetchone()
-        backup_database("notify")
+        persist_database("notify")
         self.write_json({"notification": notification_from_row(notification)})
 
     def list_files(self, registration_id):
@@ -2250,7 +2517,7 @@ class Handler(SimpleHTTPRequestHandler):
     def delete_registration(self, registration_id):
         if not self.require_admin():
             return
-        backup_database("before-archive")
+        persist_database("before-archive")
         timestamp = now_iso()
         with db() as connection:
             cursor = connection.execute(
@@ -2268,7 +2535,7 @@ class Handler(SimpleHTTPRequestHandler):
                 if exists is None:
                     self.write_error("报名记录不存在", 404)
                     return
-        backup_database("archive")
+        persist_database("archive")
         self.write_json({"ok": True, "archived": True})
 
     def save_imported_records(self):
@@ -2285,7 +2552,7 @@ class Handler(SimpleHTTPRequestHandler):
                 (now_iso(), clean_text(payload, "source") or "feishu", json.dumps(rows, ensure_ascii=False)),
             )
             upserted = self.upsert_feishu_rows(connection, rows)
-        backup_database("import")
+        persist_database("import")
         self.write_json({"ok": True, "count": len(rows), "upserted": upserted})
 
     def upsert_feishu_rows(self, connection, rows):
@@ -2421,6 +2688,9 @@ class Handler(SimpleHTTPRequestHandler):
 
 def main():
     init_db()
+    recovery = recover_database_from_latest_snapshot()
+    if recovery:
+        print(f"Snapshot recovery: {recovery}")
     port = int(os.environ.get("PORT", "4174"))
     host = os.environ.get("HOST", "127.0.0.1")
     server = ThreadingHTTPServer((host, port), Handler)
