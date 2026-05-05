@@ -2673,6 +2673,19 @@ a {
   line-height: 1.55;
 }
 
+.admin-storage-warning {
+  margin: 0;
+}
+
+.admin-storage-warning strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.admin-storage-warning p {
+  margin: 6px 0 0;
+}
+
 .admin-storage-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

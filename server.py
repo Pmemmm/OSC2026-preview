@@ -1407,6 +1407,16 @@ class Handler(SimpleHTTPRequestHandler):
             "snapshots": list_snapshots(),
             "latestSnapshot": str(SNAPSHOT_DIR / "latest.json") if (SNAPSHOT_DIR / "latest.json").exists() else "",
             "ledgerSize": LEDGER_PATH.stat().st_size if LEDGER_PATH.exists() else 0,
+            "persistence": {
+                "kind": "sqlite-filesystem",
+                "requiresPersistentDisk": True,
+                "renderFreeDiskUnsupported": True,
+                "message": (
+                    "当前后台使用 SQLite 文件存储。Render Free 实例不支持 Persistent Disk；"
+                    "如果没有升级实例并在 Render Disk 页面启用持久盘，重新部署会导致数据库、备份和快照一起清空。"
+                    "正式运营必须使用 Render 持久盘或外部数据库。"
+                ),
+            },
         })
 
     def create_admin_backup(self):

@@ -583,14 +583,21 @@ function renderStorage() {
   const counts = storageInfo.counts || {};
   const latest = (storageInfo.backups || [])[0];
   const latestSnapshot = (storageInfo.snapshots || [])[0];
+  const persistence = storageInfo.persistence || {};
+  const persistenceWarning = persistence.message || "当前使用 SQLite 文件存储。请确认生产环境已配置持久盘或外部数据库，否则重新部署可能导致数据丢失。";
   panel.innerHTML = `
     <div class="admin-storage-card">
       <div>
         <span class="tag">数据安全</span>
-        <h3>SQLite 持久化数据库已连接</h3>
+        <h3>报名数据存储状态</h3>
         <p>数据库：<code>${escapeHtml(storageInfo.database)}</code></p>
         <p>备份目录：<code>${escapeHtml(storageInfo.backupDir)}</code></p>
         <p>快照目录：<code>${escapeHtml(storageInfo.snapshotDir || "")}</code></p>
+      </div>
+      <div class="progress-alert progress-alert--error admin-storage-warning">
+        <strong>必须确认持久存储。</strong>
+        <p>${escapeHtml(persistenceWarning)}</p>
+        <p>当前看到的 SQLite 备份和 JSON 快照只能保护“同一个持久存储卷”内的数据；如果 Render Disk 未生效，它们会随重新部署一起消失。</p>
       </div>
       <div class="admin-storage-metrics">
         <div><span>报名</span><strong>${counts.registrations ?? registrations.length}</strong></div>
@@ -605,7 +612,7 @@ function renderStorage() {
         <a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/export"))}" target="_blank" rel="noreferrer">导出完整 JSON</a>
         <button class="button secondary" type="button" data-action="restore-json">从 JSON 恢复</button>
         ${storageInfo.ledgerSize ? `<a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/ledger"))}" target="_blank" rel="noreferrer">下载审计日志</a>` : ""}
-        <span>系统会在报名、导入、审核、状态修改、归档等写入动作后，同时生成 SQLite 备份、完整 JSON 快照和审计日志；服务启动时若数据库为空，会尝试从 latest.json 自动恢复。</span>
+        <span>系统会在报名、导入、审核、状态修改、归档等写入动作后，同时生成 SQLite 备份、完整 JSON 快照和审计日志；服务启动时若数据库为空，会尝试从 latest.json 自动恢复。正式运营前请先完成 Render 持久盘或外部数据库配置。</span>
       </div>
       <div class="admin-backup-grid">
         <div>
