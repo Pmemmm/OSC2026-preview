@@ -1312,7 +1312,7 @@ function initRegisterPage() {
         <button class="button primary" type="submit">提交报名信息</button>
         <button class="button secondary" type="button" data-action="github-oauth">使用 GitHub 一键登录</button>
         <a class="button secondary" href="${hostedPage("progress.html")}">查看比赛进度</a>
-        <a class="button secondary" href="${PROPOSAL_FORM_URL}">飞书正式报名</a>
+        <a class="button secondary" href="${PROPOSAL_FORM_URL}">飞书报名</a>
         <button class="button secondary" type="button" data-action="export-registration">导出备份 JSON</button>
       </div>
       <div class="progress-alert" id="registration-message" hidden></div>
@@ -1351,7 +1351,7 @@ async function handleRegistrationSubmit(form) {
       msg.innerHTML = `报名成功，${escapeHtml(value.projectName || "项目")} 已写入服务器。请留在本页面查看提示；后续可使用 GitHub 登录进入 <a href="${hostedPage("progress.html")}">比赛进度页</a> 查看审核和仓库检查状态。`;
     } else {
       msg.className = "progress-alert progress-alert--error";
-      msg.innerHTML = `报名没有写入服务器，只临时保存了 ${escapeHtml(value.projectName || "项目")} 的非敏感信息到当前浏览器。请不要关闭本页，稍后重新点击“提交报名信息”，或使用飞书正式报名。错误：${escapeHtml(result.error?.message || "服务器连接失败")}`;
+      msg.innerHTML = `报名没有写入服务器，只临时保存了 ${escapeHtml(value.projectName || "项目")} 的非敏感信息到当前浏览器。请不要关闭本页，稍后重新点击“提交报名信息”，或使用飞书报名。错误：${escapeHtml(result.error?.message || "服务器连接失败")}`;
     }
     msg.scrollIntoView({ behavior: "smooth", block: "center" });
   } catch (error) {

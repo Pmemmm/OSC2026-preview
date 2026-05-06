@@ -1814,10 +1814,10 @@ class Handler(SimpleHTTPRequestHandler):
                     "safety": "只有在日志路径位于持久盘时才可靠。",
                 },
                 {
-                    "name": "飞书渠道报名表",
+                    "name": "飞书报名表",
                     "kind": "external",
                     "location": FEISHU_TABLE_URL,
-                    "content": "飞书渠道报名数据。配置 Feishu OpenAPI 后，可从飞书拉取到 Render 数据库，也可把官网官方报名回写到飞书表。",
+                    "content": "飞书报名数据。配置 Feishu OpenAPI 后，可从飞书拉取到 Render 数据库，也可把官网报名回写到飞书表。",
                     "countLabel": f"{counts['imports']} 条已导入记录",
                     "safety": "属于外部主表，需配置 FEISHU_APP_ID、FEISHU_APP_SECRET、FEISHU_APP_TOKEN、FEISHU_TABLE_ID；字段名不一致时用 FEISHU_FIELD_MAP 映射。",
                 },

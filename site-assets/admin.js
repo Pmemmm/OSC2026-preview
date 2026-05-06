@@ -317,8 +317,8 @@ function statusBadge(value) {
 
 function sourceLabel(value) {
   const labels = {
-    website: "官方报名系统",
-    feishu: "飞书渠道",
+    website: "官网报名",
+    feishu: "飞书报名",
     backend: "后台录入",
   };
   return labels[value] || value || "未知来源";
@@ -448,9 +448,9 @@ function renderShell() {
           <button class="button primary" type="button" data-action="open-register">新增报名</button>
           <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
           <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
-          <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/wiki/UtVVwrmahiBQlokfhQrc0hh4np1?table=tblpdjqjCZdRNJah&view=vewygPXWz5" target="_blank" rel="noreferrer">查看飞书渠道报名</a>
+          <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/wiki/UtVVwrmahiBQlokfhQrc0hh4np1?table=tblpdjqjCZdRNJah&view=vewygPXWz5" target="_blank" rel="noreferrer">查看飞书报名</a>
           <button class="button secondary" type="button" data-action="sync-feishu-in">飞书同步到后台</button>
-          <button class="button secondary" type="button" data-action="sync-feishu-out">官网数据写入飞书</button>
+          <button class="button secondary" type="button" data-action="sync-feishu-out">官网报名写入飞书</button>
           <button class="button secondary" type="button" data-action="set-admin-token">管理员 Token</button>
           <a class="button secondary" href="${escapeHtml(adminOAuthStartUrl())}">GitHub 管理员登录</a>
           ${adminSession?.user ? `<button class="button secondary" type="button" data-action="logout-github">退出 GitHub 登录</button>` : ""}
@@ -1321,12 +1321,12 @@ function syncFeishuToBackend() {
 }
 
 function syncBackendToFeishu() {
-  if (!window.confirm("确认把后台官网报名数据写入飞书表？系统会按邮箱或 GitHub 仓库匹配已有飞书记录，匹配不到时会新增。")) return;
+  if (!window.confirm("确认把后台官网报名数据写入飞书报名表？系统会按邮箱或 GitHub 仓库匹配已有飞书记录，匹配不到时会新增。")) return;
   runToolbarSync(
     "sync-feishu-out",
-    "官网数据写入飞书",
+    "官网报名写入飞书",
     "/api/feishu/sync-out",
-    (result) => `官网数据已同步到飞书：新增 ${result.created || 0} 条，更新 ${result.updated || 0} 条，跳过 ${result.skipped || 0} 条。`
+    (result) => `官网报名已同步到飞书：新增 ${result.created || 0} 条，更新 ${result.updated || 0} 条，跳过 ${result.skipped || 0} 条。`
   );
 }
 

@@ -775,15 +775,15 @@ fn view_register_page(model : Model) -> Html {
         div(class="register-copy register-copy--top", [
           p(class="eyebrow", t(model.locale, zh="比赛介绍", en="Contest intro")),
           h2(t(model.locale, zh="MoonBit 国产基础软件生态开源大赛", en="MoonBit open-source contest")),
-          p(t(model.locale, zh="这是官方报名系统页面，用于提交项目信息、申报书和必要的身份材料。提交后进入赛方审核流程。", en="This official registration page is used to submit project information, proposal documents, and required identity materials. Submitted projects enter organizer review.")),
+          p(t(model.locale, zh="这是官网报名页面，用于提交项目信息、申报书和必要的身份材料。提交后进入赛方审核流程。", en="This website registration page is used to submit project information, proposal documents, and required identity materials. Submitted projects enter organizer review.")),
           div(class="progress-page-actions", [
             a(class="button primary", href="#register-form", t(model.locale, zh="填写报名表单", en="Fill registration form")),
             a(class="button secondary", href="progress.html", t(model.locale, zh="返回比赛进度", en="Back to progress")),
-            a(class="button secondary", href=registration_href(), t(model.locale, zh="飞书正式报名", en="Official Feishu form")),
+            a(class="button secondary", href=registration_href(), t(model.locale, zh="飞书报名", en="Feishu registration")),
           ]),
         ]),
         article(id="register-form", class="register-form-card", [
-          div(class="progress-alert", t(model.locale, zh="正在加载官网报名系统预览...", en="Loading registration system preview...")),
+          div(class="progress-alert", t(model.locale, zh="正在加载官网报名预览...", en="Loading website registration preview...")),
         ]),
       ]),
     ]),
