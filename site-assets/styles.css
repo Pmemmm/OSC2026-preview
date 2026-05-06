@@ -2686,6 +2686,76 @@ a {
   margin: 6px 0 0;
 }
 
+.admin-storage-locations {
+  grid-column: 1 / -1;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--panel) 78%, transparent);
+}
+
+.admin-storage-section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.admin-storage-section-head strong {
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.admin-storage-section-head span {
+  max-width: 620px;
+  color: var(--text-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.admin-storage-location-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-storage-location {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.admin-storage-location div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.admin-storage-location strong {
+  color: var(--text);
+}
+
+.admin-storage-location span,
+.admin-storage-location p {
+  color: var(--text-soft);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.admin-storage-location code {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.admin-storage-location-safety {
+  color: color-mix(in srgb, var(--accent-strong) 82%, var(--text)) !important;
+}
+
 .admin-storage-metrics {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -3804,6 +3874,7 @@ a {
   .admin-search-wrap,
   .admin-storage-card,
   .admin-backup-grid,
+  .admin-storage-location-grid,
   .admin-workflow-board,
   .admin-connect-steps,
   .card-grid,

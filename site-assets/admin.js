@@ -568,6 +568,23 @@ function snapshotLinks(snapshots = []) {
   `).join("");
 }
 
+function storageLocationCards(locations = []) {
+  if (!locations.length) {
+    return `<p>后台暂未返回存储位置清单。</p>`;
+  }
+  return locations.map((item) => `
+    <article class="admin-storage-location">
+      <div>
+        <strong>${escapeHtml(item.name || "未命名存储")}</strong>
+        <span>${escapeHtml(item.kind || "storage")} · ${escapeHtml(item.countLabel || "")}</span>
+      </div>
+      <code>${escapeHtml(item.location || "未配置")}</code>
+      <p>${escapeHtml(item.content || "暂无说明")}</p>
+      <p class="admin-storage-location-safety">${escapeHtml(item.safety || "请确认访问权限和备份策略。")}</p>
+    </article>
+  `).join("");
+}
+
 function renderStorage() {
   const panel = $("#admin-storage-panel");
   if (!panel) return;
@@ -598,6 +615,15 @@ function renderStorage() {
         <strong>必须确认持久存储。</strong>
         <p>${escapeHtml(persistenceWarning)}</p>
         <p>当前看到的 SQLite 备份和 JSON 快照只能保护“同一个持久存储卷”内的数据；如果 Render Disk 未生效，它们会随重新部署一起消失。</p>
+      </div>
+      <div class="admin-storage-locations">
+        <div class="admin-storage-section-head">
+          <strong>所有数据存储位置</strong>
+          <span>用于确认报名数据、材料、日志、外部渠道和浏览器缓存分别存在哪里。</span>
+        </div>
+        <div class="admin-storage-location-grid">
+          ${storageLocationCards(storageInfo.storageLocations)}
+        </div>
       </div>
       <div class="admin-storage-metrics">
         <div><span>报名</span><strong>${counts.registrations ?? registrations.length}</strong></div>
