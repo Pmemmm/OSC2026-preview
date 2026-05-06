@@ -449,7 +449,8 @@ function renderShell() {
           <button class="button secondary" type="button" data-action="refresh">刷新数据</button>
           <button class="button secondary" type="button" data-action="export-csv">导出 CSV</button>
           <a class="button secondary" href="https://bxup9uklfcb.feishu.cn/wiki/UtVVwrmahiBQlokfhQrc0hh4np1?table=tblpdjqjCZdRNJah&view=vewygPXWz5" target="_blank" rel="noreferrer">查看飞书渠道报名</a>
-          <a class="button secondary" href="progress.html#progress-plans">导入飞书表</a>
+          <button class="button secondary" type="button" data-action="sync-feishu-in">飞书同步到后台</button>
+          <button class="button secondary" type="button" data-action="sync-feishu-out">官网数据写入飞书</button>
           <button class="button secondary" type="button" data-action="set-admin-token">管理员 Token</button>
           <a class="button secondary" href="${escapeHtml(adminOAuthStartUrl())}">GitHub 管理员登录</a>
           ${adminSession?.user ? `<button class="button secondary" type="button" data-action="logout-github">退出 GitHub 登录</button>` : ""}
@@ -498,6 +499,8 @@ function renderShell() {
   app.querySelector("[data-action='logout-github']")?.addEventListener("click", logoutGitHubAdmin);
   app.querySelector("[data-action='set-admin-token']").addEventListener("click", promptAdminToken);
   app.querySelector("[data-action='export-csv']").addEventListener("click", exportCsv);
+  app.querySelector("[data-action='sync-feishu-in']").addEventListener("click", syncFeishuToBackend);
+  app.querySelector("[data-action='sync-feishu-out']").addEventListener("click", syncBackendToFeishu);
   app.querySelector("[data-action='open-register']").addEventListener("click", () => {
     window.location.href = apiBase ? `${apiBase}/register.html` : "register.html";
   });
@@ -1284,6 +1287,47 @@ function exportCsv() {
     }),
   ];
   downloadText(`mgpic2026-registrations-${Date.now()}.csv`, lines.join("\n"), "text/csv;charset=utf-8");
+}
+
+async function runToolbarSync(action, label, path, summary) {
+  const button = $(`[data-action='${action}']`);
+  const originalText = button?.textContent || label;
+  if (button) {
+    button.disabled = true;
+    button.textContent = `${label}中...`;
+  }
+  try {
+    const result = await api(path, { method: "POST", body: JSON.stringify({}) });
+    await loadRegistrations(false);
+    window.alert(summary(result));
+  } catch (error) {
+    window.alert(`${label}失败：${error.message}`);
+  } finally {
+    const nextButton = $(`[data-action='${action}']`);
+    if (nextButton) {
+      nextButton.disabled = false;
+      nextButton.textContent = originalText;
+    }
+  }
+}
+
+function syncFeishuToBackend() {
+  runToolbarSync(
+    "sync-feishu-in",
+    "飞书同步到后台",
+    "/api/feishu/sync-in",
+    (result) => `飞书同步完成：读取 ${result.count || 0} 条，写入/更新后台 ${result.upserted || 0} 条。`
+  );
+}
+
+function syncBackendToFeishu() {
+  if (!window.confirm("确认把后台官网报名数据写入飞书表？系统会按邮箱或 GitHub 仓库匹配已有飞书记录，匹配不到时会新增。")) return;
+  runToolbarSync(
+    "sync-feishu-out",
+    "官网数据写入飞书",
+    "/api/feishu/sync-out",
+    (result) => `官网数据已同步到飞书：新增 ${result.created || 0} 条，更新 ${result.updated || 0} 条，跳过 ${result.skipped || 0} 条。`
+  );
 }
 
 async function loadStorageInfo() {

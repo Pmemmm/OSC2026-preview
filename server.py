@@ -28,10 +28,13 @@ GITHUB_SESSION_SECONDS = 60 * 60 * 24 * 14
 GITHUB_AUTH_URL = "https://github.com/login/oauth/authorize"
 GITHUB_TOKEN_URL = "https://github.com/login/oauth/access_token"
 GITHUB_API_URL = "https://api.github.com"
+FEISHU_API_BASE = os.environ.get("FEISHU_API_BASE", "https://open.feishu.cn/open-apis").rstrip("/")
+FEISHU_TABLE_URL = "https://bxup9uklfcb.feishu.cn/wiki/UtVVwrmahiBQlokfhQrc0hh4np1?table=tblpdjqjCZdRNJah&view=vewygPXWz5"
+FEISHU_TOKEN_CACHE = {"token": "", "expires_at": 0}
 
 FIELD_ALIASES = {
-    "name": ["姓名", "参赛者", "项目负责人", "负责人", "name"],
-    "email": ["邮箱", "联系邮箱", "联系方式", "email", "Email"],
+    "name": ["姓名", "选手姓名", "参赛者", "项目负责人", "负责人", "name"],
+    "email": ["邮箱", "联系邮箱", "邮箱（唯一联系方式）", "联系方式", "email", "Email"],
     "school": ["学校", "学校 / 组织", "组织", "高校", "school"],
     "idNumber": ["身份证号", "身份证号码", "身份证", "证件号", "证件号码", "idNumber"],
     "githubLogin": ["GitHub 账号", "Github 账号", "GitHub用户名", "GitHub 用户名", "github", "githubLogin"],
@@ -53,8 +56,52 @@ REGISTRATION_EXTRA_COLUMNS = {
     "bank_branch": "text not null default ''",
     "id_front_file_name": "text not null default ''",
     "id_back_file_name": "text not null default ''",
+    "feishu_record_id": "text not null default ''",
+    "feishu_synced_at": "text not null default ''",
     "archived_at": "text not null default ''",
     "archived_reason": "text not null default ''",
+}
+
+DEFAULT_FEISHU_FIELD_MAP = {
+    "backendId": "后台编号",
+    "source": "报名来源",
+    "updatedAt": "后台更新时间",
+    "name": "姓名",
+    "email": "邮箱",
+    "school": "学校",
+    "idNumber": "身份证号",
+    "githubLogin": "GitHub 账号",
+    "githubRepo": "GitHub 仓库",
+    "projectName": "项目名称",
+    "projectType": "项目方向",
+    "summary": "项目简介",
+    "bankAccount": "银行卡号",
+    "bankBranch": "开户支行",
+    "proposal": "申报审核状态",
+    "acceptance": "验收状态",
+    "reward": "奖励状态",
+    "showcase": "作品墙状态",
+}
+
+FEISHU_FIELD_CANDIDATES = {
+    "name": ["姓名", "选手姓名", "参赛者", "项目负责人", "负责人"],
+    "email": ["邮箱", "联系邮箱", "邮箱（唯一联系方式）", "联系方式"],
+    "school": ["学校", "学校 / 组织", "组织", "高校"],
+    "idNumber": ["身份证号", "身份证号码", "身份证", "证件号", "证件号码"],
+    "githubLogin": ["GitHub 账号", "Github 账号", "GitHub用户名", "GitHub 用户名"],
+    "githubRepo": ["GitHub 仓库", "项目 GitHub 链接", "GitHub仓库链接", "仓库链接"],
+    "projectName": ["项目名称", "项目名", "参赛项目"],
+    "projectType": ["项目方向", "方向", "项目类型"],
+    "summary": ["项目简介", "简介", "项目说明"],
+    "bankAccount": ["银行卡号", "银行账号", "收款账号", "银行卡"],
+    "bankBranch": ["开户支行", "开户银行", "开户行", "支行"],
+    "proposal": ["申报审核状态", "项目申报状态", "立项状态", "申报状态"],
+    "acceptance": ["验收状态", "项目验收状态", "验收审核状态"],
+    "reward": ["奖励状态", "激励状态", "奖金状态"],
+    "showcase": ["作品墙状态", "展示状态", "上墙状态"],
+    "backendId": ["后台编号", "报名编号", "ID"],
+    "source": ["报名来源", "来源"],
+    "updatedAt": ["后台更新时间", "更新时间"],
 }
 
 CONTEST_REVIEW_RULES = [
@@ -467,6 +514,276 @@ def github_oauth_configured():
     return bool(os.environ.get("GITHUB_CLIENT_ID", "").strip() and os.environ.get("GITHUB_CLIENT_SECRET", "").strip())
 
 
+class FeishuConfigError(Exception):
+    pass
+
+
+class FeishuApiError(Exception):
+    pass
+
+
+def feishu_config(include_secrets=False):
+    app_id = os.environ.get("FEISHU_APP_ID", "").strip()
+    app_secret = os.environ.get("FEISHU_APP_SECRET", "").strip()
+    app_token = os.environ.get("FEISHU_APP_TOKEN", "").strip()
+    table_id = os.environ.get("FEISHU_TABLE_ID", "tblpdjqjCZdRNJah").strip()
+    view_id = os.environ.get("FEISHU_VIEW_ID", "").strip()
+    result = {
+        "appIdConfigured": bool(app_id),
+        "appSecretConfigured": bool(app_secret),
+        "appTokenConfigured": bool(app_token),
+        "tableId": table_id,
+        "viewId": view_id,
+        "configured": bool(app_id and app_secret and app_token and table_id),
+        "missing": [
+            key
+            for key, value in (
+                ("FEISHU_APP_ID", app_id),
+                ("FEISHU_APP_SECRET", app_secret),
+                ("FEISHU_APP_TOKEN", app_token),
+                ("FEISHU_TABLE_ID", table_id),
+            )
+            if not value
+        ],
+        "tableUrl": FEISHU_TABLE_URL,
+    }
+    if include_secrets:
+        result.update(
+            {
+                "appId": app_id,
+                "appSecret": app_secret,
+                "appToken": app_token,
+            }
+        )
+    return result
+
+
+def require_feishu_config():
+    config = feishu_config(include_secrets=True)
+    if not config["configured"]:
+        raise FeishuConfigError(
+            "飞书同步未配置：请在 Render 环境变量中设置 "
+            + "、".join(config["missing"])
+            + "。FEISHU_APP_TOKEN 是多维表格 app_token，不是 table_id。"
+        )
+    return config
+
+
+def feishu_field_map():
+    field_map = dict(DEFAULT_FEISHU_FIELD_MAP)
+    configured = os.environ.get("FEISHU_FIELD_MAP", "").strip()
+    if configured:
+        try:
+            custom = json.loads(configured)
+            if isinstance(custom, dict):
+                for key, value in custom.items():
+                    if isinstance(value, str) and value.strip():
+                        field_map[key] = value.strip()
+        except json.JSONDecodeError:
+            raise FeishuConfigError("FEISHU_FIELD_MAP 必须是 JSON 对象，例如 {\"email\":\"联系邮箱\"}。")
+    return field_map
+
+
+def http_json(method, url, headers=None, payload=None, timeout=30):
+    request_headers = {
+        "Accept": "application/json",
+        **(headers or {}),
+    }
+    data = None
+    if payload is not None:
+        request_headers["Content-Type"] = "application/json; charset=utf-8"
+        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+    request = urllib_request.Request(url, data=data, headers=request_headers, method=method)
+    try:
+        with urllib_request.urlopen(request, timeout=timeout) as response:
+            body = response.read().decode("utf-8")
+    except urllib_error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        raise FeishuApiError(f"飞书接口 HTTP {exc.code}：{body[:500]}")
+    except urllib_error.URLError as exc:
+        raise FeishuApiError(f"无法连接飞书接口：{exc.reason}")
+    if not body:
+        return {}
+    try:
+        return json.loads(body)
+    except json.JSONDecodeError:
+        raise FeishuApiError(f"飞书接口返回非 JSON 内容：{body[:200]}")
+
+
+def feishu_tenant_access_token():
+    config = require_feishu_config()
+    now = time.time()
+    if FEISHU_TOKEN_CACHE["token"] and FEISHU_TOKEN_CACHE["expires_at"] > now + 60:
+        return FEISHU_TOKEN_CACHE["token"]
+    payload = {
+        "app_id": config["appId"],
+        "app_secret": config["appSecret"],
+    }
+    data = http_json(
+        "POST",
+        f"{FEISHU_API_BASE}/auth/v3/tenant_access_token/internal",
+        payload=payload,
+    )
+    if data.get("code") != 0:
+        raise FeishuApiError(f"获取飞书 tenant_access_token 失败：{data.get('msg') or data}")
+    token = data.get("tenant_access_token") or data.get("data", {}).get("tenant_access_token")
+    if not token:
+        raise FeishuApiError("飞书未返回 tenant_access_token。")
+    expire = int(data.get("expire") or data.get("data", {}).get("expire") or 7200)
+    FEISHU_TOKEN_CACHE["token"] = token
+    FEISHU_TOKEN_CACHE["expires_at"] = now + expire
+    return token
+
+
+def feishu_request(method, path, payload=None, params=None):
+    token = feishu_tenant_access_token()
+    url = f"{FEISHU_API_BASE}{path}"
+    if params:
+        url = f"{url}?{urlencode({key: value for key, value in params.items() if value})}"
+    data = http_json(method, url, headers={"Authorization": f"Bearer {token}"}, payload=payload)
+    if data.get("code") not in (None, 0):
+        raise FeishuApiError(f"飞书接口错误 {data.get('code')}：{data.get('msg') or data}")
+    return data.get("data") or {}
+
+
+def feishu_table_path(config=None):
+    config = config or require_feishu_config()
+    return f"/bitable/v1/apps/{quote(config['appToken'])}/tables/{quote(config['tableId'])}"
+
+
+def feishu_list_records():
+    config = require_feishu_config()
+    records = []
+    page_token = ""
+    while True:
+        params = {"page_size": "500"}
+        if config["viewId"]:
+            params["view_id"] = config["viewId"]
+        if page_token:
+            params["page_token"] = page_token
+        data = feishu_request(
+            "GET",
+            f"{feishu_table_path(config)}/records",
+            params=params,
+        )
+        records.extend(data.get("items") or [])
+        if not data.get("has_more"):
+            break
+        page_token = data.get("page_token") or ""
+        if not page_token:
+            break
+    return records
+
+
+def feishu_import_rows_from_records(records):
+    rows = []
+    for record in records:
+        if not isinstance(record, dict):
+            continue
+        rows.append(
+            {
+                "fields": record.get("fields") or {},
+                "__feishuRecordId": record.get("record_id") or record.get("id") or "",
+            }
+        )
+    return rows
+
+
+def feishu_table_field_names():
+    config = require_feishu_config()
+    names = set()
+    page_token = ""
+    while True:
+        params = {"page_size": "200"}
+        if page_token:
+            params["page_token"] = page_token
+        data = feishu_request("GET", f"{feishu_table_path(config)}/fields", params=params)
+        names.update(
+            item.get("field_name")
+            for item in data.get("items", [])
+            if isinstance(item, dict) and item.get("field_name")
+        )
+        if not data.get("has_more"):
+            break
+        page_token = data.get("page_token") or ""
+        if not page_token:
+            break
+    return names
+
+
+def registration_match_keys(values):
+    keys = []
+    email = str(values.get("email") or "").strip().lower()
+    repo = str(values.get("githubRepo") or values.get("github_repo") or "").strip().lower().rstrip("/")
+    if email:
+        keys.append(f"email:{email}")
+    if repo:
+        keys.append(f"repo:{repo}")
+    return keys
+
+
+def feishu_remote_index(import_rows):
+    index = {}
+    for row in import_rows:
+        values = {
+            "email": import_field(row, "email"),
+            "githubRepo": import_field(row, "githubRepo"),
+        }
+        record_id = clean_text(row, "__feishuRecordId")
+        if not record_id:
+            continue
+        for key in registration_match_keys(values):
+            index.setdefault(key, record_id)
+    return index
+
+
+def feishu_write_field_name(key, field_map, available_fields=None):
+    names = []
+    configured = field_map.get(key)
+    if configured:
+        names.append(configured)
+    names.extend(FEISHU_FIELD_CANDIDATES.get(key, []))
+    names = list(dict.fromkeys(name for name in names if name))
+    if available_fields is None:
+        return names[0] if names else ""
+    for name in names:
+        if name in available_fields:
+            return name
+    return ""
+
+
+def feishu_fields_for_registration(row, available_fields=None):
+    field_map = feishu_field_map()
+    values = {
+        "backendId": str(row["id"]),
+        "source": row["source"] or "website",
+        "updatedAt": row["updated_at"],
+        "name": row["name"],
+        "email": row["email"],
+        "school": row["school"],
+        "idNumber": row["id_number"],
+        "githubLogin": row["github_login"],
+        "githubRepo": row["github_repo"],
+        "projectName": row["project_name"],
+        "projectType": row["project_type"],
+        "summary": row["summary"],
+        "bankAccount": row["bank_account"],
+        "bankBranch": row["bank_branch"],
+        "proposal": row["proposal"] or "申报审核中",
+        "acceptance": row["acceptance"] or "未提交",
+        "reward": row["reward"] or "未开始",
+        "showcase": row["showcase"] or "待上墙",
+    }
+    fields = {}
+    for key, value in values.items():
+        field_name = feishu_write_field_name(key, field_map, available_fields=available_fields)
+        text = str(value or "").strip()
+        if not field_name or not text:
+            continue
+        fields[field_name] = text
+    return fields
+
+
 def admin_github_logins():
     value = os.environ.get("ADMIN_GITHUB_LOGINS", "").strip()
     if not value:
@@ -555,6 +872,8 @@ def registration_from_row(row, include_sensitive=False):
         "bankAccountMasked": mask_middle(row["bank_account"]),
         "sensitiveSubmitted": sensitive_submitted,
         "source": row["source"],
+        "feishuRecordId": row["feishu_record_id"],
+        "feishuSyncedAt": row["feishu_synced_at"],
         "archivedAt": row["archived_at"],
         "archivedReason": row["archived_reason"],
         "archived": bool(row["archived_at"]),
@@ -1270,6 +1589,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "githubOAuth": github_oauth_configured(),
                     "adminToken": bool(self.admin_token()),
                     "adminGithub": bool(admin_github_logins()),
+                    "feishu": feishu_config(),
                 })
                 return
 
@@ -1371,6 +1691,20 @@ class Handler(SimpleHTTPRequestHandler):
 
             if path == "/api/import/feishu" and method == "POST":
                 self.save_imported_records()
+                return
+
+            if path == "/api/feishu/status" and method == "GET":
+                if not self.require_admin():
+                    return
+                self.write_json(feishu_config())
+                return
+
+            if path == "/api/feishu/sync-in" and method == "POST":
+                self.sync_feishu_to_backend()
+                return
+
+            if path == "/api/feishu/sync-out" and method == "POST":
+                self.sync_backend_to_feishu()
                 return
 
             self.write_error("接口不存在", 404)
@@ -1482,10 +1816,10 @@ class Handler(SimpleHTTPRequestHandler):
                 {
                     "name": "飞书渠道报名表",
                     "kind": "external",
-                    "location": "https://bxup9uklfcb.feishu.cn/wiki/UtVVwrmahiBQlokfhQrc0hh4np1",
-                    "content": "飞书渠道提交或导入的报名数据，和 Render 后台数据库是两套存储。",
+                    "location": FEISHU_TABLE_URL,
+                    "content": "飞书渠道报名数据。配置 Feishu OpenAPI 后，可从飞书拉取到 Render 数据库，也可把官网官方报名回写到飞书表。",
                     "countLabel": f"{counts['imports']} 条已导入记录",
-                    "safety": "外部数据源，需要后续通过飞书 API 或 CSV/JSON 导入同步。",
+                    "safety": "属于外部主表，需配置 FEISHU_APP_ID、FEISHU_APP_SECRET、FEISHU_APP_TOKEN、FEISHU_TABLE_ID；字段名不一致时用 FEISHU_FIELD_MAP 映射。",
                 },
                 {
                     "name": "浏览器本地缓存",
@@ -2637,6 +2971,139 @@ class Handler(SimpleHTTPRequestHandler):
         persist_database("archive")
         self.write_json({"ok": True, "archived": True})
 
+    def sync_feishu_to_backend(self):
+        if not self.require_admin():
+            return
+        try:
+            records = feishu_list_records()
+            rows = feishu_import_rows_from_records(records)
+        except FeishuConfigError as exc:
+            self.write_error(str(exc), 400)
+            return
+        except FeishuApiError as exc:
+            self.write_error(str(exc), 502)
+            return
+        with db() as connection:
+            connection.execute(
+                "insert into imported_records (created_at, source, payload_json) values (?, ?, ?)",
+                (now_iso(), "feishu-api", json.dumps(rows, ensure_ascii=False)),
+            )
+            upserted = self.upsert_feishu_rows(connection, rows)
+        persisted = persist_database("feishu-sync-in")
+        self.write_json(
+            {
+                "ok": True,
+                "direction": "feishu-to-backend",
+                "count": len(rows),
+                "upserted": upserted,
+                "backup": persisted,
+            }
+        )
+
+    def sync_backend_to_feishu(self):
+        if not self.require_admin():
+            return
+        try:
+            available_fields = feishu_table_field_names()
+            remote_rows = feishu_import_rows_from_records(feishu_list_records())
+            remote_index = feishu_remote_index(remote_rows)
+        except FeishuConfigError as exc:
+            self.write_error(str(exc), 400)
+            return
+        except FeishuApiError as exc:
+            self.write_error(str(exc), 502)
+            return
+        created = 0
+        updated = 0
+        skipped = 0
+        timestamp = now_iso()
+        with db() as connection:
+            rows = connection.execute(
+                """
+                select
+                  r.*,
+                  s.proposal,
+                  s.acceptance,
+                  s.reward,
+                  s.showcase
+                from registrations r
+                left join registration_statuses s on s.registration_id = r.id
+                where r.archived_at = ''
+                order by r.id asc
+                """
+            ).fetchall()
+            for row in rows:
+                fields = feishu_fields_for_registration(row, available_fields=available_fields)
+                if not fields:
+                    skipped += 1
+                    continue
+                match_values = {
+                    "email": row["email"],
+                    "githubRepo": row["github_repo"],
+                }
+                record_id = row["feishu_record_id"] or ""
+                if not record_id:
+                    for key in registration_match_keys(match_values):
+                        record_id = remote_index.get(key, "")
+                        if record_id:
+                            break
+                try:
+                    if record_id:
+                        feishu_request(
+                            "PUT",
+                            f"{feishu_table_path()}/records/{quote(record_id)}",
+                            payload={"fields": fields},
+                        )
+                        updated += 1
+                    else:
+                        response = feishu_request(
+                            "POST",
+                            f"{feishu_table_path()}/records",
+                            payload={"fields": fields},
+                        )
+                        record = response.get("record") or {}
+                        record_id = record.get("record_id") or response.get("record_id") or ""
+                        created += 1
+                    connection.execute(
+                        """
+                        update registrations
+                        set feishu_record_id = coalesce(nullif(?, ''), feishu_record_id),
+                            feishu_synced_at = ?
+                        where id = ?
+                        """,
+                        (record_id, timestamp, row["id"]),
+                    )
+                except FeishuApiError as exc:
+                    raise FeishuApiError(f"同步报名 #{row['id']} 到飞书失败：{exc}")
+            connection.execute(
+                "insert into imported_records (created_at, source, payload_json) values (?, ?, ?)",
+                (
+                    timestamp,
+                    "backend-to-feishu",
+                    json.dumps(
+                        {
+                            "created": created,
+                            "updated": updated,
+                            "skipped": skipped,
+                            "fieldNames": sorted(available_fields),
+                        },
+                        ensure_ascii=False,
+                    ),
+                ),
+            )
+        persisted = persist_database("feishu-sync-out")
+        self.write_json(
+            {
+                "ok": True,
+                "direction": "backend-to-feishu",
+                "created": created,
+                "updated": updated,
+                "skipped": skipped,
+                "fieldNames": sorted(available_fields),
+                "backup": persisted,
+            }
+        )
+
     def save_imported_records(self):
         if not self.require_admin():
             return
@@ -2676,6 +3143,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "reward": import_field(row, "reward"),
                 "showcase": import_field(row, "showcase"),
             }
+            record_id = clean_text(row, "__feishuRecordId") or clean_text(row, "record_id")
             if not any([data["email"], data["githubRepo"], data["projectName"]]):
                 continue
             existing = None
@@ -2707,7 +3175,9 @@ class Handler(SimpleHTTPRequestHandler):
                       summary = coalesce(nullif(?, ''), summary),
                       bank_account = coalesce(nullif(?, ''), bank_account),
                       bank_branch = coalesce(nullif(?, ''), bank_branch),
-                      source = 'feishu'
+                      feishu_record_id = coalesce(nullif(?, ''), feishu_record_id),
+                      feishu_synced_at = coalesce(nullif(?, ''), feishu_synced_at),
+                      source = case when source = '' then 'feishu' else source end
                     where id = ?
                     """,
                     (
@@ -2723,6 +3193,8 @@ class Handler(SimpleHTTPRequestHandler):
                         data["summary"],
                         data["bankAccount"],
                         data["bankBranch"],
+                        record_id,
+                        timestamp if record_id else "",
                         registration_id,
                     ),
                 )
@@ -2733,8 +3205,9 @@ class Handler(SimpleHTTPRequestHandler):
                       created_at, updated_at, name, email, school, github_login,
                       github_repo, project_name, project_type, summary,
                       proposal_file_name, student_file_name, id_number, bank_account,
-                      bank_branch, id_front_file_name, id_back_file_name, source
-                    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, '', '', 'feishu')
+                      bank_branch, id_front_file_name, id_back_file_name,
+                      feishu_record_id, feishu_synced_at, source
+                    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, '', '', ?, ?, 'feishu')
                     """,
                     (
                         timestamp,
@@ -2750,6 +3223,8 @@ class Handler(SimpleHTTPRequestHandler):
                         data["idNumber"],
                         data["bankAccount"],
                         data["bankBranch"],
+                        record_id,
+                        timestamp if record_id else "",
                     ),
                 )
                 registration_id = cursor.lastrowid

@@ -34,6 +34,18 @@ services:
         sync: false
       - key: OPENAI_API_KEY
         sync: false
+      - key: FEISHU_APP_ID
+        sync: false
+      - key: FEISHU_APP_SECRET
+        sync: false
+      - key: FEISHU_APP_TOKEN
+        sync: false
+      - key: FEISHU_TABLE_ID
+        value: tblpdjqjCZdRNJah
+      - key: FEISHU_VIEW_ID
+        value: vewygPXWz5
+      - key: FEISHU_FIELD_MAP
+        sync: false
       - key: SMTP_HOST
         sync: false
       - key: SMTP_FROM
