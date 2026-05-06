@@ -2984,6 +2984,144 @@ a {
   margin-top: 0;
 }
 
+.admin-submission-list {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.admin-submission-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--primary) 7%, transparent), transparent 38%),
+    var(--card);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.06);
+  cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.admin-submission-card:hover,
+.admin-submission-card.is-selected {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  box-shadow: 0 22px 48px rgba(94, 133, 255, 0.16);
+}
+
+.admin-submission-card.is-archived {
+  opacity: 0.72;
+}
+
+.admin-submission-card-head,
+.admin-submission-project {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.admin-submission-card-head > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-submission-card-head > strong {
+  color: var(--text);
+  font-size: 1rem;
+  text-align: right;
+}
+
+.admin-submission-project h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(1.25rem, 2vw, 1.7rem);
+}
+
+.admin-submission-project p,
+.admin-submission-grid p,
+.admin-submission-summary {
+  margin: 4px 0 0;
+  color: var(--text-soft);
+  line-height: 1.55;
+}
+
+.admin-submission-repo {
+  max-width: min(520px, 48%);
+  text-align: right;
+  word-break: break-all;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+.admin-submission-repo a {
+  color: inherit;
+}
+
+.admin-submission-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.admin-submission-grid > div {
+  min-height: 108px;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: color-mix(in srgb, #fff 82%, transparent);
+}
+
+.admin-submission-grid span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.admin-submission-grid strong {
+  color: var(--text);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.admin-submission-summary {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--primary) 6%, transparent);
+}
+
+.admin-submission-action {
+  justify-self: start;
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.admin-empty-state {
+  padding: 28px;
+  border: 1px dashed color-mix(in srgb, var(--primary) 35%, var(--border));
+  border-radius: 22px;
+  color: var(--text-soft);
+  background: color-mix(in srgb, var(--primary) 5%, transparent);
+}
+
+.admin-empty-state strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.tag-muted {
+  border-color: var(--border);
+  background: color-mix(in srgb, var(--text-soft) 8%, transparent);
+  color: var(--text-soft);
+}
+
 .admin-badge {
   display: inline-flex;
   align-items: center;
@@ -3969,7 +4107,8 @@ a {
 
   .admin-transition-controls,
   .admin-transition-groups,
-  .admin-event-layout {
+  .admin-event-layout,
+  .admin-submission-grid {
     grid-template-columns: 1fr;
   }
 
@@ -4075,6 +4214,20 @@ a {
   .admin-storage-summary {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .admin-submission-card-head,
+  .admin-submission-project {
+    flex-direction: column;
+  }
+
+  .admin-submission-card-head > strong {
+    text-align: left;
+  }
+
+  .admin-submission-repo {
+    max-width: 100%;
+    text-align: left;
   }
 
   .eyebrow,

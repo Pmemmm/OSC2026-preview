@@ -464,28 +464,11 @@ function renderShell() {
         <div class="admin-card-head">
           <div>
             <h2>全部提交数据</h2>
-            <p>这里展示 Render SQLite 中保存的全部报名记录。选中任意一行可查看完整报名字段、材料文件、仓库检查、AI 审核建议、流程状态和通知记录。</p>
+            <p>这里展示 Render SQLite 中保存的全部报名记录。飞书报名和官网报名都会进入这里；点击任意卡片可查看完整字段、材料文件、仓库检查、AI 审核建议、流程状态和通知记录。</p>
           </div>
           <span id="admin-count">0 条</span>
         </div>
-        <div class="admin-table-wrap">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>编号 / 来源</th>
-                <th>项目与仓库</th>
-                <th>选手</th>
-                <th>联系方式 / 学校</th>
-                <th>材料与敏感信息</th>
-                <th>仓库检查</th>
-                <th>流程状态</th>
-                <th>奖励 / 作品墙</th>
-                <th>提交时间</th>
-              </tr>
-            </thead>
-            <tbody id="admin-table-body"></tbody>
-          </table>
-        </div>
+        <div class="admin-submission-list" id="admin-table-body"></div>
       </section>
       <section class="admin-card admin-card--detail" id="admin-detail">
         <div class="progress-alert">选择一条报名记录后，在这里查看详情和维护状态。</div>
@@ -730,56 +713,81 @@ function renderList() {
   $("#admin-count").textContent = `${rows.length} 条`;
   $("#admin-table-body").innerHTML = rows.map((item) => {
     const repoCheck = repoCheckSummary(item);
+    const source = sourceLabel(item.source);
+    const externalNo = item.externalRegistrationNo ? `飞书编号 ${item.externalRegistrationNo}` : "";
+    const repoHtml = item.githubRepo
+      ? `<a href="${escapeHtml(item.githubRepo)}" target="_blank" rel="noreferrer">${escapeHtml(item.githubRepo)}</a>`
+      : `<span>未填写仓库</span>`;
     return `
-      <tr data-id="${item.id}" class="${[
+      <article data-id="${item.id}" class="${[
+        "admin-submission-card",
         Number(item.id) === Number(selectedId) ? "is-selected" : "",
         item.archived ? "is-archived" : "",
       ].filter(Boolean).join(" ")}">
-        <td>
-          <strong>#${item.id}</strong>
-          <span>${escapeHtml(sourceLabel(item.source))}</span>
-          ${item.archived ? statusBadge("已归档", { warn: true }) : ""}
-        </td>
-        <td>
-          <strong>${escapeHtml(item.projectName || "未命名项目")}</strong>
-          <span>${escapeHtml(item.projectType || "未填写方向")}</span>
-          <span>${escapeHtml(item.githubRepo || "未填写仓库")}</span>
-        </td>
-        <td>
-          <strong>${escapeHtml(item.name || "未填写")}</strong>
-          <span>GitHub：${escapeHtml(item.githubLogin || "未填写")}</span>
-        </td>
-        <td>
-          <strong>${escapeHtml(item.email || "邮箱未填")}</strong>
-          <span>${escapeHtml(item.school || "学校 / 组织未填")}</span>
-        </td>
-        <td>
-          <strong>${escapeHtml(materialSummary(item))}</strong>
-          <span>${escapeHtml(sensitiveSummary(item))}</span>
-        </td>
-        <td>
-          <strong>${escapeHtml(repoCheck.title)}</strong>
-          <span>${escapeHtml(repoCheck.body)}</span>
-        </td>
-        <td>
-          ${statusBadge(stageLabel(item))}
-          <span>申报：${escapeHtml(item.status?.proposal || "申报审核中")}</span>
-          <span>验收：${escapeHtml(item.status?.acceptance || "未提交")}</span>
-        </td>
-        <td>
-          ${statusBadge(item.status?.reward)}
-          <span>${escapeHtml(item.status?.showcase || "待上墙")}</span>
-        </td>
-        <td>
-          <strong>${formatTime(item.createdAt)}</strong>
-          <span>更新：${formatTime(item.updatedAt)}</span>
-          ${item.archivedAt ? `<span>归档：${formatTime(item.archivedAt)}</span>` : ""}
-        </td>
-      </tr>
+        <div class="admin-submission-card-head">
+          <div>
+            <span class="tag">${escapeHtml(source)}</span>
+            ${externalNo ? `<span class="tag tag-muted">${escapeHtml(externalNo)}</span>` : ""}
+            ${item.archived ? statusBadge("已归档") : statusBadge(stageLabel(item))}
+          </div>
+          <strong>#${escapeHtml(item.id)} · ${escapeHtml(item.projectName || "未命名项目")}</strong>
+        </div>
+        <div class="admin-submission-project">
+          <div>
+            <h3>${escapeHtml(item.projectName || "未命名项目")}</h3>
+            <p>${escapeHtml(item.projectType || "未填写方向")}</p>
+          </div>
+          <div class="admin-submission-repo">${repoHtml}</div>
+        </div>
+        <div class="admin-submission-grid">
+          <div>
+            <span>选手</span>
+            <strong>${escapeHtml(item.name || "未填写")}</strong>
+            <p>GitHub：${escapeHtml(item.githubLogin || "未填写")}</p>
+          </div>
+          <div>
+            <span>联系方式 / 学校</span>
+            <strong>${escapeHtml(item.email || "邮箱未填")}</strong>
+            <p>${escapeHtml(item.school || "学校 / 组织未填")}</p>
+          </div>
+          <div>
+            <span>材料与敏感信息</span>
+            <strong>${escapeHtml(materialSummary(item))}</strong>
+            <p>${escapeHtml(sensitiveSummary(item))}</p>
+          </div>
+          <div>
+            <span>仓库检查</span>
+            <strong>${escapeHtml(repoCheck.title)}</strong>
+            <p>${escapeHtml(repoCheck.body)}</p>
+          </div>
+          <div>
+            <span>流程状态</span>
+            <strong>申报：${escapeHtml(item.status?.proposal || "申报审核中")}</strong>
+            <p>验收：${escapeHtml(item.status?.acceptance || "未提交")}</p>
+          </div>
+          <div>
+            <span>奖励 / 作品墙</span>
+            <strong>${escapeHtml(item.status?.reward || "未开始")}</strong>
+            <p>${escapeHtml(item.status?.showcase || "待上墙")}</p>
+          </div>
+          <div>
+            <span>提交时间</span>
+            <strong>${formatTime(item.createdAt)}</strong>
+            <p>更新：${formatTime(item.updatedAt)}</p>
+          </div>
+        </div>
+        ${item.summary ? `<p class="admin-submission-summary">${escapeHtml(item.summary)}</p>` : ""}
+        <div class="admin-submission-action">点击查看完整填报信息和流程操作</div>
+      </article>
     `;
-  }).join("") || `<tr><td colspan="9">暂无报名记录。</td></tr>`;
+  }).join("") || `
+    <div class="admin-empty-state">
+      <strong>暂无报名记录。</strong>
+      <p>如果飞书报名表已有数据，请先确认 Render 已配置飞书 OpenAPI，或使用管理员工具执行“飞书同步到后台”。同步后会直接显示在这里。</p>
+    </div>
+  `;
 
-  $("#admin-table-body").querySelectorAll("tr[data-id]").forEach((row) => {
+  $("#admin-table-body").querySelectorAll("[data-id]").forEach((row) => {
     row.addEventListener("click", () => selectRegistration(row.dataset.id));
   });
 }
@@ -893,6 +901,8 @@ function completeSubmissionPanel(data) {
       </div>
       <div class="admin-info-grid">
         ${infoItem("报名编号", `#${item.id || "-"}`)}
+        ${infoItem("飞书报名编号", item.externalRegistrationNo || "非飞书记录 / 未同步")}
+        ${infoItem("飞书记录 ID", item.feishuRecordId || "未同步")}
         ${infoItem("报名来源", sourceLabel(item.source))}
         ${infoItem("记录状态", item.archived ? `已归档：${formatTime(item.archivedAt)}` : "正常")}
         ${infoItem("创建时间", formatTime(item.createdAt))}
@@ -1124,6 +1134,7 @@ function renderDetail(data) {
       <div><span>GitHub 用户名</span><strong>${escapeHtml(item.githubLogin || "-")}</strong></div>
       <div><span>项目方向</span><strong>${escapeHtml(item.projectType || "-")}</strong></div>
       <div><span>报名来源</span><strong>${escapeHtml(sourceLabel(item.source))}</strong></div>
+      <div><span>飞书报名编号</span><strong>${escapeHtml(item.externalRegistrationNo || "-")}</strong></div>
       <div><span>记录状态</span><strong>${item.archived ? "已归档" : "正常"}</strong></div>
       <div><span>创建时间</span><strong>${formatTime(item.createdAt)}</strong></div>
       <div><span>更新时间</span><strong>${formatTime(item.updatedAt)}</strong></div>
@@ -1472,7 +1483,12 @@ async function loadRegistrations(showLoading = true) {
     await loadStorageInfo();
     renderStats();
     renderList();
-    if (!registrations.length) {
+    if (registrations.length) {
+      if (!registrations.some((item) => Number(item.id) === Number(selectedId))) {
+        selectedId = registrations[0].id;
+      }
+      await selectRegistration(selectedId);
+    } else {
       $("#admin-detail").innerHTML = `<div class="progress-alert">数据库已连接：${escapeHtml(health.database)}。暂无报名记录，可以从“新建报名”或飞书导入开始。</div>`;
     }
   } catch (error) {

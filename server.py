@@ -62,9 +62,11 @@ FIELD_ALIASES = {
     "acceptance": ["验收状态", "项目验收状态", "验收审核状态", "acceptance", "acceptanceStatus"],
     "reward": ["奖励状态", "激励状态", "奖金状态", "reward", "rewardStatus"],
     "showcase": ["作品墙状态", "展示状态", "上墙状态", "showcase", "showcaseStatus"],
+    "backendId": ["报名编号", "后台编号", "ID", "编号", "backendId"],
 }
 
 REGISTRATION_EXTRA_COLUMNS = {
+    "external_registration_no": "text not null default ''",
     "id_number": "text not null default ''",
     "bank_account": "text not null default ''",
     "bank_branch": "text not null default ''",
@@ -912,6 +914,7 @@ def registration_from_row(row, include_sensitive=False):
     result = {
         "id": row["id"],
         "serverId": row["id"],
+        "externalRegistrationNo": row["external_registration_no"] if "external_registration_no" in row.keys() else "",
         "createdAt": row["created_at"],
         "updatedAt": row["updated_at"],
         "name": row["name"],
@@ -3180,6 +3183,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "projectName": import_field(row, "projectName"),
                 "projectType": import_field(row, "projectType"),
                 "summary": import_field(row, "summary"),
+                "externalRegistrationNo": import_field(row, "backendId"),
                 "bankAccount": import_field(row, "bankAccount"),
                 "bankBranch": import_field(row, "bankBranch"),
                 "proposal": import_field(row, "proposal"),
@@ -3217,6 +3221,7 @@ class Handler(SimpleHTTPRequestHandler):
                       project_name = coalesce(nullif(?, ''), project_name),
                       project_type = coalesce(nullif(?, ''), project_type),
                       summary = coalesce(nullif(?, ''), summary),
+                      external_registration_no = coalesce(nullif(?, ''), external_registration_no),
                       bank_account = coalesce(nullif(?, ''), bank_account),
                       bank_branch = coalesce(nullif(?, ''), bank_branch),
                       feishu_record_id = coalesce(nullif(?, ''), feishu_record_id),
@@ -3235,6 +3240,7 @@ class Handler(SimpleHTTPRequestHandler):
                         data["projectName"],
                         data["projectType"],
                         data["summary"],
+                        data["externalRegistrationNo"],
                         data["bankAccount"],
                         data["bankBranch"],
                         record_id,
@@ -3248,10 +3254,10 @@ class Handler(SimpleHTTPRequestHandler):
                     insert into registrations (
                       created_at, updated_at, name, email, school, github_login,
                       github_repo, project_name, project_type, summary,
-                      proposal_file_name, student_file_name, id_number, bank_account,
+                      proposal_file_name, student_file_name, external_registration_no, id_number, bank_account,
                       bank_branch, id_front_file_name, id_back_file_name,
                       feishu_record_id, feishu_synced_at, source
-                    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, '', '', ?, ?, 'feishu')
+                    ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, '', '', ?, ?, 'feishu')
                     """,
                     (
                         timestamp,
@@ -3264,6 +3270,7 @@ class Handler(SimpleHTTPRequestHandler):
                         data["projectName"],
                         data["projectType"],
                         data["summary"],
+                        data["externalRegistrationNo"],
                         data["idNumber"],
                         data["bankAccount"],
                         data["bankBranch"],
