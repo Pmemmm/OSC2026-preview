@@ -459,7 +459,6 @@ function renderShell() {
     </div>
     <div class="admin-stats" id="admin-stats"></div>
     <div class="admin-workflow-board" id="admin-workflow-board"></div>
-    <div class="admin-storage-panel" id="admin-storage-panel"></div>
     <div class="admin-layout">
       <section class="admin-card admin-card--table">
         <div class="admin-card-head">
@@ -492,6 +491,7 @@ function renderShell() {
         <div class="progress-alert">选择一条报名记录后，在这里查看详情和维护状态。</div>
       </section>
     </div>
+    <div class="admin-storage-panel" id="admin-storage-panel"></div>
   `;
   $("#admin-search").addEventListener("input", renderList);
   $("#admin-stage-filter").addEventListener("change", renderList);
@@ -638,10 +638,16 @@ function renderStorage() {
   if (!panel) return;
   if (!storageInfo) {
     panel.innerHTML = `
-      <div class="admin-storage-card">
-        <strong>数据安全</strong>
-        <p>正在读取数据库状态和备份信息...</p>
-      </div>
+      <details class="admin-storage-card">
+        <summary class="admin-storage-summary">
+          <div>
+            <span class="tag">数据安全</span>
+            <strong>报名数据存储状态</strong>
+            <p>正在读取数据库状态和备份信息...</p>
+          </div>
+          <span class="admin-storage-toggle">展开</span>
+        </summary>
+      </details>
     `;
     return;
   }
@@ -652,58 +658,68 @@ function renderStorage() {
   const persistenceWarning = persistence.message || "当前使用 SQLite 文件存储。请确认生产环境已配置持久盘或外部数据库，否则重新部署可能导致数据丢失。";
   const syncStatus = autoSyncSummary(storageInfo.feishuAutoSync);
   panel.innerHTML = `
-    <div class="admin-storage-card">
-      <div>
-        <span class="tag">数据安全</span>
-        <h3>报名数据存储状态</h3>
-        <p>数据库：<code>${escapeHtml(storageInfo.database)}</code></p>
-        <p>备份目录：<code>${escapeHtml(storageInfo.backupDir)}</code></p>
-        <p>快照目录：<code>${escapeHtml(storageInfo.snapshotDir || "")}</code></p>
-      </div>
-      <div class="progress-alert ${syncStatus.tone}">
-        <strong>${escapeHtml(syncStatus.title)}</strong>
-        <p>${escapeHtml(syncStatus.body)}</p>
-      </div>
-      <div class="progress-alert progress-alert--error admin-storage-warning">
-        <strong>必须确认持久存储。</strong>
-        <p>${escapeHtml(persistenceWarning)}</p>
-        <p>当前看到的 SQLite 备份和 JSON 快照只能保护“同一个持久存储卷”内的数据；如果 Render Disk 未生效，它们会随重新部署一起消失。</p>
-      </div>
-      <div class="admin-storage-locations">
-        <div class="admin-storage-section-head">
-          <strong>所有数据存储位置</strong>
-          <span>用于确认报名数据、材料、日志、外部渠道和浏览器缓存分别存在哪里。</span>
-        </div>
-        <div class="admin-storage-location-grid">
-          ${storageLocationCards(storageInfo.storageLocations)}
-        </div>
-      </div>
-      <div class="admin-storage-metrics">
-        <div><span>报名</span><strong>${counts.registrations ?? registrations.length}</strong></div>
-        <div><span>材料文件</span><strong>${counts.files ?? 0}</strong></div>
-        <div><span>数据库大小</span><strong>${formatBytes(storageInfo.databaseSize)}</strong></div>
-        <div><span>最近备份</span><strong>${latest ? formatTime(latest.createdAt) : "暂无"}</strong></div>
-        <div><span>最近快照</span><strong>${latestSnapshot ? formatTime(latestSnapshot.createdAt) : "暂无"}</strong></div>
-        <div><span>审计日志</span><strong>${formatBytes(storageInfo.ledgerSize || 0)}</strong></div>
-      </div>
-      <div class="admin-storage-actions">
-        <button class="button primary" type="button" data-action="create-backup">立即生成备份</button>
-        <a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/export"))}" target="_blank" rel="noreferrer">导出完整 JSON</a>
-        <button class="button secondary" type="button" data-action="restore-json">从 JSON 恢复</button>
-        ${storageInfo.ledgerSize ? `<a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/ledger"))}" target="_blank" rel="noreferrer">下载审计日志</a>` : ""}
-        <span>系统会在报名、导入、审核、状态修改、归档等写入动作后，同时生成 SQLite 备份、完整 JSON 快照和审计日志；服务启动时若数据库为空，会尝试从 latest.json 自动恢复。正式运营前请先完成 Render 持久盘或外部数据库配置。</span>
-      </div>
-      <div class="admin-backup-grid">
+    <details class="admin-storage-card">
+      <summary class="admin-storage-summary">
         <div>
-          <strong>SQLite 备份</strong>
-          <div class="admin-backup-list">${backupLinks(storageInfo.backups)}</div>
+          <span class="tag">数据安全</span>
+          <strong>报名数据存储、备份与同步状态</strong>
+          <p>${counts.registrations ?? registrations.length} 条报名 · ${counts.files ?? 0} 份材料 · 最近备份 ${latest ? formatTime(latest.createdAt) : "暂无"}</p>
         </div>
-        <div>
-          <strong>JSON 快照</strong>
-          <div class="admin-backup-list">${snapshotLinks(storageInfo.snapshots)}</div>
+        <span class="admin-storage-toggle">展开查看</span>
+      </summary>
+      <div class="admin-storage-body">
+        <div class="admin-storage-paths">
+          <span class="tag">数据安全</span>
+          <h3>报名数据存储状态</h3>
+          <p>数据库：<code>${escapeHtml(storageInfo.database)}</code></p>
+          <p>备份目录：<code>${escapeHtml(storageInfo.backupDir)}</code></p>
+          <p>快照目录：<code>${escapeHtml(storageInfo.snapshotDir || "")}</code></p>
+        </div>
+        <div class="progress-alert ${syncStatus.tone}">
+          <strong>${escapeHtml(syncStatus.title)}</strong>
+          <p>${escapeHtml(syncStatus.body)}</p>
+        </div>
+        <div class="progress-alert progress-alert--error admin-storage-warning">
+          <strong>必须确认持久存储。</strong>
+          <p>${escapeHtml(persistenceWarning)}</p>
+          <p>当前看到的 SQLite 备份和 JSON 快照只能保护“同一个持久存储卷”内的数据；如果 Render Disk 未生效，它们会随重新部署一起消失。</p>
+        </div>
+        <div class="admin-storage-locations">
+          <div class="admin-storage-section-head">
+            <strong>所有数据存储位置</strong>
+            <span>用于确认报名数据、材料、日志、外部渠道和浏览器缓存分别存在哪里。</span>
+          </div>
+          <div class="admin-storage-location-grid">
+            ${storageLocationCards(storageInfo.storageLocations)}
+          </div>
+        </div>
+        <div class="admin-storage-metrics">
+          <div><span>报名</span><strong>${counts.registrations ?? registrations.length}</strong></div>
+          <div><span>材料文件</span><strong>${counts.files ?? 0}</strong></div>
+          <div><span>数据库大小</span><strong>${formatBytes(storageInfo.databaseSize)}</strong></div>
+          <div><span>最近备份</span><strong>${latest ? formatTime(latest.createdAt) : "暂无"}</strong></div>
+          <div><span>最近快照</span><strong>${latestSnapshot ? formatTime(latestSnapshot.createdAt) : "暂无"}</strong></div>
+          <div><span>审计日志</span><strong>${formatBytes(storageInfo.ledgerSize || 0)}</strong></div>
+        </div>
+        <div class="admin-storage-actions">
+          <button class="button primary" type="button" data-action="create-backup">立即生成备份</button>
+          <a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/export"))}" target="_blank" rel="noreferrer">导出完整 JSON</a>
+          <button class="button secondary" type="button" data-action="restore-json">从 JSON 恢复</button>
+          ${storageInfo.ledgerSize ? `<a class="button secondary" href="${escapeHtml(adminFileUrl("/api/admin/ledger"))}" target="_blank" rel="noreferrer">下载审计日志</a>` : ""}
+          <span>系统会在报名、导入、审核、状态修改、归档等写入动作后，同时生成 SQLite 备份、完整 JSON 快照和审计日志；服务启动时若数据库为空，会尝试从 latest.json 自动恢复。正式运营前请先完成 Render 持久盘或外部数据库配置。</span>
+        </div>
+        <div class="admin-backup-grid">
+          <div>
+            <strong>SQLite 备份</strong>
+            <div class="admin-backup-list">${backupLinks(storageInfo.backups)}</div>
+          </div>
+          <div>
+            <strong>JSON 快照</strong>
+            <div class="admin-backup-list">${snapshotLinks(storageInfo.snapshots)}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </details>
   `;
   panel.querySelector("[data-action='create-backup']")?.addEventListener("click", createBackup);
   panel.querySelector("[data-action='restore-json']")?.addEventListener("click", restoreFromJsonFile);
