@@ -77,6 +77,8 @@ data/mgpic2026.sqlite3
 - `GET /api/registrations/:id/files/:kind`：下载申报书或学生证明
 - `DELETE /api/registrations/:id`：删除报名记录
 - `POST /api/import/feishu`：保存飞书导入记录
+- `POST /api/feishu/sync-in`：管理员手动把飞书报名导入后台；线上服务可通过 `FEISHU_AUTO_SYNC_ENABLED=1` 自动每 6 小时导入一次
+- `POST /api/feishu/sync-out`：管理员手动把官网报名写入飞书表，默认不会自动执行
 - `GET /api/auth/github/start`：发起 GitHub OAuth 登录
 - `GET /api/auth/github/callback`：GitHub OAuth 回调，换取 token 并建立登录会话
 - `GET /api/auth/github/session`：读取当前 GitHub 登录会话

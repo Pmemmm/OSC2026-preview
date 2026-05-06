@@ -6,6 +6,7 @@ import io
 import secrets
 import smtplib
 import sqlite3
+import threading
 import time
 from http.cookies import SimpleCookie
 from datetime import datetime, timezone
@@ -31,6 +32,19 @@ GITHUB_API_URL = "https://api.github.com"
 FEISHU_API_BASE = os.environ.get("FEISHU_API_BASE", "https://open.feishu.cn/open-apis").rstrip("/")
 FEISHU_TABLE_URL = "https://bxup9uklfcb.feishu.cn/wiki/UtVVwrmahiBQlokfhQrc0hh4np1?table=tblpdjqjCZdRNJah&view=vewygPXWz5"
 FEISHU_TOKEN_CACHE = {"token": "", "expires_at": 0}
+FEISHU_AUTO_SYNC_LOCK = threading.Lock()
+FEISHU_AUTO_SYNC_STATE_LOCK = threading.Lock()
+FEISHU_AUTO_SYNC_STATE = {
+    "running": False,
+    "lastStartedAt": "",
+    "lastFinishedAt": "",
+    "lastOkAt": "",
+    "lastErrorAt": "",
+    "lastError": "",
+    "lastTrigger": "",
+    "lastResult": None,
+    "nextRunAt": "",
+}
 
 FIELD_ALIASES = {
     "name": ["姓名", "选手姓名", "参赛者", "项目负责人", "负责人", "name"],
@@ -137,6 +151,23 @@ RESTORE_TABLES = list(reversed(EXPORT_TABLES))
 
 def now_iso():
     return datetime.now(timezone.utc).isoformat()
+
+
+def env_bool(key, default=False):
+    value = os.environ.get(key)
+    if value is None or value == "":
+        return default
+    return str(value).strip().lower() in {"1", "true", "yes", "on"}
+
+
+def env_int(key, default, minimum=None):
+    try:
+        value = int(os.environ.get(key, str(default)))
+    except (TypeError, ValueError):
+        value = default
+    if minimum is not None:
+        value = max(minimum, value)
+    return value
 
 
 def db():
@@ -556,6 +587,33 @@ def feishu_config(include_secrets=False):
             }
         )
     return result
+
+
+def feishu_auto_sync_config():
+    # Only imports Feishu registration data into SQLite by default. Writing
+    # website data back to Feishu remains a manual admin action.
+    interval_seconds = env_int("FEISHU_AUTO_SYNC_INTERVAL_SECONDS", 6 * 60 * 60, minimum=60)
+    return {
+        "enabled": env_bool("FEISHU_AUTO_SYNC_ENABLED", False),
+        "intervalSeconds": interval_seconds,
+        "intervalHours": round(interval_seconds / 3600, 2),
+        "runsPerDay": round(86400 / interval_seconds, 2),
+        "runOnStart": env_bool("FEISHU_AUTO_SYNC_RUN_ON_START", True),
+        "direction": "feishu-to-backend",
+    }
+
+
+def update_feishu_auto_sync_state(**updates):
+    with FEISHU_AUTO_SYNC_STATE_LOCK:
+        FEISHU_AUTO_SYNC_STATE.update(updates)
+        return dict(FEISHU_AUTO_SYNC_STATE)
+
+
+def feishu_auto_sync_status():
+    status = update_feishu_auto_sync_state()
+    status["config"] = feishu_auto_sync_config()
+    status["feishuConfigured"] = feishu_config()["configured"]
+    return status
 
 
 def require_feishu_config():
@@ -1590,6 +1648,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "adminToken": bool(self.admin_token()),
                     "adminGithub": bool(admin_github_logins()),
                     "feishu": feishu_config(),
+                    "feishuAutoSync": feishu_auto_sync_status(),
                 })
                 return
 
@@ -1748,6 +1807,7 @@ class Handler(SimpleHTTPRequestHandler):
             "snapshots": snapshots,
             "latestSnapshot": str(latest_snapshot_path) if latest_snapshot_path.exists() else "",
             "ledgerSize": ledger_size,
+            "feishuAutoSync": feishu_auto_sync_status(),
             "storageLocations": [
                 {
                     "name": "主 SQLite 数据库",
@@ -2975,30 +3035,14 @@ class Handler(SimpleHTTPRequestHandler):
         if not self.require_admin():
             return
         try:
-            records = feishu_list_records()
-            rows = feishu_import_rows_from_records(records)
+            result = sync_feishu_to_backend_job(trigger="manual-admin")
         except FeishuConfigError as exc:
             self.write_error(str(exc), 400)
             return
         except FeishuApiError as exc:
             self.write_error(str(exc), 502)
             return
-        with db() as connection:
-            connection.execute(
-                "insert into imported_records (created_at, source, payload_json) values (?, ?, ?)",
-                (now_iso(), "feishu-api", json.dumps(rows, ensure_ascii=False)),
-            )
-            upserted = self.upsert_feishu_rows(connection, rows)
-        persisted = persist_database("feishu-sync-in")
-        self.write_json(
-            {
-                "ok": True,
-                "direction": "feishu-to-backend",
-                "count": len(rows),
-                "upserted": upserted,
-                "backup": persisted,
-            }
-        )
+        self.write_json(result)
 
     def sync_backend_to_feishu(self):
         if not self.require_admin():
@@ -3260,11 +3304,149 @@ class Handler(SimpleHTTPRequestHandler):
         return count
 
 
+def sync_feishu_to_backend_job(trigger="manual", raise_errors=True):
+    if not FEISHU_AUTO_SYNC_LOCK.acquire(blocking=False):
+        result = {
+            "ok": False,
+            "direction": "feishu-to-backend",
+            "skipped": True,
+            "error": "已有飞书同步任务正在运行。",
+            "trigger": trigger,
+        }
+        update_feishu_auto_sync_state(lastResult=result)
+        return result
+    started_at = now_iso()
+    update_feishu_auto_sync_state(
+        running=True,
+        lastStartedAt=started_at,
+        lastTrigger=trigger,
+        lastError="",
+    )
+    try:
+        records = feishu_list_records()
+        rows = feishu_import_rows_from_records(records)
+        with db() as connection:
+            connection.execute(
+                "insert into imported_records (created_at, source, payload_json) values (?, ?, ?)",
+                (now_iso(), f"feishu-api-{trigger}", json.dumps(rows, ensure_ascii=False)),
+            )
+            upserted = Handler.upsert_feishu_rows(None, connection, rows)
+        persisted = persist_database("feishu-sync-in")
+        finished_at = now_iso()
+        result = {
+            "ok": True,
+            "direction": "feishu-to-backend",
+            "count": len(rows),
+            "upserted": upserted,
+            "backup": persisted,
+            "trigger": trigger,
+            "startedAt": started_at,
+            "finishedAt": finished_at,
+        }
+        append_ledger_event({
+            "event": "feishu-sync-in",
+            "trigger": trigger,
+            "createdAt": finished_at,
+            "count": len(rows),
+            "upserted": upserted,
+        })
+        update_feishu_auto_sync_state(
+            running=False,
+            lastFinishedAt=finished_at,
+            lastOkAt=finished_at,
+            lastError="",
+            lastResult=result,
+        )
+        return result
+    except (FeishuConfigError, FeishuApiError) as exc:
+        finished_at = now_iso()
+        result = {
+            "ok": False,
+            "direction": "feishu-to-backend",
+            "error": str(exc),
+            "trigger": trigger,
+            "startedAt": started_at,
+            "finishedAt": finished_at,
+        }
+        append_ledger_event({
+            "event": "feishu-sync-in-error",
+            "trigger": trigger,
+            "createdAt": finished_at,
+            "error": str(exc),
+        })
+        update_feishu_auto_sync_state(
+            running=False,
+            lastFinishedAt=finished_at,
+            lastErrorAt=finished_at,
+            lastError=str(exc),
+            lastResult=result,
+        )
+        if raise_errors:
+            raise
+        return result
+    except Exception as exc:
+        finished_at = now_iso()
+        result = {
+            "ok": False,
+            "direction": "feishu-to-backend",
+            "error": str(exc),
+            "trigger": trigger,
+            "startedAt": started_at,
+            "finishedAt": finished_at,
+        }
+        append_ledger_event({
+            "event": "feishu-sync-in-error",
+            "trigger": trigger,
+            "createdAt": finished_at,
+            "error": str(exc),
+        })
+        update_feishu_auto_sync_state(
+            running=False,
+            lastFinishedAt=finished_at,
+            lastErrorAt=finished_at,
+            lastError=str(exc),
+            lastResult=result,
+        )
+        if raise_errors:
+            raise FeishuApiError(str(exc))
+        return result
+    finally:
+        update_feishu_auto_sync_state(running=False)
+        FEISHU_AUTO_SYNC_LOCK.release()
+
+
+def feishu_auto_sync_loop():
+    config = feishu_auto_sync_config()
+    interval = config["intervalSeconds"]
+    if config["runOnStart"]:
+        sync_feishu_to_backend_job(trigger="auto-start", raise_errors=False)
+    while True:
+        next_run_at = datetime.fromtimestamp(time.time() + interval, timezone.utc).isoformat()
+        update_feishu_auto_sync_state(nextRunAt=next_run_at)
+        time.sleep(interval)
+        sync_feishu_to_backend_job(trigger="auto-scheduled", raise_errors=False)
+
+
+def start_feishu_auto_sync():
+    config = feishu_auto_sync_config()
+    if not config["enabled"]:
+        update_feishu_auto_sync_state(nextRunAt="")
+        return None
+    thread = threading.Thread(target=feishu_auto_sync_loop, name="feishu-auto-sync", daemon=True)
+    thread.start()
+    print(
+        "Feishu auto sync enabled: "
+        f"every {config['intervalSeconds']} seconds, direction={config['direction']}"
+    )
+    return thread
+
+
 def main():
     init_db()
     recovery = recover_database_from_latest_snapshot()
     if recovery:
         print(f"Snapshot recovery: {recovery}")
+    start_feishu_auto_sync()
     port = int(os.environ.get("PORT", "4174"))
     host = os.environ.get("HOST", "127.0.0.1")
     server = ThreadingHTTPServer((host, port), Handler)

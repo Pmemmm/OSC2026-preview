@@ -46,6 +46,12 @@ services:
         value: vewygPXWz5
       - key: FEISHU_FIELD_MAP
         sync: false
+      - key: FEISHU_AUTO_SYNC_ENABLED
+        value: "1"
+      - key: FEISHU_AUTO_SYNC_INTERVAL_SECONDS
+        value: "21600"
+      - key: FEISHU_AUTO_SYNC_RUN_ON_START
+        value: "1"
       - key: SMTP_HOST
         sync: false
       - key: SMTP_FROM

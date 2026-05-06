@@ -36,6 +36,7 @@ GitHub Pages 页面会在静态域名下自动把 `/api/*` 请求转到这个 Re
    `FEISHU_TABLE_ID`
    `FEISHU_VIEW_ID`
    其中 `FEISHU_TABLE_ID` 当前为 `tblpdjqjCZdRNJah`，`FEISHU_VIEW_ID` 当前为 `vewygPXWz5`。`FEISHU_APP_TOKEN` 是多维表格的 app token，不是 table id；系统会自动匹配“邮箱 / 联系邮箱”“GitHub 仓库 / 项目 GitHub 链接”等常见字段名，如果字段名仍不一致，可用 `FEISHU_FIELD_MAP` 配置 JSON，例如 `{"email":"联系邮箱","githubRepo":"项目 GitHub 链接"}`。
+   `FEISHU_AUTO_SYNC_ENABLED=1` 会开启飞书报名自动导入后台；`FEISHU_AUTO_SYNC_INTERVAL_SECONDS=21600` 表示每 6 小时导入一次，也就是每天 4 次；`FEISHU_AUTO_SYNC_RUN_ON_START=1` 表示服务启动后先导入一次。
 
 ## 重要说明
 
@@ -48,7 +49,7 @@ GitHub Pages 页面会在静态域名下自动把 `/api/*` 请求转到这个 Re
 - 后台的“数据安全”区域可以手动生成备份、导出完整 JSON、下载审计日志。涉及身份证、银行卡和材料文件，导出文件只能交给赛事管理员保存。
 - 报名表会收集身份证、银行卡和证明材料，部署平台必须限制管理员访问，不要把数据库文件公开。
 - 后台管理员推荐使用 `ADMIN_GITHUB_LOGINS` 白名单登录；`ADMIN_TOKEN` 保留给临时排障或没有 GitHub 权限的内部工作人员。
-- 后台提供两个飞书同步动作：“飞书同步到后台”会把飞书报名记录写入 Render SQLite；“官网报名写入飞书”会按邮箱或 GitHub 仓库匹配记录，把官网报名数据回写到飞书表。
+- 后台提供两个飞书同步动作：“飞书同步到后台”会把飞书报名记录写入 Render SQLite；“官网报名写入飞书”会按邮箱或 GitHub 仓库匹配记录，把官网报名数据回写到飞书表。自动同步默认只做“飞书报名读取到后台”，不会自动改动飞书表。
 - 如果继续使用 GitHub Pages 作为公开入口，需要再把页面里的 API base 指向后端域名；最简单稳定的方式是直接对外使用后端域名。
 
 ## 排查

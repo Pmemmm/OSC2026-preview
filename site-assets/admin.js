@@ -588,6 +588,51 @@ function storageLocationCards(locations = []) {
   `).join("");
 }
 
+function autoSyncSummary(autoSync = {}) {
+  const config = autoSync.config || {};
+  const result = autoSync.lastResult || {};
+  if (!config.enabled) {
+    return {
+      tone: "",
+      title: "飞书自动导入未启用",
+      body: "当前只支持管理员手动点击“飞书同步到后台”。需要自动导入时，在 Render 环境变量中开启 FEISHU_AUTO_SYNC_ENABLED。",
+    };
+  }
+  if (!autoSync.feishuConfigured) {
+    return {
+      tone: "progress-alert--error",
+      title: "飞书自动导入已开启，但 OpenAPI 未配置完整",
+      body: "请确认 FEISHU_APP_ID、FEISHU_APP_SECRET、FEISHU_APP_TOKEN、FEISHU_TABLE_ID 已配置；系统会继续按计划尝试，但不会写入数据。",
+    };
+  }
+  if (autoSync.running) {
+    return {
+      tone: "",
+      title: "飞书自动导入正在执行",
+      body: `开始时间：${formatTime(autoSync.lastStartedAt)}。本任务只读取飞书报名表并写入后台数据库，不会自动改动飞书表。`,
+    };
+  }
+  if (autoSync.lastError) {
+    return {
+      tone: "progress-alert--error",
+      title: "最近一次飞书自动导入失败",
+      body: `${autoSync.lastError}；下次计划：${formatTime(autoSync.nextRunAt)}。`,
+    };
+  }
+  if (result.ok) {
+    return {
+      tone: "progress-alert--ok",
+      title: "飞书自动导入正常",
+      body: `最近 ${formatTime(autoSync.lastOkAt)} 读取 ${result.count || 0} 条，写入/更新 ${result.upserted || 0} 条；下次计划：${formatTime(autoSync.nextRunAt)}。`,
+    };
+  }
+  return {
+    tone: "",
+    title: "飞书自动导入等待首次执行",
+    body: `频率约 ${config.intervalHours || 6} 小时一次，每天约 ${config.runsPerDay || 4} 次；下次计划：${formatTime(autoSync.nextRunAt)}。`,
+  };
+}
+
 function renderStorage() {
   const panel = $("#admin-storage-panel");
   if (!panel) return;
@@ -605,6 +650,7 @@ function renderStorage() {
   const latestSnapshot = (storageInfo.snapshots || [])[0];
   const persistence = storageInfo.persistence || {};
   const persistenceWarning = persistence.message || "当前使用 SQLite 文件存储。请确认生产环境已配置持久盘或外部数据库，否则重新部署可能导致数据丢失。";
+  const syncStatus = autoSyncSummary(storageInfo.feishuAutoSync);
   panel.innerHTML = `
     <div class="admin-storage-card">
       <div>
@@ -613,6 +659,10 @@ function renderStorage() {
         <p>数据库：<code>${escapeHtml(storageInfo.database)}</code></p>
         <p>备份目录：<code>${escapeHtml(storageInfo.backupDir)}</code></p>
         <p>快照目录：<code>${escapeHtml(storageInfo.snapshotDir || "")}</code></p>
+      </div>
+      <div class="progress-alert ${syncStatus.tone}">
+        <strong>${escapeHtml(syncStatus.title)}</strong>
+        <p>${escapeHtml(syncStatus.body)}</p>
       </div>
       <div class="progress-alert progress-alert--error admin-storage-warning">
         <strong>必须确认持久存储。</strong>
