@@ -344,22 +344,22 @@ fn about_cards(locale : Locale) -> Array[InfoCard] {
 fn process_items(locale : Locale) -> Array[ProcessItem] {
   [
     {
-      time: t(locale, zh="4 月 29 日 - 7 月 1 日", en="Apr 29 - Jul 1"),
+      time: t(locale, zh="4 月 29 日 - 7 月 15 日", en="Apr 29 - Jul 15"),
       title: t(locale, zh="项目申报", en="Project proposal"),
       desc: t(locale, zh="通过官方表单提交参赛信息、GitHub 仓库和一页 PDF 项目申报书；仓库需包含 10-20 个有效 commits。通过申报审核可获得 150 元启动支持。", en="Submit participant info, GitHub repository, and a one-page PDF proposal through the official form. The repository should contain 10-20 valid commits. Approved proposals may receive RMB 150 kickoff support."),
     },
     {
-      time: t(locale, zh="4 月 29 日 - 7 月 1 日", en="Apr 29 - Jul 1"),
+      time: t(locale, zh="4 月 29 日 - 8 月 14 日", en="Apr 29 - Aug 14"),
       title: t(locale, zh="项目开发与社区活动", en="Development and community"),
       desc: t(locale, zh="围绕公开仓库持续开发，保持提交记录、工单、合并请求和更新日志可追踪；赛事组提供指南、模板、答疑、宣讲和阶段展示。", en="Build in public with traceable commits, issues, pull requests, and changelogs. Organizers provide guides, templates, Q&A, talks, and stage showcases."),
     },
     {
-      time: t(locale, zh="6 月 1 日 - 7 月 1 日", en="Jun 1 - Jul 1"),
+      time: t(locale, zh="6 月 1 日 - 8 月 14 日", en="Jun 1 - Aug 14"),
       title: t(locale, zh="项目验收", en="Project acceptance"),
       desc: t(locale, zh="项目完成后通过验收表提交申请。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。", en="After completion, submit the acceptance form. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project."),
     },
     {
-      time: t(locale, zh="7 月 5 日", en="Jul 5"),
+      time: t(locale, zh="8 月 23 日", en="Aug 23"),
       title: t(locale, zh="优秀项目评选与展示", en="Final selection and showcase"),
       desc: t(locale, zh="赛事组根据完成度、MoonBit 生态贡献、工程质量和展示表现综合评估，入选项目需要参加决赛答辩；决赛具体地点和流程后续公布。", en="Organizers evaluate completion, MoonBit ecosystem contribution, engineering quality, and presentation. Selected projects join the final defense; the final venue and detailed process will be announced later."),
     },
@@ -508,7 +508,7 @@ fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
 ///|
 fn attention_items(locale : Locale) -> Array[String] {
   [
-    t(locale, zh="项目申报截止到 7 月 1 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。", en="Proposal submission closes on July 1. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits."),
+    t(locale, zh="项目申报截止到 7 月 15 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。", en="Proposal submission closes on July 1. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits."),
     t(locale, zh="4 月 29 日前已存在或已发布的库可以继续维护参赛，但有效工作量只统计 4 月 29 日后新增的 commits、功能、测试、文档和发布改进。", en="Existing or previously published libraries can join as continued-maintenance projects, but only commits, features, tests, docs, and release improvements after April 29 count."),
     t(locale, zh="验收项目需以 MoonBit 为主要实现语言，仓库公开可访问，并提供清晰 README、可运行示例、CI、测试和 mooncakes.io 发布。", en="For acceptance, MoonBit should be the primary language, the repository must be public, and the project should provide a clear README, runnable example, CI, tests, and mooncakes.io publication."),
     t(locale, zh="原创、移植或参考已有开源项目都可以；移植项目必须说明原项目、链接、许可证和本次移植范围。", en="Original projects, ports, or projects referencing existing open source are all allowed; ports must document the upstream project, link, license, and porting scope."),
@@ -547,7 +547,7 @@ fn faq_items(locale : Locale) -> Array[FaqItem] {
     },
     {
       question: t(locale, zh="验收什么时候开放？", en="When does acceptance open?"),
-      answer: t(locale, zh="验收申请计划于 6 月 1 日至 7 月 1 日开放。项目完成后可通过验收表提交申请，通过验收的项目可获得 350 元 / 项目的完成支持，并继续参与优秀项目评选。", en="Acceptance is planned from June 1 to July 1. Completed projects can submit the acceptance form. Accepted projects may receive RMB 350 completion support and continue into the final selection."),
+      answer: t(locale, zh="验收申请计划于 6 月 1 日至 8 月 14 日开放。项目完成后可通过验收表提交申请，通过验收的项目可获得 350 元 / 项目的完成支持，并继续参与优秀项目评选。", en="Acceptance is planned from June 1 to August 14. Completed projects can submit the acceptance form. Accepted projects may receive RMB 350 completion support and continue into the final selection."),
       opened: false,
     },
   ]
@@ -611,7 +611,7 @@ fn view_hero(model : Model) -> Html {
       div(class="hero-cta-row", [
         div(class="hero-cta-copy", [
           strong(t(model.locale, zh="项目申报已开放", en="Proposal submission is open")),
-          p(t(model.locale, zh="4 月 29 日至 7 月 1 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 1.")),
+          p(t(model.locale, zh="4 月 29 日至 7 月 15 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 1.")),
         ]),
         div(class="hero-cta-actions", [
           a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
