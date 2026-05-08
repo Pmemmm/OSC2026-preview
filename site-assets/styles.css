@@ -1247,6 +1247,51 @@ a {
   white-space: nowrap;
 }
 
+.referral-prize-card {
+  grid-column: 1 / -1;
+}
+
+.referral-prize-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+
+.referral-prize-head h3 {
+  margin: 0;
+}
+
+.referral-prize-amount {
+  color: var(--primary);
+  font-size: 1.02rem;
+  font-weight: 900;
+}
+
+.referral-prize-note-head {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  color: var(--text);
+  background: color-mix(in srgb, var(--primary) 9%, transparent);
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.referral-prize-list {
+  display: grid;
+  gap: 9px;
+  margin: 0;
+  padding-left: 18px;
+  color: var(--text-soft);
+}
+
+.referral-prize-list li {
+  padding-left: 2px;
+  color: var(--text-soft);
+  line-height: 1.72;
+}
+
 .showcase-wall-panel {
   overflow: hidden;
   padding: clamp(20px, 3vw, 28px);

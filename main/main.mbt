@@ -359,7 +359,7 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       desc: t(locale, zh="项目完成后通过验收表提交申请。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。", en="After completion, submit the acceptance form. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project."),
     },
     {
-      time: t(locale, zh="8 月 23 日", en="Aug 23"),
+      time: t(locale, zh="8 月 22 日", en="Aug 22"),
       title: t(locale, zh="优秀项目评选与展示", en="Final selection and showcase"),
       desc: t(locale, zh="赛事组根据完成度、MoonBit 生态贡献、工程质量和展示表现综合评估，入选项目需要参加决赛答辩；决赛具体地点和流程后续公布。", en="Organizers evaluate completion, MoonBit ecosystem contribution, engineering quality, and presentation. Selected projects join the final defense; the final venue and detailed process will be announced later."),
     },
@@ -508,7 +508,7 @@ fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
 ///|
 fn attention_items(locale : Locale) -> Array[String] {
   [
-    t(locale, zh="项目申报截止到 7 月 15 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。", en="Proposal submission closes on July 1. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits."),
+    t(locale, zh="项目申报截止到 7 月 15 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。", en="Proposal submission closes on July 15. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits."),
     t(locale, zh="4 月 29 日前已存在或已发布的库可以继续维护参赛，但有效工作量只统计 4 月 29 日后新增的 commits、功能、测试、文档和发布改进。", en="Existing or previously published libraries can join as continued-maintenance projects, but only commits, features, tests, docs, and release improvements after April 29 count."),
     t(locale, zh="验收项目需以 MoonBit 为主要实现语言，仓库公开可访问，并提供清晰 README、可运行示例、CI、测试和 mooncakes.io 发布。", en="For acceptance, MoonBit should be the primary language, the repository must be public, and the project should provide a clear README, runnable example, CI, tests, and mooncakes.io publication."),
     t(locale, zh="原创、移植或参考已有开源项目都可以；移植项目必须说明原项目、链接、许可证和本次移植范围。", en="Original projects, ports, or projects referencing existing open source are all allowed; ports must document the upstream project, link, license, and porting scope."),
@@ -611,7 +611,7 @@ fn view_hero(model : Model) -> Html {
       div(class="hero-cta-row", [
         div(class="hero-cta-copy", [
           strong(t(model.locale, zh="项目申报已开放", en="Proposal submission is open")),
-          p(t(model.locale, zh="4 月 29 日至 7 月 15 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 1.")),
+          p(t(model.locale, zh="4 月 29 日至 7 月 15 日，提交 GitHub 仓库和一页 PDF 申报书。", en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 15.")),
         ]),
         div(class="hero-cta-actions", [
           a(class="button primary hero-cta-button", href=registration_href(), t(model.locale, zh="立即报名", en="Register now")),
@@ -674,6 +674,24 @@ fn view_prize_table(title : String, locale : Locale, items : Array[PrizeItem]) -
         ]),
       ]),
       tbody(items.map(fn(item) { view_prize_row(item) })),
+    ]),
+  ])
+}
+
+///|
+fn view_referral_prize_card(locale : Locale) -> Html {
+  article(class="prize-table-card referral-prize-card", [
+    div(class="referral-prize-head", [
+      h3(t(locale, zh="转推荐奖励", en="Referral Reward")),
+      span(class="referral-prize-amount", t(locale, zh="50 元 / 人", en="RMB 50 / person")),
+    ]),
+    div(class="referral-prize-note-head", t(locale, zh="说明", en="Notes")),
+    ul(class="referral-prize-list", [
+      li(t(locale, zh="已成功报名的参赛者（推荐人），可邀请新参赛者（被推荐人）报名参赛；", en="Successfully registered participants (referrers) may invite new participants (referees) to register;")),
+      li(t(locale, zh="被推荐人在提交项目申报问卷时，需在“推荐人”字段准确填写推荐人的 GitHub ID；", en="When submitting the project proposal form, the referee must accurately fill in the referrer's GitHub ID in the Referrer field;")),
+      li(t(locale, zh="推荐关系认定规则：一位被推荐人只能绑定一位推荐人。若被推荐人由多人先后邀请，以报名问卷中首次有效提交的推荐人信息为准。", en="Referral recognition: one referee can only be linked to one referrer. If multiple people invited the same referee, the first valid referrer information submitted in the registration form prevails.")),
+      li(t(locale, zh="推荐关系一经赛事组审核确认，不予变更。推荐人与被推荐人不得相互推荐、重复推荐或通过虚假账号套取奖励，一经发现，取消比赛双方比赛资格。", en="Once confirmed by the organizers, the referral relationship cannot be changed. Referrers and referees may not refer each other, duplicate referrals, or claim rewards through fake accounts; violations will disqualify both parties.")),
+      li(t(locale, zh="赛事组审核确认被推荐人报名成功后，推荐人可获得 50 元 / 人的现金奖励，上限 30 人。", en="After organizers confirm that the referee has registered successfully, the referrer may receive RMB 50 per person in cash rewards, up to 30 people.")),
     ]),
   ])
 }
@@ -826,6 +844,7 @@ fn view_awards(model : Model) -> Html {
             span(t(model.locale, zh="基础激励 500 元 / 项目", en="RMB 500 base support / project")),
             span(t(model.locale, zh="特等奖 15,000 元", en="Grand Prize RMB 15,000")),
             span(t(model.locale, zh="生态优异奖 4,000 元", en="Ecosystem Excellence RMB 4,000")),
+            span(t(model.locale, zh="推荐他人成功参赛 50 元 / 人", en="Referral reward RMB 50 / person")),
           ]),
         ]),
         div(class="prize-total-card", [
@@ -838,6 +857,7 @@ fn view_awards(model : Model) -> Html {
       div(class="prize-table-grid", [
         view_prize_table(t(model.locale, zh="优秀项目奖励", en="Outstanding Project Awards"), model.locale, prize_items(model.locale)),
         view_prize_table(t(model.locale, zh="生态与专项奖励", en="Ecosystem and Special Awards"), model.locale, bonus_prize_items(model.locale)),
+        view_referral_prize_card(model.locale),
       ]),
     ]),
   ])
