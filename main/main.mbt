@@ -310,8 +310,8 @@ fn summary_cards(locale : Locale) -> Array[InfoCard] {
   [
     {
       badge: t(locale, zh="参赛对象", en="Participants"),
-      title: t(locale, zh="在校生开放", en="Students"),
-      desc: t(locale, zh="面向所有对 MoonBit、AI 编程、开源生态和基础软件感兴趣的在校生。", en="Open to students interested in MoonBit, AI programming, open source, and infrastructure software."),
+      title: t(locale, zh="全体开发者", en="All developers"),
+      desc: t(locale, zh="面向所有对 MoonBit、AI 编程、开源生态和基础软件感兴趣的开发者（不限学生或社会人士）。", en="Open to all developers interested in MoonBit, AI programming, open source, and infrastructure software, including students and professionals."),
     },
     {
       badge: t(locale, zh="项目规模", en="Scope"),
@@ -827,7 +827,7 @@ fn view_about(model : Model) -> Html {
       section_intro(
         t(model.locale, zh="赛事定位", en="Positioning"),
         t(model.locale, zh="用 MoonBit，一起建设国产开源生态", en="Build an open-source ecosystem with MoonBit"),
-        t(model.locale, zh="以 MoonBit 编程语言及其工具链为基础，面向在校生群体，鼓励参赛者利用 AI 工具完成开源生态库、开发工具和示例工程的设计、移植、实现与完善。", en="Based on MoonBit and its toolchain, the contest is open to students and encourages AI-assisted design, porting, implementation, and improvement of ecosystem libraries, developer tools, and example projects."),
+        t(model.locale, zh="以 MoonBit 编程语言及其工具链为基础，面向全体开发者（不限学生或社会人士），鼓励参赛者利用 AI 工具完成开源生态库、开发工具和示例工程的设计、移植、实现与完善。", en="Based on MoonBit and its toolchain, the contest is open to all developers, including students and professionals, and encourages AI-assisted design, porting, implementation, and improvement of ecosystem libraries, developer tools, and example projects."),
       ),
       div(class="summary-grid position-summary-grid", summary_cards(model.locale).map(fn(card) {
         view_info_card(card)
