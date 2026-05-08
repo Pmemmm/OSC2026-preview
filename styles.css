@@ -1082,6 +1082,14 @@ a {
   line-height: 1.72;
 }
 
+.section-head--wide {
+  max-width: none;
+}
+
+.section-head--wide p:not(.eyebrow) {
+  max-width: 980px;
+}
+
 .prize-spotlight {
   position: relative;
   overflow: hidden;

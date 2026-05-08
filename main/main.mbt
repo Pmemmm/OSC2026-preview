@@ -575,6 +575,15 @@ fn section_intro(eyebrow : String, title : String, desc : String) -> Html {
 }
 
 ///|
+fn section_intro_wide(eyebrow : String, title : String, desc : String) -> Html {
+  div(class="section-head section-head--wide", [
+    p(class="eyebrow", eyebrow),
+    h2(title),
+    if desc == "" { nothing } else { p(desc) },
+  ])
+}
+
+///|
 fn view_header(dispatch : Dispatch[Msg], model : Model) -> Html {
   header(class="site-header", [
     div(class="container nav-shell", [
@@ -824,7 +833,7 @@ fn view_register_page(model : Model) -> Html {
 fn view_about(model : Model) -> Html {
   section(id="about", class="section", [
     div(class="container", [
-      section_intro(
+      section_intro_wide(
         t(model.locale, zh="赛事定位", en="Positioning"),
         t(model.locale, zh="用 MoonBit，一起建设国产开源生态", en="Build an open-source ecosystem with MoonBit"),
         t(model.locale, zh="以 MoonBit 编程语言及其工具链为基础，面向全体开发者（不限学生或社会人士），鼓励参赛者利用 AI 工具完成开源生态库、开发工具和示例工程的设计、移植、实现与完善。", en="Based on MoonBit and its toolchain, the contest is open to all developers, including students and professionals, and encourages AI-assisted design, porting, implementation, and improvement of ecosystem libraries, developer tools, and example projects."),
