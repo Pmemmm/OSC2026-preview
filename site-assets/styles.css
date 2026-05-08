@@ -4022,11 +4022,10 @@ a {
 
 .qq-float {
   position: fixed;
-  right: 18px;
-  top: 50%;
+  right: 24px;
+  top: 80px;
   z-index: 40;
-  width: 160px;
-  transform: translateY(-50%);
+  width: 150px;
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -4082,6 +4081,79 @@ a {
   height: 100%;
   object-fit: contain;
   border-radius: 8px;
+}
+
+@media (min-width: 1201px) and (max-width: 1480px) {
+  .site--with-qr .container {
+    width: min(var(--max-width), calc(100vw - 230px));
+    margin-left: max(16px, calc((100vw - var(--max-width) - 190px) / 2));
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 1200px) {
+  .site--with-qr {
+    padding-bottom: 112px;
+  }
+
+  .qq-float {
+    left: 10px;
+    right: 10px;
+    top: auto;
+    bottom: 12px;
+    width: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
+  }
+
+  .qr-float-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 64px;
+    gap: 8px;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .qr-float-card + .qr-float-card {
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 8px;
+    border-top: 0;
+    border-left: 1px solid var(--border);
+  }
+
+  .qq-float-copy p {
+    display: none;
+  }
+
+  .qq-qr-box {
+    min-height: 64px;
+    padding: 6px;
+  }
+}
+
+@media (max-width: 420px) {
+  .site--with-qr {
+    padding-bottom: 102px;
+  }
+
+  .qq-float {
+    grid-template-columns: 1fr;
+  }
+
+  .qr-float-card {
+    grid-template-columns: minmax(0, 1fr) 54px;
+  }
+
+  .qr-float-card + .qr-float-card {
+    display: none;
+  }
+
+  .qq-qr-box {
+    min-height: 54px;
+  }
 }
 
 .footer-inner {
@@ -4223,10 +4295,6 @@ a {
     min-height: 360px;
   }
 
-  .qq-float {
-    right: 10px;
-    width: 144px;
-  }
 }
 
 @media (max-width: 760px) {
@@ -4528,43 +4596,6 @@ a {
 
   .timeline-item {
     grid-template-columns: 1fr;
-  }
-
-  .qq-float {
-    left: 10px;
-    right: 10px;
-    top: auto;
-    bottom: 12px;
-    width: auto;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-    transform: none;
-    padding: 8px;
-  }
-
-  .qr-float-card {
-    display: grid;
-    grid-template-columns: 1fr 58px;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .qr-float-card + .qr-float-card {
-    margin-top: 0;
-    padding-top: 0;
-    padding-left: 8px;
-    border-top: 0;
-    border-left: 1px solid var(--border);
-  }
-
-  .qq-float-copy p {
-    display: none;
-  }
-
-  .qq-qr-box {
-    min-height: 58px;
-    padding: 6px;
   }
 
   .learn-step-card {

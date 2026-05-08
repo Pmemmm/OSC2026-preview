@@ -209,10 +209,17 @@ struct FaqItem {
 }
 
 ///|
-fn site_class(theme : Theme) -> String {
-  match theme {
-    Light => "site site--light"
-    Dark => "site site--dark"
+fn site_class(theme : Theme, has_qr_float : Bool) -> String {
+  if has_qr_float {
+    match theme {
+      Light => "site site--light site--with-qr"
+      Dark => "site site--dark site--with-qr"
+    }
+  } else {
+    match theme {
+      Light => "site site--light"
+      Dark => "site site--dark"
+    }
   }
 }
 
@@ -1026,7 +1033,8 @@ fn view_footer(model : Model) -> Html {
 
 ///|
 fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
-  div(class=site_class(model.theme), [
+  let has_qr_float = !is_standalone_page()
+  div(class=site_class(model.theme, has_qr_float), [
     view_header(dispatch, model),
     if is_progress_page() {
       main_(class="page-main", [
@@ -1052,7 +1060,7 @@ fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
       ])
     },
     view_footer(model),
-    if is_standalone_page() { nothing } else { view_qq_float(model) },
+    if has_qr_float { view_qq_float(model) } else { nothing },
   ])
 }
 
