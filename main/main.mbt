@@ -371,8 +371,8 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       desc: t(locale, zh="赛事组根据完成度、MoonBit 生态贡献、工程质量和展示表现综合评估。", en="Organizers evaluate completion, MoonBit ecosystem contribution, engineering quality, and presentation."),
     },
     {
-      time: t(locale, zh="8 月 末", en="Late August"),
-      title: t(locale, zh="优秀项目决赛答辩", en="Outstanding project final defense"),
+      time: t(locale, zh="8 月 22 日", en="Aug 22"),
+      title: t(locale, zh="优秀项目展示与答辩", en="Outstanding project showcase and defense"),
       desc: t(locale, zh="优秀入选项目参加决赛答辩，决赛具体时间、地点、流程后续公布。", en="Selected outstanding projects join the final defense. The exact time, venue, and process will be announced later."),
     },
   ]
