@@ -359,7 +359,7 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       desc: t(locale, zh="项目完成后通过验收表提交申请。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。", en="After completion, submit the acceptance form. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project."),
     },
     {
-      time: t(locale, zh="8 月 22 日", en="Aug 22"),
+      time: t(locale, zh="8 月 14 日", en="Aug 14"),
       title: t(locale, zh="优秀项目评选与展示", en="Final selection and showcase"),
       desc: t(locale, zh="赛事组根据完成度、MoonBit 生态贡献、工程质量和展示表现综合评估，入选项目需要参加决赛答辩；决赛具体地点和流程后续公布。", en="Organizers evaluate completion, MoonBit ecosystem contribution, engineering quality, and presentation. Selected projects join the final defense; the final venue and detailed process will be announced later."),
     },
