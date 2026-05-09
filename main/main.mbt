@@ -342,7 +342,7 @@ fn about_cards(locale : Locale) -> Array[InfoCard] {
     {
       badge: t(locale, zh="可验收", en="Acceptable"),
       title: t(locale, zh="真实可用、可测试、可维护", en="Usable, tested, maintainable"),
-      desc: t(locale, zh="官网突出关键规则：边界清晰、文档完整、测试可运行、长期可维护，细则以赛事公告和最终章程为准。", en="The site highlights key rules: clear scope, complete docs, runnable tests, and long-term maintainability. Details follow official announcements and final rules."),
+      desc: t(locale, zh="关键规则：边界清晰、文档完整、测试可运行、长期可维护，细则以赛事公告和最终章程为准。", en="Key rules: clear scope, complete docs, runnable tests, and long-term maintainability. Details follow official announcements and final rules."),
     },
   ]
 }
