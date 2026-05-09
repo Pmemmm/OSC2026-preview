@@ -3760,9 +3760,10 @@ a {
 }
 
 .direction-card h3 {
-  font-size: clamp(19px, 1.55vw, 24px);
-  line-height: 1.14;
-  letter-spacing: -0.035em;
+  font-size: clamp(17px, 1.25vw, 21px);
+  line-height: 1.18;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
 }
 
 .direction-card p,
@@ -4306,6 +4307,10 @@ a {
 }
 
 @media (max-width: 760px) {
+  .direction-card h3 {
+    white-space: normal;
+  }
+
   .container {
     width: min(var(--max-width), calc(100vw - 20px));
   }
