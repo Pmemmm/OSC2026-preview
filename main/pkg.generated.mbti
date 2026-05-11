@@ -1,0 +1,38 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "zongen01/mgpic2026-site/main"
+
+// Values
+
+// Errors
+
+// Types and methods
+type FaqItem
+
+type InfoCard
+
+type ListCard
+
+type Locale
+
+type Model
+
+type Msg
+
+type NavItem
+
+type PrizeItem
+
+type ProcessItem
+
+type ShowcaseLink
+
+type ShowcaseProject
+
+type ShowcaseSignal
+
+type Theme
+
+// Type aliases
+
+// Traits
+
