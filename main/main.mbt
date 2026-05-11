@@ -391,7 +391,7 @@ fn about_cards(locale : Locale) -> Array[InfoCard] {
 fn process_items(locale : Locale) -> Array[ProcessItem] {
   [
     {
-      time: t(locale, zh="4 月 29 日 - 7 月 15 日", en="Apr 29 - Jul 15"),
+      time: t(locale, zh="4 月 29 日 - 7 月 10 日", en="Apr 29 - Jul 10"),
       title: t(locale, zh="项目申报", en="Project proposal"),
       desc: t(
         locale,
@@ -400,7 +400,7 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       ),
     },
     {
-      time: t(locale, zh="4 月 29 日 - 8 月 14 日", en="Apr 29 - Aug 14"),
+      time: t(locale, zh="4 月 29 日 - 7 月 10 日", en="Apr 29 - Jul 10"),
       title: t(
         locale,
         zh="项目开发与社区活动",
@@ -413,7 +413,7 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       ),
     },
     {
-      time: t(locale, zh="6 月 1 日 - 8 月 14 日", en="Jun 1 - Aug 14"),
+      time: t(locale, zh="7 月 11 日 - 7 月 17 日", en="Jul 11 - Jul 17"),
       title: t(locale, zh="项目验收", en="Project acceptance"),
       desc: t(
         locale,
@@ -422,7 +422,7 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       ),
     },
     {
-      time: t(locale, zh="8 月 14 日", en="Aug 14"),
+      time: t(locale, zh="8 月 4 日 - 8 月 14 日", en="Aug 4 - Aug 14"),
       title: t(locale, zh="优秀项目评选", en="Final selection"),
       desc: t(
         locale,
@@ -431,16 +431,16 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       ),
     },
     {
-      time: t(locale, zh="8 月 22 日", en="Aug 22"),
+      time: t(locale, zh="8 月 16 日", en="Aug 16"),
       title: t(
         locale,
-        zh="优秀项目展示与答辩",
-        en="Outstanding project showcase and defense",
+        zh="线下作品展示与颁奖",
+        en="Offline showcase and awards ceremony",
       ),
       desc: t(
         locale,
-        zh="优秀入选项目参加决赛答辩，决赛具体时间、地点、流程后续公布。",
-        en="Selected outstanding projects join the final defense. The exact time, venue, and process will be announced later.",
+        zh="入选优秀项目参加线下作品展示与颁奖，具体地点和流程后续公布。",
+        en="Selected outstanding projects join the offline showcase and awards ceremony. The exact venue and process will be announced later.",
       ),
     },
   ]
@@ -794,8 +794,8 @@ fn attention_items(locale : Locale) -> Array[String] {
   [
     t(
       locale,
-      zh="项目申报截止到 7 月 15 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。",
-      en="Proposal submission closes on July 15. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits.",
+      zh="项目申报截止到 7 月 10 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。",
+      en="Proposal submission closes on July 10. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits.",
     ),
     t(
       locale,
@@ -901,8 +901,8 @@ fn faq_items(locale : Locale) -> Array[FaqItem] {
       ),
       answer: t(
         locale,
-        zh="验收申请计划于 6 月 1 日至 8 月 14 日开放。项目完成后可通过验收表提交申请，通过验收的项目可获得 350 元 / 项目的完成支持，并继续参与优秀项目评选。",
-        en="Acceptance is planned from June 1 to August 14. Completed projects can submit the acceptance form. Accepted projects may receive RMB 350 completion support and continue into the final selection.",
+        zh="验收申请计划于 7 月 11 日至 7 月 17 日开放。项目完成后可通过验收表提交申请，通过验收的项目可获得 350 元 / 项目的完成支持，并继续参与优秀项目评选。",
+        en="Acceptance is planned from July 11 to July 17. Completed projects can submit the acceptance form. Accepted projects may receive RMB 350 completion support and continue into the final selection.",
       ),
       opened: false,
     },
@@ -1006,8 +1006,8 @@ fn view_hero(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="4 月 29 日至 7 月 15 日，提交 GitHub 仓库和一页 PDF 申报书。",
-              en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 15.",
+              zh="4 月 29 日至 7 月 10 日，提交 GitHub 仓库和一页 PDF 申报书。",
+              en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 10.",
             ),
           ),
         ]),
