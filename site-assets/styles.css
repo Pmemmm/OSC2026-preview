@@ -2700,73 +2700,18 @@ a {
 }
 
 .admin-storage-panel {
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .admin-storage-card {
-  display: block;
-  overflow: hidden;
-  padding: 0;
+  display: grid;
+  grid-template-columns: minmax(260px, 1.1fr) minmax(420px, 1.5fr);
+  gap: 18px;
+  padding: 18px;
   border: 1px solid var(--border);
   border-radius: 22px;
   background: color-mix(in srgb, var(--panel-strong) 88%, transparent);
   box-shadow: var(--shadow-soft);
-}
-
-.admin-storage-summary {
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
-  align-items: center;
-  padding: 18px;
-  cursor: pointer;
-  list-style: none;
-}
-
-.admin-storage-summary::-webkit-details-marker {
-  display: none;
-}
-
-.admin-storage-summary strong {
-  display: block;
-  margin-top: 10px;
-  color: var(--text);
-  font-size: 1.08rem;
-}
-
-.admin-storage-summary p {
-  margin: 6px 0 0;
-  color: var(--text-soft);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.admin-storage-toggle {
-  flex: 0 0 auto;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--text);
-  font-size: 0.86rem;
-  font-weight: 900;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.admin-storage-card[open] .admin-storage-toggle {
-  color: #fff;
-  border-color: transparent;
-  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
-}
-
-.admin-storage-card[open] .admin-storage-toggle::before {
-  content: "已";
-}
-
-.admin-storage-body {
-  display: grid;
-  grid-template-columns: minmax(260px, 1.1fr) minmax(420px, 1.5fr);
-  gap: 18px;
-  padding: 0 18px 18px;
 }
 
 .admin-storage-card h3 {
@@ -2779,89 +2724,6 @@ a {
   margin: 6px 0;
   color: var(--text-soft);
   line-height: 1.55;
-}
-
-.admin-storage-warning {
-  margin: 0;
-}
-
-.admin-storage-warning strong {
-  display: block;
-  margin-bottom: 6px;
-}
-
-.admin-storage-warning p {
-  margin: 6px 0 0;
-}
-
-.admin-storage-locations {
-  grid-column: 1 / -1;
-  padding: 14px;
-  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
-  border-radius: 18px;
-  background: color-mix(in srgb, var(--panel) 78%, transparent);
-}
-
-.admin-storage-section-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 16px;
-  align-items: end;
-  margin-bottom: 12px;
-}
-
-.admin-storage-section-head strong {
-  color: var(--text);
-  font-size: 1.05rem;
-}
-
-.admin-storage-section-head span {
-  max-width: 620px;
-  color: var(--text-soft);
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.admin-storage-location-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.admin-storage-location {
-  display: grid;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.admin-storage-location div {
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  align-items: baseline;
-}
-
-.admin-storage-location strong {
-  color: var(--text);
-}
-
-.admin-storage-location span,
-.admin-storage-location p {
-  color: var(--text-soft);
-  font-size: 0.86rem;
-  line-height: 1.55;
-}
-
-.admin-storage-location code {
-  overflow-wrap: anywhere;
-  white-space: normal;
-}
-
-.admin-storage-location-safety {
-  color: color-mix(in srgb, var(--accent-strong) 82%, var(--text)) !important;
 }
 
 .admin-storage-metrics {
@@ -2903,25 +2765,6 @@ a {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 8px;
-}
-
-.admin-backup-grid {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.admin-backup-grid > div {
-  padding: 14px;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.56);
-}
-
-.admin-backup-grid strong {
-  display: block;
-  margin-bottom: 8px;
 }
 
 .admin-stats div {
@@ -3035,144 +2878,6 @@ a {
 .admin-table td .admin-badge {
   display: inline-flex;
   margin-top: 0;
-}
-
-.admin-submission-list {
-  display: grid;
-  gap: 14px;
-  padding: 16px;
-}
-
-.admin-submission-card {
-  display: grid;
-  gap: 14px;
-  padding: 18px;
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  background:
-    linear-gradient(135deg, color-mix(in srgb, var(--primary) 7%, transparent), transparent 38%),
-    var(--card);
-  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.06);
-  cursor: pointer;
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-}
-
-.admin-submission-card:hover,
-.admin-submission-card.is-selected {
-  transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
-  box-shadow: 0 22px 48px rgba(94, 133, 255, 0.16);
-}
-
-.admin-submission-card.is-archived {
-  opacity: 0.72;
-}
-
-.admin-submission-card-head,
-.admin-submission-project {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 18px;
-}
-
-.admin-submission-card-head > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-.admin-submission-card-head > strong {
-  color: var(--text);
-  font-size: 1rem;
-  text-align: right;
-}
-
-.admin-submission-project h3 {
-  margin: 0;
-  color: var(--text);
-  font-size: clamp(1.25rem, 2vw, 1.7rem);
-}
-
-.admin-submission-project p,
-.admin-submission-grid p,
-.admin-submission-summary {
-  margin: 4px 0 0;
-  color: var(--text-soft);
-  line-height: 1.55;
-}
-
-.admin-submission-repo {
-  max-width: min(520px, 48%);
-  text-align: right;
-  word-break: break-all;
-  color: var(--primary);
-  font-weight: 800;
-}
-
-.admin-submission-repo a {
-  color: inherit;
-}
-
-.admin-submission-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.admin-submission-grid > div {
-  min-height: 108px;
-  padding: 13px;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: color-mix(in srgb, #fff 82%, transparent);
-}
-
-.admin-submission-grid span {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text-soft);
-  font-size: 0.8rem;
-  font-weight: 800;
-}
-
-.admin-submission-grid strong {
-  color: var(--text);
-  line-height: 1.45;
-  word-break: break-word;
-}
-
-.admin-submission-summary {
-  padding: 12px 14px;
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--primary) 6%, transparent);
-}
-
-.admin-submission-action {
-  justify-self: start;
-  color: var(--primary);
-  font-weight: 900;
-}
-
-.admin-empty-state {
-  padding: 28px;
-  border: 1px dashed color-mix(in srgb, var(--primary) 35%, var(--border));
-  border-radius: 22px;
-  color: var(--text-soft);
-  background: color-mix(in srgb, var(--primary) 5%, transparent);
-}
-
-.admin-empty-state strong {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-.tag-muted {
-  border-color: var(--border);
-  background: color-mix(in srgb, var(--text-soft) 8%, transparent);
-  color: var(--text-soft);
 }
 
 .admin-badge {
@@ -4191,9 +3896,7 @@ a {
   .admin-toolbar,
   .admin-layout,
   .admin-search-wrap,
-  .admin-storage-body,
-  .admin-backup-grid,
-  .admin-storage-location-grid,
+  .admin-storage-card,
   .admin-workflow-board,
   .admin-connect-steps,
   .card-grid,
@@ -4233,8 +3936,7 @@ a {
 
   .admin-transition-controls,
   .admin-transition-groups,
-  .admin-event-layout,
-  .admin-submission-grid {
+  .admin-event-layout {
     grid-template-columns: 1fr;
   }
 
@@ -4328,32 +4030,12 @@ a {
   }
 
   .admin-storage-metrics,
-  .admin-storage-body,
   .admin-info-grid,
   .admin-transition-controls,
   .admin-transition-groups,
   .admin-event-layout,
   .admin-backup-list {
     grid-template-columns: 1fr;
-  }
-
-  .admin-storage-summary {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .admin-submission-card-head,
-  .admin-submission-project {
-    flex-direction: column;
-  }
-
-  .admin-submission-card-head > strong {
-    text-align: left;
-  }
-
-  .admin-submission-repo {
-    max-width: 100%;
-    text-align: left;
   }
 
   .eyebrow,

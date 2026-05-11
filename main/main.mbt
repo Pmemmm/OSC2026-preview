@@ -1699,49 +1699,6 @@ fn view_faq(model : Model) -> Html {
   ])
 }
 
-///|
-fn view_qq_float(model : Model) -> Html {
-  div(class="qq-float", [
-    a(class="qr-float-card qr-float-card--primary", href=registration_href(), [
-      div(class="qq-float-copy", [
-        strong(t(model.locale, zh="项目申报", en="Proposal")),
-        p(t(model.locale, zh="扫码提交申报表", en="Scan to submit")),
-      ]),
-      div(class="qq-qr-box", [
-        img(
-          class="qq-qr-img",
-          src="site-assets/registration-qr.png?v=20260428-progress-system",
-          alt=t(
-            model.locale,
-            zh="赛事报名二维码",
-            en="Event registration QR code",
-          ),
-          nothing,
-        ),
-      ]),
-    ]),
-    div(class="qr-float-card", [
-      div(class="qq-float-copy", [
-        strong(t(model.locale, zh="赛事交流群", en="QQ Group")),
-        p(t(model.locale, zh="扫码加入 QQ 群", en="Scan to join")),
-      ]),
-      div(class="qq-qr-box", [
-        img(
-          class="qq-qr-img",
-          src="site-assets/qq-group-qr.png?v=20260428-progress-system",
-          alt=t(
-            model.locale,
-            zh="赛事 QQ 群二维码",
-            en="Event QQ group QR code",
-          ),
-          nothing,
-        ),
-      ]),
-    ]),
-  ])
-}
-
-///|
 fn view_footer(model : Model) -> Html {
   footer(class="site-footer", [
     div(class="container footer-inner", [
@@ -1787,8 +1744,7 @@ fn view_footer(model : Model) -> Html {
 
 ///|
 fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
-  let has_qr_float = !is_standalone_page()
-  div(class=site_class(model.theme, has_qr_float), [
+  div(class=site_class(model.theme, false), [
     view_header(dispatch, model),
     if is_progress_page() {
       main_(class="page-main", [view_progress_page(model)])
@@ -1808,11 +1764,6 @@ fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
       ])
     },
     view_footer(model),
-    if has_qr_float {
-      view_qq_float(model)
-    } else {
-      nothing
-    },
   ])
 }
 
