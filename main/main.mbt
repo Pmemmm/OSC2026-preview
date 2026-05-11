@@ -502,17 +502,15 @@ fn showcase_projects(locale : Locale) -> Array[ShowcaseProject] {
 ///|
 fn prize_items(locale : Locale) -> Array[PrizeItem] {
   [
-    { award: t(locale, zh="特等奖", en="Grand Prize"), prize: "15,000 元", count: "1 名" },
-    { award: t(locale, zh="一等奖", en="First Prize"), prize: "10,000 元", count: "1 名" },
-    { award: t(locale, zh="二等奖", en="Second Prize"), prize: "8,000 元", count: "2 名" },
-    { award: t(locale, zh="三等奖", en="Third Prize"), prize: "6,000 元", count: "3 名" },
+    { award: t(locale, zh="一等奖", en="First Prize"), prize: t(locale, zh="18,000 元 + 获奖证书", en="RMB 18,000 + certificate"), count: t(locale, zh="1 名", en="1 winner") },
+    { award: t(locale, zh="二等奖", en="Second Prize"), prize: t(locale, zh="10,000 元 + 获奖证书", en="RMB 10,000 + certificate"), count: t(locale, zh="3 名", en="3 winners") },
+    { award: t(locale, zh="三等奖", en="Third Prize"), prize: t(locale, zh="5,000 元 + 获奖证书", en="RMB 5,000 + certificate"), count: t(locale, zh="9 名", en="9 winners") },
   ]
 }
 
 ///|
 fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
   [
-    { award: t(locale, zh="生态优异奖", en="Ecosystem Excellence"), prize: "4,000 元", count: t(locale, zh="若干名", en="Several") },
     { award: t(locale, zh="专项鼓励奖", en="Special Encouragement"), prize: t(locale, zh="金额及数量视实际情况确定", en="Amount and count TBD"), count: t(locale, zh="若干名", en="Several") },
   ]
 }
@@ -863,8 +861,8 @@ fn view_awards(model : Model) -> Html {
           ),
           div(class="prize-pills", [
             span(t(model.locale, zh="基础激励 500 元 / 项目", en="RMB 500 base support / project")),
-            span(t(model.locale, zh="特等奖 15,000 元", en="Grand Prize RMB 15,000")),
-            span(t(model.locale, zh="生态优异奖 4,000 元", en="Ecosystem Excellence RMB 4,000")),
+            span(t(model.locale, zh="一等奖 18,000 元 + 获奖证书", en="First Prize RMB 18,000 + certificate")),
+            span(t(model.locale, zh="专项鼓励奖视实际情况确定", en="Special Encouragement TBD")),
             span(t(model.locale, zh="推荐他人成功参赛 50 元 / 人", en="Referral reward RMB 50 / person")),
           ]),
         ]),
@@ -877,7 +875,7 @@ fn view_awards(model : Model) -> Html {
       ]),
       div(class="prize-table-grid", [
         view_prize_table(t(model.locale, zh="优秀项目奖励", en="Outstanding Project Awards"), model.locale, prize_items(model.locale)),
-        view_prize_table(t(model.locale, zh="生态与专项奖励", en="Ecosystem and Special Awards"), model.locale, bonus_prize_items(model.locale)),
+        view_prize_table(t(model.locale, zh="专项奖励", en="Special Awards"), model.locale, bonus_prize_items(model.locale)),
         view_referral_prize_card(model.locale),
       ]),
     ]),
