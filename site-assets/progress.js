@@ -8,7 +8,6 @@ const NOTIFICATIONS_KEY = "mgpic2026.notifications.v1";
 const START_DATE_ISO = "2026-04-28T16:00:00Z";
 const MAX_UPLOAD_SIZE = 10 * 1024 * 1024;
 const PROPOSAL_FORM_URL = "https://www.gitlink.org.cn/competitions/track1_2026MoonBit";
-const ACCEPTANCE_FORM_URL = "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg";
 const DEFAULT_RENDER_API_BASE = "https://mgpic2026.onrender.com";
 const API_BASE = resolveApiBase();
 const PUBLIC_SELF_SERVICE_ENABLED = true;
@@ -776,7 +775,7 @@ function inferStage(registration, check, feishu) {
   const total = check?.checks?.length || 8;
   const hasRegistration = Boolean(registration.projectName || registration.githubRepo);
   if (statusDone(feishu.acceptance)) return { stage: "已通过验收", next: "等待评选与作品展示" };
-  if (statusDone(feishu.proposal) && passed >= Math.max(6, total - 1)) return { stage: "可提交验收", next: "提交验收申请" };
+  if (statusDone(feishu.proposal) && passed >= Math.max(6, total - 1)) return { stage: "具备验收准备条件", next: "等待官方验收安排" };
   if (statusDone(feishu.proposal)) return { stage: "项目开发中", next: "补齐仓库检查项" };
   if (/拒绝|不通过|需调整|驳回/i.test(String(feishu.proposal || ""))) return { stage: "申报需调整", next: "修改申报材料后重交" };
   if (hasRegistration) return { stage: "申报审核中", next: "等待审核或补齐仓库" };
@@ -883,7 +882,7 @@ function progressFlowItems(registration, check, feishu, profile) {
     },
     {
       title: "项目验收",
-      body: feishu.acceptance || "完成后提交验收申请。",
+      body: feishu.acceptance || "完成后按官方通知准备验收材料。",
       done: statusDone(feishu.acceptance),
       current: statusDone(feishu.proposal) && !statusDone(feishu.acceptance),
     },
@@ -1017,7 +1016,6 @@ function renderProgressDashboard() {
       <button class="button ${profile ? "primary" : "secondary"}" type="button" data-action="recheck-repo">${repoUrl ? "检查公开仓库" : "填写仓库后检查"}</button>
       <a class="button secondary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">官方渠道申报</a>
       <a class="button secondary" href="${hostedPage("register.html")}">${hasRegistration ? "更新报名信息" : "填写官网报名"}</a>
-      ${hasRegistration || check ? `<a class="button secondary" href="${ACCEPTANCE_FORM_URL}" target="_blank" rel="noreferrer">提交验收</a>` : ""}
     </div>
   `;
 }
@@ -1062,7 +1060,6 @@ function renderPlanPanels(force = false) {
       <p>通过官方渠道提交 GitHub 仓库和一页 PDF 申报书，赛方会通过邮件反馈申报审核结果。</p>
       <div class="progress-compact-actions">
         <a class="button primary" href="${PROPOSAL_FORM_URL}" target="_blank" rel="noreferrer">官方渠道申报</a>
-        <a class="button secondary" href="${ACCEPTANCE_FORM_URL}" target="_blank" rel="noreferrer">提交验收</a>
       </div>
     </article>
     <article class="path-card progress-plan-card">

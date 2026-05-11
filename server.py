@@ -2731,7 +2731,7 @@ class Handler(SimpleHTTPRequestHandler):
                 "subject": f"MoonBit 国产基础软件生态开源大赛：项目「{project}」验收未通过",
                 "body": (
                     f"同学你好，你的项目「{project}」本次验收暂未通过。\n\n"
-                    "如仍在赛事周期内，可根据反馈继续完善后重新提交验收。"
+                    "如仍在赛事周期内，可根据反馈继续完善，并等待后续复核安排。"
                 ),
             },
             "reward_start_paid": {

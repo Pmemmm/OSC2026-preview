@@ -241,11 +241,6 @@ fn registration_href() -> String {
 }
 
 ///|
-fn acceptance_href() -> String {
-  "https://bxup9uklfcb.feishu.cn/share/base/form/shrcnlOdTfQUDNW5raWrQDqVTQg"
-}
-
-///|
 fn github_oauth_href() -> String {
   "https://mgpic2026.onrender.com/api/auth/github/start?return_to=%2Fprogress.html"
 }
@@ -417,8 +412,8 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       title: t(locale, zh="项目验收", en="Project acceptance"),
       desc: t(
         locale,
-        zh="项目完成后通过验收表提交申请。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。",
-        en="After completion, submit the acceptance form. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project.",
+        zh="项目完成后按官方通知准备验收材料。通过验收可获得 350 元完成支持，启动支持与完成支持合计 500 元 / 项目。",
+        en="After completion, prepare acceptance materials according to official notices. Accepted projects may receive RMB 350 completion support, for RMB 500 total base support per project.",
       ),
     },
     {
@@ -684,12 +679,7 @@ fn showcase_projects(locale : Locale) -> Array[ShowcaseProject] {
         t(locale, zh="工具链", en="Tooling"),
         t(locale, zh="示例", en="Examples"),
       ],
-      links: [
-        {
-          label: t(locale, zh="验收入口", en="Acceptance form"),
-          href: acceptance_href(),
-        },
-      ],
+      links: [],
     },
     {
       status: t(locale, zh="待上墙", en="Pending"),
@@ -890,19 +880,6 @@ fn faq_items(locale : Locale) -> Array[FaqItem] {
         locale,
         zh="这是参考范围。验收更看重项目真实可用、边界清晰、文档完整、测试可运行和后续可维护。",
         en="It is a reference range. Acceptance focuses more on usability, clear scope, complete docs, runnable tests, and maintainability.",
-      ),
-      opened: false,
-    },
-    {
-      question: t(
-        locale,
-        zh="验收什么时候开放？",
-        en="When does acceptance open?",
-      ),
-      answer: t(
-        locale,
-        zh="验收申请计划于 7 月 11 日至 7 月 17 日开放。项目完成后可通过验收表提交申请，通过验收的项目可获得 350 元 / 项目的完成支持，并继续参与优秀项目评选。",
-        en="Acceptance is planned from July 11 to July 17. Completed projects can submit the acceptance form. Accepted projects may receive RMB 350 completion support and continue into the final selection.",
       ),
       opened: false,
     },
@@ -1226,8 +1203,8 @@ fn view_progress_page(model : Model) -> Html {
             p(
               t(
                 model.locale,
-                zh="这里用于查看项目申报、GitHub 仓库检查、验收提交和作品展示状态。正式申报请通过官方渠道提交，并以官方表单记录为准。",
-                en="Use this page to track project submission, GitHub repository checks, acceptance submission, and showcase status. Official submissions must go through the official form and follow its records.",
+                zh="这里用于查看项目申报、GitHub 仓库检查、验收状态和作品展示状态。正式申报请通过官方渠道提交，并以官方表单记录为准。",
+                en="Use this page to track project submission, GitHub repository checks, acceptance status, and showcase status. Official submissions must go through the official form and follow its records.",
               ),
             ),
             div(class="progress-page-actions", [
@@ -1670,11 +1647,6 @@ fn view_requirements(model : Model) -> Html {
               href=registration_href(),
               t(model.locale, zh="项目申报", en="Submit proposal"),
             ),
-            a(
-              class="button secondary",
-              href=acceptance_href(),
-              t(model.locale, zh="验收入口", en="Acceptance form"),
-            ),
           ]),
         ]),
       ]),
@@ -1699,6 +1671,7 @@ fn view_faq(model : Model) -> Html {
   ])
 }
 
+///|
 fn view_footer(model : Model) -> Html {
   footer(class="site-footer", [
     div(class="container footer-inner", [
