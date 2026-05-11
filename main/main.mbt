@@ -237,7 +237,7 @@ fn theme_toggle_label(model : Model) -> String {
 
 ///|
 fn registration_href() -> String {
-  "https://bxup9uklfcb.feishu.cn/share/base/form/shrcn2duseEVtk3e4sTRA8z5Qyf"
+  "https://www.gitlink.org.cn/competitions/track1_2026MoonBit"
 }
 
 ///|
@@ -1388,7 +1388,7 @@ fn view_register_page(model : Model) -> Html {
               a(
                 class="button secondary",
                 href=registration_href(),
-                t(model.locale, zh="飞书报名", en="Feishu registration"),
+                t(model.locale, zh="GitLink 报名", en="GitLink registration"),
               ),
             ]),
           ]),
