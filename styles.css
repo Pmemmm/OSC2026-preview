@@ -3464,7 +3464,7 @@ a {
   min-height: 260px;
 }
 
-.direction-card h3 {
+.showcase-card.direction-card h3 {
   font-size: clamp(17px, 1.25vw, 21px);
   line-height: 1.18;
   letter-spacing: -0.04em;
@@ -4009,7 +4009,7 @@ a {
 }
 
 @media (max-width: 760px) {
-  .direction-card h3 {
+  .showcase-card.direction-card h3 {
     white-space: normal;
   }
 
