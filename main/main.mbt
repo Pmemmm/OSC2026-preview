@@ -966,7 +966,7 @@ fn view_hero(model : Model) -> Html {
       div(class="hero-banner hero-banner--kv", [
         img(
           class="hero-kv-image",
-          src="site-assets/main-kv.png?v=20260428-progress-system",
+          src="site-assets/main-kv.webp?v=20260428-progress-system",
           alt=hero_kv_alt(model.locale),
           nothing,
         ),

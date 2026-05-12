@@ -808,7 +808,7 @@ const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS116 = "hero her
 const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS117 = "container";
 const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS118 = "hero-banner hero-banner--kv";
 const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS119 = "hero-kv-image";
-const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS120 = "site-assets/main-kv.png?v=20260428-progress-system";
+const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS120 = "site-assets/main-kv.webp?v=20260428-progress-system";
 const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS121 = "hero-cta-row";
 const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS122 = "hero-cta-copy";
 const _M0FP38zongen0116mgpic2026_2dsite4main10view__heroN6constrS123 = "hero-cta-actions";
