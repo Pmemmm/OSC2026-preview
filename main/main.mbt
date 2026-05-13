@@ -1101,8 +1101,8 @@ fn view_referral_prize_card(locale : Locale) -> Html {
       li(
         t(
           locale,
-          zh="被推荐人在提交项目申报问卷时，需在“推荐人”字段准确填写推荐人的 GitHub ID；",
-          en="When submitting the project proposal form, the referee must accurately fill in the referrer's GitHub ID in the Referrer field;",
+          zh="被推荐人在提交项目申报问卷时，需在“推荐人”字段准确填写推荐人的手机号码；",
+          en="When submitting the project proposal form, the referee must accurately fill in the referrer's phone number in the Referrer field;",
         ),
       ),
       li(
