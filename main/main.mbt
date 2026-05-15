@@ -390,8 +390,8 @@ fn process_items(locale : Locale) -> Array[ProcessItem] {
       title: t(locale, zh="项目申报", en="Project proposal"),
       desc: t(
         locale,
-        zh="通过官方表单提交参赛信息、GitHub 仓库和一页 PDF 项目申报书；仓库需包含 10-20 个有效 commits。通过申报审核可获得 150 元启动支持。",
-        en="Submit participant info, GitHub repository, and a one-page PDF proposal through the official form. The repository should contain 10-20 valid commits. Approved proposals may receive RMB 150 kickoff support.",
+        zh="通过官方表单提交参赛信息、在线仓库链接和一页 PDF 项目申报书。通过申报审核可获得 150 元启动支持。",
+        en="Submit participant info, an online repository link, and a one-page PDF proposal through the official form. Approved proposals may receive RMB 150 kickoff support.",
       ),
     },
     {
@@ -784,8 +784,8 @@ fn attention_items(locale : Locale) -> Array[String] {
   [
     t(
       locale,
-      zh="项目申报截止到 7 月 10 日，需提交 GitHub 仓库和一页左右 PDF 申报书；仓库应包含 10-20 个有效 commits。",
-      en="Proposal submission closes on July 10. Submit a GitHub repository and a roughly one-page PDF proposal; the repository should contain 10-20 valid commits.",
+      zh="项目申报截止到 7 月 10 日，需提交在线仓库链接和一页左右 PDF 申报书。",
+      en="Proposal submission closes on July 10. Submit an online repository link and a roughly one-page PDF proposal.",
     ),
     t(
       locale,
@@ -983,8 +983,8 @@ fn view_hero(model : Model) -> Html {
           p(
             t(
               model.locale,
-              zh="4 月 29 日至 7 月 10 日，提交 GitHub 仓库和一页 PDF 申报书。",
-              en="Submit your GitHub repository and one-page PDF proposal from Apr 29 to Jul 10.",
+              zh="4 月 29 日至 7 月 10 日，提交在线仓库链接和一页 PDF 申报书。",
+              en="Submit your online repository link and one-page PDF proposal from Apr 29 to Jul 10.",
             ),
           ),
         ]),
@@ -1279,8 +1279,8 @@ fn view_progress_page(model : Model) -> Html {
             p(
               t(
                 model.locale,
-                zh="通过官方渠道提交 GitHub 仓库和一页 PDF 申报书，赛方会通过邮件反馈申报审核结果。",
-                en="Submit your GitHub repository and one-page PDF proposal through the official channel. The organizers will send review results by email.",
+                zh="通过官方渠道提交在线仓库链接和一页 PDF 申报书，赛方会通过邮件反馈申报审核结果。",
+                en="Submit your online repository link and one-page PDF proposal through the official channel. The organizers will send review results by email.",
               ),
             ),
           ]),
