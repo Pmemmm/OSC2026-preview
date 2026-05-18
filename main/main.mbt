@@ -788,6 +788,32 @@ fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
 }
 
 ///|
+fn mvp_plan_items(locale : Locale) -> Array[String] {
+  [
+    t(
+      locale,
+      zh="完成本次比赛初赛选手获得 MoonBit MVP 免笔试资格",
+      en="Participants who complete the preliminary round may receive a MoonBit MVP written-test waiver.",
+    ),
+    t(
+      locale,
+      zh="任职可获得补贴 2k–5k 元 / 月",
+      en="Selected MVPs may receive RMB 2k-5k monthly support during the role.",
+    ),
+    t(
+      locale,
+      zh="MoonBit MVP 荣誉证书",
+      en="MoonBit MVP honorary certificate.",
+    ),
+    t(
+      locale,
+      zh="择优获得 MoonBit 秋招 / 实习绿色通道资格",
+      en="Outstanding MVPs may receive priority channels for MoonBit autumn recruitment or internships.",
+    ),
+  ]
+}
+
+///|
 fn attention_items(locale : Locale) -> Array[String] {
   [
     t(
@@ -1228,6 +1254,27 @@ fn view_faq_item(item : FaqItem) -> Html {
 }
 
 ///|
+fn view_mvp_plan_card(locale : Locale) -> Html {
+  article(class="prize-table-card mvp-plan-card", [
+    div(class="mvp-plan-head", [
+      span(class="tag", "MoonBit MVP"),
+      h3(t(locale, zh="MoonBit MVP 计划", en="MoonBit MVP Program")),
+      p(
+        t(
+          locale,
+          zh="MoonBit MVP（Most Valuable Professional）计划旨在扩大 MoonBit 技术影响力，让更多开发者参与到 MoonBit 生态建设。",
+          en="The MoonBit MVP (Most Valuable Professional) Program aims to expand MoonBit's technical influence and bring more developers into the MoonBit ecosystem.",
+        ),
+      ),
+    ]),
+    ul(
+      class="mvp-plan-list",
+      mvp_plan_items(locale).map(fn(item) { li(item) }),
+    ),
+  ])
+}
+
+///|
 fn view_progress_page(model : Model) -> Html {
   section(
     id="progress",
@@ -1511,6 +1558,13 @@ fn view_awards(model : Model) -> Html {
                 en="Referral reward RMB 50 / person",
               ),
             ),
+            span(
+              t(
+                model.locale,
+                zh="MoonBit MVP 计划",
+                en="MoonBit MVP Program",
+              ),
+            ),
           ]),
         ]),
         div(class="prize-total-card", [
@@ -1540,6 +1594,7 @@ fn view_awards(model : Model) -> Html {
           bonus_prize_items(model.locale),
         ),
         view_referral_prize_card(model.locale),
+        view_mvp_plan_card(model.locale),
       ]),
     ]),
   ])
