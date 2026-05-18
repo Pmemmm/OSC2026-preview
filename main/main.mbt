@@ -1257,7 +1257,6 @@ fn view_faq_item(item : FaqItem) -> Html {
 fn view_mvp_plan_card(locale : Locale) -> Html {
   article(class="prize-table-card mvp-plan-card", [
     div(class="mvp-plan-head", [
-      span(class="tag", "MoonBit MVP"),
       h3(t(locale, zh="MoonBit MVP 计划", en="MoonBit MVP Program")),
       p(
         t(

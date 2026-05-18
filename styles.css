@@ -1264,8 +1264,7 @@ a {
 .mvp-plan-card {
   grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: 18px;
+  gap: 14px;
   align-items: start;
 }
 
@@ -1274,19 +1273,12 @@ a {
   gap: 10px;
 }
 
-.mvp-plan-head .tag {
-  width: fit-content;
-}
-
 .mvp-plan-head h3 {
   margin: 0;
-  font-size: clamp(22px, 2.2vw, 30px);
-  line-height: 1.12;
-  letter-spacing: -0.02em;
 }
 
 .mvp-plan-head p {
-  max-width: 62ch;
+  max-width: none;
   margin: 0;
   color: var(--text-soft);
   line-height: 1.72;
@@ -1294,7 +1286,6 @@ a {
 
 .mvp-plan-list {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
   margin: 0;
   padding: 0;
@@ -1304,8 +1295,8 @@ a {
 
 .mvp-plan-list li {
   position: relative;
-  min-height: 86px;
-  padding: 16px 16px 16px 52px;
+  min-height: auto;
+  padding: 14px 16px 14px 52px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--primary) 6%, transparent);
@@ -4222,15 +4213,6 @@ a {
 
   .prize-table-card {
     padding: 12px;
-  }
-
-  .mvp-plan-card,
-  .mvp-plan-list {
-    grid-template-columns: 1fr;
-  }
-
-  .mvp-plan-list li {
-    min-height: auto;
   }
 
   .prize-table th,
