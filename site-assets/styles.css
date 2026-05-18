@@ -1271,6 +1271,11 @@ a {
   line-height: 1.72;
 }
 
+.mvp-plan-emphasis {
+  color: var(--primary);
+  font-weight: 900;
+}
+
 .referral-prize-head {
   display: flex;
   flex-wrap: wrap;

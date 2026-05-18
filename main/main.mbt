@@ -788,28 +788,25 @@ fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
 }
 
 ///|
-fn mvp_plan_items(locale : Locale) -> Array[String] {
+fn mvp_plan_items(locale : Locale) -> Array[Html] {
   [
-    t(
-      locale,
-      zh="完成本次比赛初赛选手获得 MoonBit MVP 免笔试资格",
-      en="Participants who complete the preliminary round may receive a MoonBit MVP written-test waiver.",
-    ),
-    t(
-      locale,
-      zh="任职可获得补贴 2k–5k 元 / 月",
-      en="Selected MVPs may receive RMB 2k-5k monthly support during the role.",
-    ),
-    t(
-      locale,
-      zh="MoonBit MVP 荣誉证书",
-      en="MoonBit MVP honorary certificate.",
-    ),
-    t(
-      locale,
-      zh="择优获得 MoonBit 秋招 / 实习绿色通道资格",
-      en="Outstanding MVPs may receive priority channels for MoonBit autumn recruitment or internships.",
-    ),
+    li([
+      span(t(locale, zh="完成本次比赛初赛选手获得 MoonBit MVP ", en="Participants who complete the preliminary round may receive a MoonBit MVP ")),
+      span(class="mvp-plan-emphasis", t(locale, zh="免笔试资格", en="written-test waiver")),
+    ]),
+    li([
+      span(t(locale, zh="任职可获得补贴 ", en="Selected MVPs may receive ")),
+      span(class="mvp-plan-emphasis", t(locale, zh="2k-5k 元/月", en="RMB 2k-5k / month")),
+    ]),
+    li([
+      span(t(locale, zh="中国计算机学会（ CCF ）& 粤港澳大湾区数字经济研究院（IDEA 研究院）", en="Official ")),
+      span(class="mvp-plan-emphasis", t(locale, zh="官方出具的荣誉证书", en="honorary certificate")),
+      span(t(locale, zh="", en=" issued by the China Computer Federation (CCF) and the International Digital Economy Academy (IDEA)")),
+    ]),
+    li([
+      span(t(locale, zh="择优获得 MoonBit ", en="Outstanding MVPs may receive priority channels for MoonBit ")),
+      span(class="mvp-plan-emphasis", t(locale, zh="秋招 / 实习绿色通道资格", en="autumn recruitment / internship opportunities")),
+    ]),
   ]
 }
 
@@ -1268,7 +1265,7 @@ fn view_mvp_plan_card(locale : Locale) -> Html {
     ),
     ul(
       class="referral-prize-list mvp-plan-list",
-      mvp_plan_items(locale).map(fn(item) { li(item) }),
+      mvp_plan_items(locale),
     ),
   ])
 }
