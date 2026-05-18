@@ -799,9 +799,8 @@ fn mvp_plan_items(locale : Locale) -> Array[Html] {
       span(class="mvp-plan-emphasis", t(locale, zh="2k-5k 元/月", en="RMB 2k-5k / month")),
     ]),
     li([
-      span(t(locale, zh="中国计算机学会（ CCF ）& 粤港澳大湾区数字经济研究院（IDEA 研究院）", en="Official ")),
-      span(class="mvp-plan-emphasis", t(locale, zh="官方出具的荣誉证书", en="honorary certificate")),
-      span(t(locale, zh="", en=" issued by the China Computer Federation (CCF) and the International Digital Economy Academy (IDEA)")),
+      span(class="mvp-plan-emphasis", t(locale, zh="中国计算机学会（ CCF ）& 粤港澳大湾区数字经济研究院（IDEA 研究院）", en="China Computer Federation (CCF) and the International Digital Economy Academy (IDEA)")),
+      span(t(locale, zh="官方出具的荣誉证书", en=" official honorary certificate")),
     ]),
     li([
       span(t(locale, zh="择优获得 MoonBit ", en="Outstanding MVPs may receive priority channels for MoonBit ")),
@@ -1255,14 +1254,23 @@ fn view_mvp_plan_card(locale : Locale) -> Html {
   article(class="prize-table-card mvp-plan-card", [
     h3(t(locale, zh="MoonBit MVP 计划", en="MoonBit MVP Program")),
     div(class="referral-prize-note-head", t(locale, zh="说明", en="Notes")),
-    p(
-      class="mvp-plan-desc",
-      t(
-        locale,
-        zh="MoonBit MVP（Most Valuable Professional）计划旨在扩大 MoonBit 技术影响力，让更多开发者参与到 MoonBit 生态建设。",
-        en="The MoonBit MVP (Most Valuable Professional) Program aims to expand MoonBit's technical influence and bring more developers into the MoonBit ecosystem.",
+    p(class="mvp-plan-desc", [
+      span(
+        class="mvp-plan-emphasis",
+        t(
+          locale,
+          zh="MoonBit MVP（Most Valuable Professional）计划",
+          en="MoonBit MVP (Most Valuable Professional) Program",
+        ),
       ),
-    ),
+      span(
+        t(
+          locale,
+          zh="旨在扩大 MoonBit 技术影响力，让更多开发者参与到 MoonBit 生态建设。",
+          en=" aims to expand MoonBit's technical influence and bring more developers into the MoonBit ecosystem.",
+        ),
+      ),
+    ]),
     ul(
       class="referral-prize-list mvp-plan-list",
       mvp_plan_items(locale),
