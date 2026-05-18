@@ -799,8 +799,8 @@ fn mvp_plan_items(locale : Locale) -> Array[Html] {
       span(class="mvp-plan-emphasis", t(locale, zh="2k-5k 元/月", en="RMB 2k-5k / month")),
     ]),
     li([
-      span(class="mvp-plan-emphasis", t(locale, zh="中国计算机学会（ CCF ）& 粤港澳大湾区数字经济研究院（IDEA 研究院）", en="China Computer Federation (CCF) and the International Digital Economy Academy (IDEA)")),
-      span(t(locale, zh="官方出具的荣誉证书", en=" official honorary certificate")),
+      span(t(locale, zh="中国计算机学会（ CCF ）& 粤港澳大湾区数字经济研究院（IDEA 研究院）官方出具的", en="Official certificate issued by the China Computer Federation (CCF) and the International Digital Economy Academy (IDEA): ")),
+      span(class="mvp-plan-emphasis", t(locale, zh="荣誉证书", en="honorary certificate")),
     ]),
     li([
       span(t(locale, zh="择优获得 MoonBit ", en="Outstanding MVPs may receive priority channels for MoonBit ")),
@@ -1259,7 +1259,7 @@ fn view_mvp_plan_card(locale : Locale) -> Html {
         class="mvp-plan-emphasis",
         t(
           locale,
-          zh="MoonBit MVP（Most Valuable Professional）计划",
+          zh="MoonBit MVP（Most Valuable Professional）计划 ",
           en="MoonBit MVP (Most Valuable Professional) Program",
         ),
       ),
