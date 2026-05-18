@@ -1267,6 +1267,7 @@ a {
 
 .mvp-plan-desc {
   margin: 0 0 14px;
+  padding-left: 14px;
   color: var(--text-soft);
   line-height: 1.72;
 }
