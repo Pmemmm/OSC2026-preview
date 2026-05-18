@@ -1256,18 +1256,18 @@ fn view_faq_item(item : FaqItem) -> Html {
 ///|
 fn view_mvp_plan_card(locale : Locale) -> Html {
   article(class="prize-table-card mvp-plan-card", [
-    div(class="mvp-plan-head", [
-      h3(t(locale, zh="MoonBit MVP 计划", en="MoonBit MVP Program")),
-      p(
-        t(
-          locale,
-          zh="MoonBit MVP（Most Valuable Professional）计划旨在扩大 MoonBit 技术影响力，让更多开发者参与到 MoonBit 生态建设。",
-          en="The MoonBit MVP (Most Valuable Professional) Program aims to expand MoonBit's technical influence and bring more developers into the MoonBit ecosystem.",
-        ),
+    h3(t(locale, zh="MoonBit MVP 计划", en="MoonBit MVP Program")),
+    div(class="referral-prize-note-head", t(locale, zh="说明", en="Notes")),
+    p(
+      class="mvp-plan-desc",
+      t(
+        locale,
+        zh="MoonBit MVP（Most Valuable Professional）计划旨在扩大 MoonBit 技术影响力，让更多开发者参与到 MoonBit 生态建设。",
+        en="The MoonBit MVP (Most Valuable Professional) Program aims to expand MoonBit's technical influence and bring more developers into the MoonBit ecosystem.",
       ),
-    ]),
+    ),
     ul(
-      class="mvp-plan-list",
+      class="referral-prize-list mvp-plan-list",
       mvp_plan_items(locale).map(fn(item) { li(item) }),
     ),
   ])
