@@ -769,13 +769,13 @@ const _M0FP38zongen0116mgpic2026_2dsite4main32view__judge__row_2econstr_2f3437 =
 const _M0FP38zongen0116mgpic2026_2dsite4main32view__judge__row_2econstr_2f3438 = "judge-name";
 const _M0FP38zongen0116mgpic2026_2dsite4main32view__judge__row_2econstr_2f3439 = "judge-divider";
 const _M0FP38zongen0116mgpic2026_2dsite4main32view__judge__row_2econstr_2f3440 = "judge-title";
+const _M0FP38zongen0116mgpic2026_2dsite4main36section__intro__wide_2econstr_2f3394 = "section-head section-head--wide";
+const _M0FP38zongen0116mgpic2026_2dsite4main36section__intro__wide_2econstr_2f3395 = "eyebrow";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__judges_2econstr_2f3563 = "judges";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__judges_2econstr_2f3564 = "section section--alt";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__judges_2econstr_2f3565 = "container";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__judges_2econstr_2f3566 = "judge-panel";
 const _M0FP38zongen0116mgpic2026_2dsite4main28view__judges_2econstr_2f3567 = "judge-list";
-const _M0FP38zongen0116mgpic2026_2dsite4main36section__intro__wide_2econstr_2f3394 = "section-head section-head--wide";
-const _M0FP38zongen0116mgpic2026_2dsite4main36section__intro__wide_2econstr_2f3395 = "eyebrow";
 const _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3430 = "info-card";
 const _M0FP38zongen0116mgpic2026_2dsite4main32view__info__card_2econstr_2f3431 = "tag";
 const _M0FP38zongen0116mgpic2026_2dsite4main27view__about_2econstr_2f3519 = "about";
@@ -8135,7 +8135,7 @@ function _M0FP38zongen0116mgpic2026_2dsite4main16view__directions(model) {
   return _M0FP319moonbit_2dcommunity7rabbita4html7sectionGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3557, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3558, undefined, -1, undefined, [_M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3559, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, [_tmp, _M0FP319moonbit_2dcommunity7rabbita4html3divGRPB5ArrayGRP319moonbit_2dcommunity7rabbita4html4HtmlEE(_M0DTPC16option6OptionGRPB5ArrayGsEE4None__, undefined, _M0FP38zongen0116mgpic2026_2dsite4main32view__directions_2econstr_2f3560, undefined, -1, undefined, undefined, undefined, undefined, undefined, undefined, undefined, _p$3)])]);
 }
 function _M0FP38zongen0116mgpic2026_2dsite4main12view__judges(model) {
-  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main14section__intro(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事荣誉评委", "Honorary Judges"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "由学术界与工程界专家共同见证优秀项目", "Recognizing outstanding projects with academic and engineering leadership"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事荣誉评委将为优秀项目评选提供权威支持，帮助更多 MoonBit 生态项目被看见。", "Honorary judges provide authoritative support for the final selection and help outstanding MoonBit ecosystem projects gain visibility."));
+  const _tmp = _M0FP38zongen0116mgpic2026_2dsite4main20section__intro__wide(_M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事荣誉评委", "Honorary Judges"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "由学术界与工程界专家共同见证优秀项目", "Recognizing outstanding projects with academic and engineering leadership"), _M0FP38zongen0116mgpic2026_2dsite4main1t(model.locale, "赛事荣誉评委将为优秀项目评选提供权威支持，帮助更多 MoonBit 生态项目被看见。", "Honorary judges provide authoritative support for the final selection and help outstanding MoonBit ecosystem projects gain visibility."));
   const _p$2 = _M0FP38zongen0116mgpic2026_2dsite4main12judge__items(model.locale);
   const _p$3 = new Array(_p$2.length);
   const _p$4 = _p$2.length;

@@ -1661,7 +1661,7 @@ fn view_directions(model : Model) -> Html {
 fn view_judges(model : Model) -> Html {
   section(id="judges", class="section section--alt", [
     div(class="container", [
-      section_intro(
+      section_intro_wide(
         t(model.locale, zh="赛事荣誉评委", en="Honorary Judges"),
         t(model.locale, zh="由学术界与工程界专家共同见证优秀项目", en="Recognizing outstanding projects with academic and engineering leadership"),
         t(
