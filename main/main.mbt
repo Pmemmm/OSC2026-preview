@@ -791,8 +791,8 @@ fn bonus_prize_items(locale : Locale) -> Array[PrizeItem] {
 fn mvp_plan_items(locale : Locale) -> Array[Html] {
   [
     li([
-      span(t(locale, zh="完成本次比赛初赛选手获得 MoonBit MVP ", en="Participants who complete the preliminary round may receive a MoonBit MVP ")),
-      span(class="mvp-plan-emphasis", t(locale, zh="免笔试资格", en="written-test waiver")),
+      span(t(locale, zh="完成本次比赛初赛选手获得 ", en="Participants who complete the preliminary round may receive ")),
+      span(class="mvp-plan-emphasis", t(locale, zh="MoonBit MVP 免笔试资格", en="MoonBit MVP written-test waiver")),
     ]),
     li([
       span(t(locale, zh="任职可获得补贴 ", en="Selected MVPs may receive ")),
