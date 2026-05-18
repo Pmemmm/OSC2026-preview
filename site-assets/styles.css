@@ -3692,7 +3692,8 @@ a {
 .judge-row {
   display: grid;
   grid-template-columns: minmax(72px, max-content) 16px 1fr;
-  gap: 12px;
+  column-gap: 8px;
+  row-gap: 12px;
   align-items: baseline;
   padding: 0 0 16px;
   border-bottom: 1px solid var(--border);
