@@ -182,6 +182,12 @@ struct PrizeItem {
 }
 
 ///|
+struct JudgeItem {
+  name : String
+  title : String
+}
+
+///|
 struct ShowcaseSignal {
   value : String
   label : String
@@ -273,6 +279,7 @@ fn page_href(anchor : String) -> String {
       "#directions" => "index.html#directions"
       "#awards" => "index.html#awards"
       "#showcase" => "showcase.html"
+      "#judges" => "index.html#judges"
       "#requirements" => "index.html#requirements"
       "#faq" => "index.html#faq"
       _ => anchor
@@ -290,6 +297,7 @@ fn nav_items(locale : Locale) -> Array[NavItem] {
     { label: t(locale, zh="方向", en="Directions"), href: "#directions" },
     { label: t(locale, zh="奖励", en="Awards"), href: "#awards" },
     { label: t(locale, zh="作品墙", en="Showcase"), href: "showcase.html" },
+    { label: t(locale, zh="评委", en="Judges"), href: "#judges" },
     { label: t(locale, zh="注意事项", en="Notes"), href: "#requirements" },
     { label: "FAQ", href: "#faq" },
   ]
@@ -816,6 +824,36 @@ fn attention_items(locale : Locale) -> Array[String] {
 }
 
 ///|
+fn judge_items(locale : Locale) -> Array[JudgeItem] {
+  [
+    {
+      name: t(locale, zh="沈向洋", en="Harry Shum"),
+      title: t(
+        locale,
+        zh="美国国家工程院外籍院士、香港科技大学校董会主席、MGPIC 赛事荣誉评委",
+        en="Foreign member of the U.S. National Academy of Engineering, Council Chairman of The Hong Kong University of Science and Technology, MGPIC honorary judge",
+      ),
+    },
+    {
+      name: t(locale, zh="赵　琛", en="Chen Zhao"),
+      title: t(
+        locale,
+        zh="中国科学院软件研究所所长、MGPIC 赛事荣誉评委",
+        en="Director of the Institute of Software, Chinese Academy of Sciences, MGPIC honorary judge",
+      ),
+    },
+    {
+      name: t(locale, zh="倪明选", en="Lionel Ni"),
+      title: t(
+        locale,
+        zh="IEEE 终身会士、香港工程科学院院士、香港科技大学（广州）创校校长、MGPIC 赛事荣誉评委",
+        en="IEEE Life Fellow, Fellow of the Hong Kong Academy of Engineering Sciences, founding president of HKUST (Guangzhou), MGPIC honorary judge",
+      ),
+    },
+  ]
+}
+
+///|
 fn faq_items(locale : Locale) -> Array[FaqItem] {
   [
     {
@@ -1037,6 +1075,15 @@ fn view_list_card(card : ListCard) -> Html {
     h3(card.title),
     p(card.desc),
     ul(class="path-points", card.items.map(fn(item) { li(item) })),
+  ])
+}
+
+///|
+fn view_judge_row(item : JudgeItem) -> Html {
+  li(class="judge-row", [
+    strong(class="judge-name", item.name),
+    span(class="judge-divider", "|"),
+    span(class="judge-title", item.title),
   ])
 }
 
@@ -1611,6 +1658,30 @@ fn view_directions(model : Model) -> Html {
 }
 
 ///|
+fn view_judges(model : Model) -> Html {
+  section(id="judges", class="section section--alt", [
+    div(class="container", [
+      section_intro(
+        t(model.locale, zh="赛事荣誉评委", en="Honorary Judges"),
+        t(model.locale, zh="由学术界与工程界专家共同见证优秀项目", en="Recognizing outstanding projects with academic and engineering leadership"),
+        t(
+          model.locale,
+          zh="赛事荣誉评委将为优秀项目评选提供权威支持，帮助更多 MoonBit 生态项目被看见。",
+          en="Honorary judges provide authoritative support for the final selection and help outstanding MoonBit ecosystem projects gain visibility.",
+        ),
+      ),
+      article(class="judge-panel", [
+        div(class="judge-panel-mark", "MGPIC"),
+        ul(
+          class="judge-list",
+          judge_items(model.locale).map(fn(item) { view_judge_row(item) }),
+        ),
+      ]),
+    ]),
+  ])
+}
+
+///|
 fn view_requirements(model : Model) -> Html {
   section(id="requirements", class="section", [
     div(class="container", [
@@ -1732,6 +1803,7 @@ fn view(dispatch : Dispatch[Msg], model : Model) -> Html {
         view_awards(model),
         view_process(model),
         view_directions(model),
+        view_judges(model),
         view_requirements(model),
         view_faq(model),
       ])
