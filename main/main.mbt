@@ -1671,7 +1671,6 @@ fn view_judges(model : Model) -> Html {
         ),
       ),
       article(class="judge-panel", [
-        div(class="judge-panel-mark", "MGPIC"),
         ul(
           class="judge-list",
           judge_items(model.locale).map(fn(item) { view_judge_row(item) }),

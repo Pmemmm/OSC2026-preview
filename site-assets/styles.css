@@ -3674,18 +3674,6 @@ a {
   background: linear-gradient(180deg, var(--primary), var(--primary-strong));
 }
 
-.judge-panel-mark {
-  position: absolute;
-  top: 22px;
-  right: 24px;
-  color: color-mix(in srgb, var(--primary) 14%, transparent);
-  font-size: 72px;
-  font-weight: 900;
-  letter-spacing: 0;
-  line-height: 1;
-  pointer-events: none;
-}
-
 .judge-list {
   position: relative;
   z-index: 1;
@@ -4379,12 +4367,6 @@ a {
   .judge-panel,
   .faq-item {
     padding: 20px;
-  }
-
-  .judge-panel-mark {
-    top: 18px;
-    right: 18px;
-    font-size: 46px;
   }
 
   .judge-row {
